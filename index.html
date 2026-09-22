@@ -1202,7 +1202,7 @@ a.btn, a.tool-btn { text-decoration: none; display: inline-flex; align-items: ce
         <div class="reader-toolbar">
           <button class="tool-btn" id="btn-narrate" title="Read aloud">🔊 Listen</button>
           <button class="tool-btn" id="btn-edit" title="Edit this answer">✏️ Edit</button>
-          <a class="tool-btn hidden" id="btn-open-sheet" href="#" target="_blank" rel="noopener" title="Open this question's Google Sheet">📄 Open Sheet</a>
+          <a class="tool-btn hidden" id="btn-open-sheet" href="#" target="_blank" rel="noopener" title="Open this question's Google Doc">📄 Open Doc</a>
         </div>
 
         <div class="edit-toolbar hidden" id="edit-toolbar">
@@ -1313,7 +1313,7 @@ a.btn, a.tool-btn { text-decoration: none; display: inline-flex; align-items: ce
 
         <section class="settings-group">
           <h3>Your Google Drive</h3>
-          <p class="settings-hint">Keep every question and answer in your own Google Drive. The app makes a <b>Rehearsly</b> folder, one folder for each section, and one Google Sheet for each question. Edit in the app or right in the Sheet, both stay in step, on every device you sign in on.</p>
+          <p class="settings-hint">Keep every question and answer in your own Google Drive. The app makes a <b>Rehearsly</b> folder, one folder for each section, and one Google Doc for each question. Edit in the app or right in the Doc, both stay in step, on every device you sign in on.</p>
           <label class="settings-row-col"><span>Google Client ID</span><input type="text" id="google-client-id" placeholder="1234567890-abc.apps.googleusercontent.com" autocomplete="off" /></label>
           <div class="settings-actions">
             <button class="btn" id="btn-drive-connect">Connect Google Drive</button>
@@ -1326,7 +1326,7 @@ a.btn, a.tool-btn { text-decoration: none; display: inline-flex; align-items: ce
             <summary>How to get your Google Client ID (one time, about 10 minutes)</summary>
             <ol class="settings-steps">
               <li>Open <a href="https://console.cloud.google.com/projectcreate" target="_blank" rel="noopener">console.cloud.google.com</a> and make a new project, name it Rehearsly.</li>
-              <li>Turn on two APIs in that project: <a href="https://console.cloud.google.com/apis/library/drive.googleapis.com" target="_blank" rel="noopener">Google Drive API</a> and <a href="https://console.cloud.google.com/apis/library/sheets.googleapis.com" target="_blank" rel="noopener">Google Sheets API</a>. Tap Enable on each.</li>
+              <li>Turn on the <a href="https://console.cloud.google.com/apis/library/drive.googleapis.com" target="_blank" rel="noopener">Google Drive API</a> in that project. Tap Enable.</li>
               <li>Open <a href="https://console.cloud.google.com/auth/overview" target="_blank" rel="noopener">Google Auth Platform</a>, tap Get started. App name Rehearsly, your email, Audience External, then Create.</li>
               <li>In Audience, add your own Gmail under Test users.</li>
               <li>In Clients, tap Create client. Type Web application. Under Authorised JavaScript origins add <b>https://sunnyabichandani1-tech.github.io</b>. Tap Create.</li>
@@ -4683,19 +4683,19 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   /* ---------------------------------------------------------------------
    * Google Drive, the master copy of all your content.
    * You sign in with Google. The app makes a "Rehearsly" folder in your
-   * Drive, one folder for every section, and one Google Sheet for every
+   * Drive, one folder for every section, and one Google Doc for every
    * question, story or page. Edit in the app or right in the Sheet, the
    * two stay in step. It only ever sees the files it made itself.
    * ------------------------------------------------------------------- */
   var DRIVE_SCOPE = "https://www.googleapis.com/auth/drive.file";
   var DRIVE_API = "https://www.googleapis.com/drive/v3";
   var DRIVE_UPLOAD = "https://www.googleapis.com/upload/drive/v3/files";
-  var SHEETS_API = "https://sheets.googleapis.com/v4/spreadsheets";
-  var SHEET_MIME = "application/vnd.google-apps.spreadsheet";
+  var DOC_MIME = "application/vnd.google-apps.document";
   var FOLDER_MIME = "application/vnd.google-apps.folder";
   var DRIVE_ROOT_NAME = "Rehearsly";
-  // What each Sheet holds, one row per field: the label you see in column
-  // A, and the value in column B.
+  // What each Google Doc holds. The first field is the heading of the
+  // document, the rest are headings inside it, so the page reads like a
+  // normal page and you can format it any way you like.
   var DRIVE_LAYOUTS = {
     Questions: [["Question", "question"], ["Answer", "answer"], ["Tip", "tips"], ["How to learn it", "approach_to_learn"], ["Part", "part_title"], ["Category", "category"]],
     Roadmaps: [["Question", "question"], ["Content", "content"], ["Tip", "tip"], ["Topic", "topic"], ["Subtopic", "subtopic"], ["Part", "part_title"]],
@@ -4808,47 +4808,44 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   }
   function driveJson(url, opts) { return driveFetch(url, opts).then(function (r) { return r.json(); }); }
 
-  // Plain CSV, with quotes and line breaks inside cells handled properly.
-  function csvCell(v) {
-    var s = v == null ? "" : String(v);
-    // A cell starting with = would turn into a formula in the Sheet.
-    if (/^[=+@]/.test(s)) s = " " + s;
-    return "\"" + s.replace(/"/g, "\"\"") + "\"";
-  }
-  function toCsv(rows) { return rows.map(function (r) { return r.map(csvCell).join(","); }).join("\r\n"); }
-  function parseCsv(text) {
-    var rows = [], row = [], cell = "", q = false, i = 0, c;
-    text = String(text || "");
-    if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
-    for (; i < text.length; i++) {
-      c = text[i];
-      if (q) {
-        if (c === "\"") { if (text[i + 1] === "\"") { cell += "\""; i++; } else q = false; }
-        else cell += c;
-      } else if (c === "\"") q = true;
-      else if (c === ",") { row.push(cell); cell = ""; }
-      else if (c === "\n" || c === "\r") {
-        if (c === "\r" && text[i + 1] === "\n") i++;
-        row.push(cell); rows.push(row); row = []; cell = "";
-      } else cell += c;
-    }
-    if (cell !== "" || row.length) { row.push(cell); rows.push(row); }
-    return rows;
-  }
-  function sheetRowsFor(kind, row) {
-    return [["Field", "Value"]].concat(DRIVE_LAYOUTS[kind].map(function (f) { return [f[0], row[f[1]] == null ? "" : String(row[f[1]])]; }));
-  }
-  function rowFromSheet(kind, rows) {
-    var layout = DRIVE_LAYOUTS[kind], out = {};
-    layout.forEach(function (f) { out[f[1]] = ""; });
-    rows.forEach(function (r) {
-      var label = String(r[0] || "").trim().toLowerCase();
-      if (!label || label === "field") return;
-      var f = layout.filter(function (x) { return x[0].toLowerCase() === label || x[1] === label; })[0];
-      if (f) out[f[1]] = String(r[1] == null ? "" : r[1]).replace(/^ (?=[=+@])/, "");
+  // The Doc, written as simple text with headings. Google turns this into
+  // a proper document, and gives it back in the same shape when we read.
+  function docTextFor(kind, row) {
+    var layout = DRIVE_LAYOUTS[kind];
+    var out = "# " + String(row[layout[0][1]] || "").replace(/\s+/g, " ").trim() + "\n";
+    layout.slice(1).forEach(function (f) {
+      out += "\n## " + f[0] + "\n\n" + String(row[f[1]] == null ? "" : row[f[1]]).replace(/\s+$/, "") + "\n";
     });
     return out;
   }
+  function rowFromDoc(kind, text) {
+    var layout = DRIVE_LAYOUTS[kind], out = {};
+    layout.forEach(function (f) { out[f[1]] = ""; });
+    var lines = String(text || "").replace(/\r/g, "").split("\n");
+    var current = null, buf = [];
+    function flush() {
+      if (!current) return;
+      out[current] = buf.join("\n").replace(/^\s+|\s+$/g, "");
+      buf = [];
+    }
+    lines.forEach(function (line) {
+      var h1 = line.match(/^#\s+(.*)$/), h2 = line.match(/^##\s+(.*)$/);
+      if (h1 && !h2) { flush(); current = layout[0][1]; buf.push(h1[1]); flush(); current = null; return; }
+      if (h2) {
+        flush();
+        var label = unescapeMd(h2[1]).trim().toLowerCase();
+        var f = layout.filter(function (x) { return x[0].toLowerCase() === label || x[1] === label; })[0];
+        current = f ? f[1] : null;
+        return;
+      }
+      if (current) buf.push(line);
+    });
+    flush();
+    // Google escapes a few characters when it writes the text back.
+    Object.keys(out).forEach(function (k) { out[k] = unescapeMd(out[k]); });
+    return out;
+  }
+  function unescapeMd(t) { return String(t || "").replace(/\\([\\`*_{}\[\]()#+\-.!>~|])/g, "$1"); }
   function itemTitle(kind, row) { return cleanFileName(row[DRIVE_LAYOUTS[kind][0][1]]); }
 
   // Turns what is in your Drive into the same shape the rest of the app
@@ -4901,32 +4898,29 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       body: JSON.stringify({ name: name, mimeType: FOLDER_MIME, parents: parentId ? [parentId] : undefined, description: desc || "", appProperties: Object.assign({ rapp: "1" }, props) })
     });
   }
-  function driveCreateSheet(kind, rid, row, folderId, order) {
-    var boundary = "rehearsly" + Date.now().toString(36);
-    var meta = { name: itemTitle(kind, row), mimeType: SHEET_MIME, parents: [folderId], appProperties: { rapp: "1", rkind: kind, rid: rid, order: String(order || 0) } };
+  function driveDocUpload(kind, row, meta, fileId) {
+    var boundary = "rehearsly" + Date.now().toString(36) + Math.floor(Math.random() * 1000);
     var body = "--" + boundary + "\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n" + JSON.stringify(meta) +
-      "\r\n--" + boundary + "\r\nContent-Type: text/csv; charset=UTF-8\r\n\r\n" + toCsv(sheetRowsFor(kind, row)) + "\r\n--" + boundary + "--";
-    return driveJson(DRIVE_UPLOAD + "?uploadType=multipart&fields=id,modifiedTime", {
-      method: "POST", headers: { "Content-Type": "multipart/related; boundary=" + boundary }, body: body
+      "\r\n--" + boundary + "\r\nContent-Type: text/markdown; charset=UTF-8\r\n\r\n" + docTextFor(kind, row) + "\r\n--" + boundary + "--";
+    return driveJson(DRIVE_UPLOAD + (fileId ? "/" + fileId : "") + "?uploadType=multipart&fields=id,modifiedTime", {
+      method: fileId ? "PATCH" : "POST",
+      headers: { "Content-Type": "multipart/related; boundary=" + boundary }, body: body
     });
   }
-  function driveWriteSheet(fileId, kind, row) {
-    var rows = sheetRowsFor(kind, row);
-    var range = encodeURIComponent("A1:B" + (rows.length + 5));
-    // Rows past the fields are cleared, so nothing old is left behind.
-    while (rows.length < DRIVE_LAYOUTS[kind].length + 6) rows.push(["", ""]);
-    return driveJson(SHEETS_API + "/" + fileId + "/values/" + range + "?valueInputOption=RAW", {
-      method: "PUT", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ range: decodeURIComponent(range), majorDimension: "ROWS", values: rows })
-    }).then(function () {
-      return driveJson(DRIVE_API + "/files/" + fileId + "?fields=id,modifiedTime", {
-        method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: itemTitle(kind, row) })
-      });
-    });
+  function driveCreateDoc(kind, rid, row, folderId, order) {
+    return driveDocUpload(kind, row, {
+      name: itemTitle(kind, row), mimeType: DOC_MIME, parents: [folderId],
+      appProperties: { rapp: "1", rkind: kind, rid: rid, order: String(order || 0) }
+    }, null);
   }
-  function driveReadSheet(fileId, kind) {
-    return driveFetch(DRIVE_API + "/files/" + fileId + "/export?mimeType=text%2Fcsv").then(function (r) { return r.text(); })
-      .then(function (text) { return rowFromSheet(kind, parseCsv(text)); });
+  // Writing the whole page again replaces what was there, and the file
+  // keeps its own link, so your bookmark still works.
+  function driveWriteDoc(fileId, kind, row) {
+    return driveDocUpload(kind, row, { name: itemTitle(kind, row), mimeType: DOC_MIME }, fileId);
+  }
+  function driveReadDoc(fileId, kind) {
+    return driveFetch(DRIVE_API + "/files/" + fileId + "/export?mimeType=text%2Fmarkdown").then(function (r) { return r.text(); })
+      .then(function (text) { return rowFromDoc(kind, text); });
   }
   function driveTrash(fileId) {
     return driveJson(DRIVE_API + "/files/" + fileId + "?fields=id", {
@@ -4979,7 +4973,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
         clearLocalOverlay();
         return driveSync(true).then(function () { return { reused: true }; });
       }
-      return (root ? Promise.resolve(root) : driveCreateFolder(DRIVE_ROOT_NAME, null, { rkind: "root" }, "Your Rehearsly questions and answers. One folder per section, one Sheet per question."))
+      return (root ? Promise.resolve(root) : driveCreateFolder(DRIVE_ROOT_NAME, null, { rkind: "root" }, "Your Rehearsly questions and answers. One folder per section, one Google Doc per question."))
         .then(function (r) { return seedDrive(r.id, files); });
     });
   }
@@ -5028,7 +5022,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       var jobs = itemDefs.map(function (it) {
         return function () {
           var found = have[it.rid];
-          var job = found ? Promise.resolve(found) : driveCreateSheet(it.kind, it.rid, it.row, cache.folders[it.sectionRid].folderId, it.order);
+          var job = found ? Promise.resolve(found) : driveCreateDoc(it.kind, it.rid, it.row, cache.folders[it.sectionRid].folderId, it.order);
           return job.then(function (res) {
             cache.items[it.rid] = { fileId: res.id, kind: it.kind, sectionRid: it.sectionRid, row: it.row, order: it.order, modifiedTime: res.modifiedTime || null };
           });
@@ -5083,7 +5077,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       var toRead = [];
       files.forEach(function (f) {
         var p = f.appProperties || {};
-        if (f.mimeType !== SHEET_MIME || !DRIVE_LAYOUTS[p.rkind]) return;
+        if (f.mimeType !== DOC_MIME || !DRIVE_LAYOUTS[p.rkind]) return;
         var secRid = (f.parents || []).map(function (id) { return folderRidById[id]; }).filter(Boolean)[0];
         if (!secRid) return;
         var kindOk = cache.folders[secRid].kind === "qa" ? p.rkind === "Questions" : FIXED_KIND[secRid] === p.rkind;
@@ -5093,9 +5087,9 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
         cache.items[p.rid] = entry;
         if (!was || was.fileId !== f.id || was.modifiedTime !== f.modifiedTime || !was.row) toRead.push(entry);
       });
-      if (toRead.length) driveStatus("Reading " + toRead.length + " changed Sheet" + (toRead.length === 1 ? "" : "s") + "…");
+      if (toRead.length) driveStatus("Reading " + toRead.length + " changed doc" + (toRead.length === 1 ? "" : "s") + "…");
       return runPool(toRead.map(function (entry) {
-        return function () { return driveReadSheet(entry.fileId, entry.kind).then(function (row) { entry.row = row; }); };
+        return function () { return driveReadDoc(entry.fileId, entry.kind).then(function (row) { entry.row = row; }); };
       }), 6).then(function () { return { cache: cache, changed: toRead.length }; });
     }).then(function (res) {
       Object.keys(res.cache.items).forEach(function (rid) { if (!res.cache.items[rid].row) delete res.cache.items[rid]; });
@@ -5149,8 +5143,8 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       var folder = cache.folders[it.sectionRid];
       if (!folder || !folder.folderId) return Promise.resolve();
       var job = it.fileId
-        ? driveWriteSheet(it.fileId, it.kind, it.row)
-        : driveCreateSheet(it.kind, op.rid, it.row, folder.folderId, it.order);
+        ? driveWriteDoc(it.fileId, it.kind, it.row)
+        : driveCreateDoc(it.kind, op.rid, it.row, folder.folderId, it.order);
       return job.then(function (res) {
         cache = driveCache() || cache;
         var cur = cache.items[op.rid];
@@ -5289,7 +5283,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     if (sheetBtn) {
       var fid = on && currentItem ? driveFileIdFor(currentItem.id) : null;
       sheetBtn.classList.toggle("hidden", !fid);
-      if (fid) sheetBtn.href = "https://docs.google.com/spreadsheets/d/" + fid + "/edit";
+      if (fid) sheetBtn.href = "https://docs.google.com/document/d/" + fid + "/edit";
     }
   }
 
@@ -8462,7 +8456,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
         btn.disabled = false;
         updateDriveUi();
         if (res && res.created != null) {
-          driveStatus("Done. " + res.created + " Sheets are in your Rehearsly folder. From now on your Drive is the master copy.");
+          driveStatus("Done. " + res.created + " docs are in your Rehearsly folder. From now on your Drive is the master copy.");
           showToast("Your content is now in Google Drive.");
         } else {
           showToast("Synced with your Google Drive.");
