@@ -764,6 +764,13 @@ button, input, select, textarea { font-family: inherit; }
 }
 .modal-field textarea { min-height: 80px; resize: vertical; font-family: var(--serif); }
 
+/* ---------- Our own confirm box, sits above every other pop up ---------- */
+.confirm-overlay { z-index: 90; }
+.confirm-card { max-width: 420px; }
+.confirm-card h3 { margin-bottom: 8px; }
+.confirm-card .modal-sub { font-size: 14px; line-height: 1.6; margin-bottom: 4px; color: var(--frame-text-soft); }
+.confirm-card .modal-close-row { margin-top: 20px; }
+
 /* ---------- AI Interviewer, a real back and forth chat about one question ---------- */
 .interview-card { max-width: 620px; display: flex; flex-direction: column; }
 .interview-modal-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
@@ -789,6 +796,9 @@ button, input, select, textarea { font-family: inherit; }
   color: var(--frame-text);
   border-bottom-left-radius: 4px;
 }
+/* A bubble still being spoken, it fills in live and settles when the turn ends. */
+.chat-bubble.draft { opacity: 0.72; font-style: italic; }
+.chat-bubble.draft::after { content: " ▍"; animation: mic-pulse 1s ease-in-out infinite; font-style: normal; }
 .chat-bubble.candidate {
   align-self: flex-end;
   background: var(--accent);
@@ -812,6 +822,8 @@ button, input, select, textarea { font-family: inherit; }
 .interview-live-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
 .live-hint { font-size: 13px; color: var(--frame-text-soft); }
 .interview-input-row { display: flex; gap: 6px; margin-top: 12px; }
+.interview-input-row { align-items: flex-end; }
+.interview-input-row textarea,
 .interview-input-row input {
   flex: 1;
   min-width: 0;
@@ -1097,6 +1109,16 @@ button, input, select, textarea { font-family: inherit; }
   .reader-card-inner { padding: 26px 32px 22px; }
 }
 
+/* The interviewer answer box grows as you speak, so every word stays visible. */
+#interview-text-input {
+  resize: none;
+  font-family: inherit;
+  line-height: 1.45;
+  min-height: 42px;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
 </style>
 </head>
 <body>
@@ -1293,9 +1315,11 @@ button, input, select, textarea { font-family: inherit; }
         </section>
 
         <section class="settings-group">
-          <h3>Gemini, for answer checking</h3>
-          <p class="settings-hint">A starter key is already filled in for you. Your key is saved only in this browser, and sent directly to Google's Gemini API when you check an answer, never anywhere else. You can replace it with your own key anytime.</p>
+          <h3>Your Gemini key</h3>
+          <p class="settings-hint">Everything smart in Rehearsly runs on one free key from Google: the interviewer, the scoring, and the voice. Get yours free at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a> and paste it below. It is saved only in this browser and sent only to Google. It is never written into the app's code, so it stays private even though the app is public.</p>
           <label class="settings-row-col"><span>Gemini API key</span><input type="password" id="gemini-key" placeholder="paste your key here" autocomplete="off" /></label>
+          <div class="settings-actions"><button class="btn" id="btn-test-key">Check my key</button></div>
+          <p class="settings-status" id="key-status"></p>
           <label class="settings-row-col"><span>Model</span><input type="text" id="gemini-model" placeholder="gemini-3.6-flash" /></label>
         </section>
 
@@ -1322,10 +1346,10 @@ button, input, select, textarea { font-family: inherit; }
             <option value="firm">Firm hiring manager</option>
             <option value="tough">Tough panel member</option>
           </select></label>
-          <label class="settings-row"><span>Interviewer voice</span><select id="live-voice-name"></select></label>
+          <label class="settings-row"><span>Voice, used everywhere</span><select id="live-voice-name"></select></label>
           <div class="settings-actions"><button class="btn" id="btn-test-live-voice">Hear this voice</button></div>
           <p class="settings-status" id="live-voice-status"></p>
-          <p class="settings-hint">If the interviewer sounds too soft, change the manner above, and try the deeper voices. Charon, Fenrir, Orus, Alnilam, Rasalgethi and Enceladus are the weightier ones. Tap Hear this voice to listen before you commit. Google does not let an accent be set directly, so the accent comes from how the interviewer is briefed, and different voices carry it differently.</p>
+          <p class="settings-hint">This one voice is used everywhere in the app: the interviewer, the Listen button, the story bank and the practice questions, always with the accent above. If it sounds too soft, change the manner above, and try the deeper voices. Charon, Fenrir, Orus, Alnilam, Rasalgethi and Enceladus are the weightier ones. Tap Hear this voice to listen before you commit. Google does not let an accent be set directly, so the accent comes from how the interviewer is briefed, and different voices carry it differently.</p>
           <label class="settings-row-col"><span>Live model</span><input type="text" id="live-model" placeholder="gemini-3.1-flash-live-preview" /></label>
         </section>
 
@@ -1340,31 +1364,8 @@ button, input, select, textarea { font-family: inherit; }
         </section>
 
         <section class="settings-group">
-          <h3>ElevenLabs, for the real voice</h3>
-          <p class="settings-hint">A starter key and your picked voice are already filled in, so this works right away. It is used in the voice practice session, to read the question and the short feedback out loud in a real voice. ElevenLabs' free plan only gives a small amount of real voice speech each month, so this is used just for the short parts, not the full model answer. You can replace the key with your own anytime.</p>
-          <label class="settings-row-col"><span>ElevenLabs API key</span><input type="password" id="eleven-key" placeholder="paste your key here" autocomplete="off" /></label>
-          <label class="settings-row-col"><span>Voice ID</span><input type="text" id="eleven-voice-id" placeholder="qTx8G3QX5lqjb2hAokQl" /></label>
-          <div class="settings-actions">
-            <button class="btn" id="btn-test-eleven">Test voice</button>
-          </div>
-          <p class="settings-status" id="eleven-status"></p>
-        </section>
-
-        <section class="settings-group">
-          <h3>Reading a page out loud</h3>
-          <p class="settings-hint">This is the Listen button at the bottom of a question. It now uses the same real Gemini voices as your interviewer, instead of the flat built in browser voice.</p>
-          <label class="settings-row"><span>Read out loud with</span><select id="read-aloud-voice">
-            <option value="gemini">A real Gemini voice</option>
-            <option value="browser">The plain browser voice</option>
-          </select></label>
-          <label class="settings-row"><span>Reading voice</span><select id="read-voice-name"></select></label>
-          <div class="settings-actions"><button class="btn" id="btn-test-read-voice">Hear this voice</button></div>
-          <p class="settings-status" id="read-voice-status"></p>
-        </section>
-
-        <section class="settings-group">
-          <h3>The plain browser voice</h3>
-          <p class="settings-hint">Only used if you pick the plain voice above, or if the real voice cannot be reached.</p>
+          <h3>Backup voice</h3>
+          <p class="settings-hint">Only used for a moment if the Gemini voice cannot be reached. Pick the one that sounds closest to your main voice, so the switch is less jarring.</p>
           <label class="settings-row"><span>Narration voice</span><select id="voice-select"></select></label>
           <label class="settings-row"><span>Narration speed</span><input type="range" id="rate-range" min="0.7" max="1.3" step="0.05" /></label>
         </section>
@@ -1404,7 +1405,7 @@ button, input, select, textarea { font-family: inherit; }
         <button class="btn btn-ghost" id="btn-interview-finish">Finish and score me</button>
       </div>
       <div class="interview-input-row" id="interview-input-row">
-        <input type="text" id="interview-text-input" placeholder="Just talk, I am listening. Or type here instead..." autocomplete="off" />
+        <textarea id="interview-text-input" rows="1" placeholder="Just talk, I am listening. Or type here instead..."></textarea>
         <button class="btn" id="btn-interview-send">Send</button>
       </div>
       <div class="interview-finish-row hidden" id="interview-finish-row">
@@ -1528,6 +1529,18 @@ button, input, select, textarea { font-family: inherit; }
         <button class="btn btn-danger hidden" id="btn-delete-story">Delete story</button>
         <button class="btn btn-ghost" id="btn-cancel-story">Cancel</button>
         <button class="btn" id="btn-save-story">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Our own confirm box, used instead of the browser's grey pop up -->
+  <div class="modal-overlay confirm-overlay hidden" id="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+    <div class="modal-card confirm-card">
+      <h3 id="confirm-title">Are you sure?</h3>
+      <p class="modal-sub" id="confirm-message"></p>
+      <div class="modal-close-row">
+        <button class="btn btn-ghost" id="btn-confirm-cancel">Cancel</button>
+        <button class="btn" id="btn-confirm-ok">Confirm</button>
       </div>
     </div>
   </div>
@@ -4055,8 +4068,10 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
 
   var DEFAULT_SETTINGS = {
     fontSize: 12, theme: "light", paperDark: false, sheetUrl: "", sheetToken: "",
-    geminiKey: "AQ.Ab8RN6I0R1qXE8e3btQEWiA12XaGFa2O6DVgQ2cB6yGVPBgp6A", geminiModel: "gemini-3.6-flash", voiceURI: "", rate: 1,
-    elevenKey: "sk_bffb9cd98c490475a10def7b45ee1c5d90cc55f829eb28b2", elevenVoiceId: "qTx8G3QX5lqjb2hAokQl",
+    // No key is ever written into the app itself. The app is public, so a
+    // key in the code can be copied by anyone and Google switches it off.
+    // Each person pastes their own key in Settings, it stays in their browser.
+    geminiKey: "", geminiModel: "gemini-3.6-flash", voiceURI: "", rate: 1,
     // Live voice interview, a real time voice line to Gemini. No buttons,
     // it hears you while you speak and you can cut it off mid sentence.
     liveVoice: true,
@@ -4069,11 +4084,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     // accent and phrasing are steered by the interviewer's instructions.
     interviewAccent: "indian",
     // How hard the interviewer is on you.
-    interviewManner: "firm",
-    // Reading a page out loud with the Listen button. "gemini" uses a real
-    // Gemini voice, "browser" falls back to the flat built in voice.
-    readAloudVoice: "gemini",
-    readVoiceName: "Charon"
+    interviewManner: "firm"
   };
 
   var MANNER_STYLES = {
@@ -4176,6 +4187,99 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     var c = $("#center");
     if (c) c.scrollTo({ top: 0, behavior: "auto" });
     window.scrollTo({ top: 0, behavior: "auto" });
+  }
+
+  /* ---------------------------------------------------------------------
+   * Our own confirm box, in the app's design, instead of the browser's
+   * grey pop up. Returns a promise that gives true for confirm, false for
+   * cancel. Escape or a tap outside counts as cancel.
+   * ------------------------------------------------------------------- */
+  var confirmResolver = null;
+  function confirmDialog(opts) {
+    opts = opts || {};
+    if (confirmResolver) { confirmResolver(false); confirmResolver = null; }
+    $("#confirm-title").textContent = opts.title || "Are you sure?";
+    $("#confirm-message").textContent = opts.message || "";
+    var ok = $("#btn-confirm-ok"), cancel = $("#btn-confirm-cancel");
+    ok.textContent = opts.confirmLabel || "Confirm";
+    cancel.textContent = opts.cancelLabel || "Cancel";
+    // In this black and white design the grey danger style reads as a
+    // disabled button, so the confirm stays the solid main button. Safety
+    // comes from starting on Cancel and from the plain wording instead.
+    ok.classList.remove("btn-danger");
+    cancel.classList.toggle("hidden", opts.hideCancel === true);
+    $("#confirm-modal").classList.remove("hidden");
+    // A destructive action starts on Cancel, so a stray Enter never deletes.
+    setTimeout(function () { (opts.danger ? cancel : ok).focus(); }, 30);
+    return new Promise(function (resolve) { confirmResolver = resolve; });
+  }
+  function closeConfirm(result) {
+    $("#confirm-modal").classList.add("hidden");
+    var r = confirmResolver;
+    confirmResolver = null;
+    if (r) r(!!result);
+  }
+
+  /* ---------------------------------------------------------------------
+   * The Gemini key. When it is missing or has stopped working, say so in
+   * plain words and take you straight to where you fix it, instead of
+   * showing Google's raw error text.
+   * ------------------------------------------------------------------- */
+  function isAuthError(err) {
+    var m = String((err && err.message) || err || "");
+    return /\b401\b/.test(m) || /API_KEY_INVALID|API key not valid|invalid authentication credentials|UNAUTHENTICATED|API key expired/i.test(m);
+  }
+  var keyDialogOpen = false;
+  function showKeyProblem(kind) {
+    if (keyDialogOpen) return;
+    keyDialogOpen = true;
+    var missing = kind === "missing";
+    confirmDialog({
+      title: missing ? "Add your free Gemini key" : "Your Gemini key is not working",
+      message: missing
+        ? "The interviewer, the scoring and the reading voice all run on a free Gemini key from Google. Get one in a minute at aistudio.google.com/apikey, then paste it in Settings. It is saved only in this browser."
+        : "Google turned this key down. This usually means the key was switched off, for example because it was shared in public code. Make a new free key at aistudio.google.com/apikey and paste it in Settings. Until then the voice and scoring cannot work.",
+      confirmLabel: "Open Settings",
+      cancelLabel: "Not now"
+    }).then(function (go) {
+      keyDialogOpen = false;
+      if (!go) return;
+      openSettings();
+      setTimeout(function () {
+        var f = $("#gemini-key");
+        if (f) { f.scrollIntoView({ behavior: "smooth", block: "center" }); f.focus(); }
+      }, 120);
+    });
+  }
+  // A tiny request to prove the key works, with the answer in plain words.
+  function testGeminiKey() {
+    var statusEl = $("#key-status");
+    var typed = $("#gemini-key").value.trim();
+    if (typed) saveSettings({ geminiKey: typed });
+    var settings = getSettings();
+    if (!settings.geminiKey) { statusEl.textContent = "Paste a key above first."; return; }
+    statusEl.textContent = "Checking with Google…";
+    callGeminiResilient(settings, "Reply with the single word OK.", "Say OK.", null)
+      .then(function () { statusEl.textContent = "Your key works. The interviewer, scoring and voice are ready."; })
+      .catch(function (err) {
+        if (isAuthError(err)) statusEl.textContent = "Google turned this key down. Make a new one at aistudio.google.com/apikey and paste it above.";
+        else if (isBusyGeminiError(err)) statusEl.textContent = "The key looks fine, Google is just busy right now. Try again in a minute.";
+        else statusEl.textContent = "Could not check the key. " + String(err.message || err).slice(0, 160);
+      });
+  }
+  function hasGeminiKey() { return !!String(getSettings().geminiKey || "").trim(); }
+  // Clears the two keys that used to ship inside the app. They are public
+  // now and switched off, keeping them only causes confusing errors. Only
+  // the first few characters are checked, which are not usable as a key.
+  function forgetLeakedKeys() {
+    try {
+      var s = JSON.parse(localStorage.getItem("sip_settings") || "{}");
+      var changed = false;
+      if (s.geminiKey && String(s.geminiKey).indexOf("AQ.Ab8RN6I0R1qX") === 0) { s.geminiKey = ""; changed = true; }
+      if (s.elevenKey) { delete s.elevenKey; changed = true; }
+      if (s.elevenVoiceId) { delete s.elevenVoiceId; changed = true; }
+      if (changed) localStorage.setItem("sip_settings", JSON.stringify(s));
+    } catch (e) {}
   }
 
   /* ---------------------------------------------------------------------
@@ -4711,25 +4815,38 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
         var found = findItemWithList(btn.dataset.delId);
         if (!found) return;
         var label = found.item.sheet === "Roadmaps" ? "topic" : found.item.sheet === "ActionPlan" ? "step" : "question";
-        if (!window.confirm("Delete this " + label + " for good?")) return;
-        var wasCurrent = currentItem && currentItem.id === found.item.id;
-        var job = found.item.sheet === "Questions"
-          ? deleteQuestionEverywhere(found.item)
-          : deleteRowEverywhere(found.item.sheet, found.item.id);
-        job.then(function () {
-          showToast(label.charAt(0).toUpperCase() + label.slice(1) + " deleted.");
-          return loadData(true);
-        }).then(function () { if (wasCurrent) goHome(); else renderSidebar(); });
+        confirmDialog({
+          title: "Delete this " + label + "?",
+          message: "\"" + found.item.question + "\" will be removed for good, along with its answer and tip.",
+          confirmLabel: "Delete", danger: true
+        }).then(function (ok) {
+          if (!ok) return;
+          var wasCurrent = currentItem && currentItem.id === found.item.id;
+          var job = found.item.sheet === "Questions"
+            ? deleteQuestionEverywhere(found.item)
+            : deleteRowEverywhere(found.item.sheet, found.item.id);
+          job.then(function () {
+            showToast(label.charAt(0).toUpperCase() + label.slice(1) + " deleted.");
+            return loadData(true);
+          }).then(function () { if (wasCurrent) goHome(); else renderSidebar(); });
+        });
       };
     });
     $all(".ni-del[data-del-story]").forEach(function (btn) {
       btn.onclick = function (e) {
         e.stopPropagation();
-        if (!window.confirm("Delete this story for good?")) return;
-        deleteRowEverywhere("StoryBank", btn.dataset.delStory).then(function () {
-          showToast("Story deleted.");
-          return loadData(true);
-        }).then(function () { renderSidebar(); if (!$("#view-stories").classList.contains("hidden")) renderStories(); });
+        var story = STORYBANK_ITEMS.filter(function (s) { return s.id === btn.dataset.delStory; })[0];
+        confirmDialog({
+          title: "Delete this story?",
+          message: (story ? "\"" + story.title + "\"" : "This story") + " will be removed from your story bank for good.",
+          confirmLabel: "Delete", danger: true
+        }).then(function (ok) {
+          if (!ok) return;
+          deleteRowEverywhere("StoryBank", btn.dataset.delStory).then(function () {
+            showToast("Story deleted.");
+            return loadData(true);
+          }).then(function () { renderSidebar(); if (!$("#view-stories").classList.contains("hidden")) renderStories(); });
+        });
       };
     });
     $all(".nav-item[data-story-id]").forEach(function (row) {
@@ -5125,41 +5242,16 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     else if (state === "playing") { btn.classList.add("active"); btn.textContent = "⏹ Stop"; }
     else { btn.classList.remove("active"); btn.textContent = "🔊 Listen"; }
   }
-  function speakCurrentWithBrowser(text) {
-    if (!("speechSynthesis" in window)) { showToast("Narration is not supported in this browser."); setNarrateBtn("idle"); return; }
-    window.speechSynthesis.cancel();
-    var utter = new SpeechSynthesisUtterance(text);
-    var settings = getSettings();
-    utter.rate = parseFloat(settings.rate || 1);
-    var voices = window.speechSynthesis.getVoices();
-    var v = voices.filter(function (vv) { return vv.voiceURI === settings.voiceURI; })[0];
-    if (v) utter.voice = v;
-    utter.onend = function () { setNarrateBtn("idle"); };
-    utter.onerror = function () { setNarrateBtn("idle"); };
-    window.speechSynthesis.speak(utter);
-    setNarrateBtn("playing");
-  }
   function speakCurrent() {
     if (!currentItem) return;
     var parts = [currentItem.question + ".", "Answer.", stripMd(currentItem.answer)];
     if (currentItem.tips) parts.push("Tip to remember.", stripMd(currentItem.tips));
     var text = parts.join(" ");
-    var settings = getSettings();
-    // First choice, a real Gemini voice, the same list the interviewer uses.
-    if (settings.readAloudVoice !== "browser" && window.WebSocket) {
-      setNarrateBtn("loading");
-      speakWithGemini(chunkForSpeech(text), {
-        voice: settings.readVoiceName || settings.liveVoiceName || DEFAULT_SETTINGS.liveVoiceName,
-        onStart: function () { setNarrateBtn("playing"); },
-        onDone: function () { setNarrateBtn("idle"); },
-        onFail: function (why) {
-          showToast("Real voice did not start. " + why + " Using the plain voice.");
-          speakCurrentWithBrowser(text);
-        }
-      });
-      return;
-    }
-    speakCurrentWithBrowser(text);
+    setNarrateBtn(hasGeminiKey() ? "loading" : "playing");
+    speakApp(text, {
+      onStart: function () { setNarrateBtn("playing"); },
+      onDone: function () { setNarrateBtn("idle"); }
+    });
   }
   function speakingNow() {
     return geminiSpeechBusy() || ("speechSynthesis" in window && window.speechSynthesis.speaking);
@@ -5177,73 +5269,76 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
    * credits, since the free ElevenLabs plan only gives a small amount
    * each month.
    * ------------------------------------------------------------------- */
+  // The backup voice, only used when the Gemini voice cannot be reached.
+  // Picked the same way every time, so it never flips between voices.
+  function pickBackupVoice() {
+    if (!("speechSynthesis" in window)) return null;
+    var voices = window.speechSynthesis.getVoices() || [];
+    var settings = getSettings();
+    var chosen = voices.filter(function (v) { return v.voiceURI === settings.voiceURI; })[0];
+    if (chosen) return chosen;
+    var byLang = function (re) { return voices.filter(function (v) { return re.test(v.lang); }); };
+    var pool = byLang(/^en[-_]IN/i);
+    if (!pool.length) pool = byLang(/^en[-_]GB/i);
+    if (!pool.length) pool = byLang(/^en/i);
+    if (!pool.length) return null;
+    // Prefer a natural sounding voice over the flat default ones.
+    var nice = pool.filter(function (v) { return /natural|neural|online|google|premium|enhanced/i.test(v.name); });
+    return (nice[0] || pool[0]);
+  }
   function speakBrowser(text, onDone) {
     if (!text || !("speechSynthesis" in window)) { if (onDone) onDone(); return; }
     window.speechSynthesis.cancel();
     var settings = getSettings();
     var utter = new SpeechSynthesisUtterance(text);
     utter.rate = parseFloat(settings.rate || 1);
-    var voices = window.speechSynthesis.getVoices();
-    var v = voices.filter(function (vv) { return vv.voiceURI === settings.voiceURI; })[0];
-    if (v) utter.voice = v;
+    var v = pickBackupVoice();
+    if (v) { utter.voice = v; utter.lang = v.lang; }
     utter.onend = function () { if (onDone) onDone(); };
     utter.onerror = function () { if (onDone) onDone(); };
     window.speechSynthesis.speak(utter);
   }
-  function speakReal(text, btnSel) {
-    if (!text) return;
-    var settings = getSettings();
-    var btn = btnSel ? $(btnSel) : null;
-    if (btn) btn.classList.add("active");
-    function done() { if (btn) btn.classList.remove("active"); }
-    if (!settings.elevenKey) { speakBrowser(text, done); return; }
-    var voiceId = settings.elevenVoiceId || "qTx8G3QX5lqjb2hAokQl";
-    fetch("https://api.elevenlabs.io/v1/text-to-speech/" + encodeURIComponent(voiceId), {
-      method: "POST",
-      headers: { "xi-api-key": settings.elevenKey, "Content-Type": "application/json", "Accept": "audio/mpeg" },
-      body: JSON.stringify({ text: text, model_id: "eleven_flash_v2_5" })
-    }).then(function (r) {
-      if (!r.ok) return r.text().then(function (t) { throw new Error("ElevenLabs error " + r.status + ", " + t.slice(0, 150)); });
-      return r.blob();
-    }).then(function (blob) {
-      var url = URL.createObjectURL(blob);
-      var audio = new Audio(url);
-      audio.onended = function () { URL.revokeObjectURL(url); done(); };
-      audio.onerror = function () { URL.revokeObjectURL(url); done(); };
-      audio.play().catch(function () {
-        showToast("Your browser blocked the real voice from playing on its own. Tap Hear question again.");
-        done();
-      });
-    }).catch(function (err) {
-      console.warn("ElevenLabs voice did not work, used the plain voice instead.", err);
-      showToast("Real voice did not work (" + (err && err.message ? err.message : "network error") + "). Used the plain voice. Check Settings, Test voice, for details.");
-      speakBrowser(text, done);
+
+  /* ---------------------------------------------------------------------
+   * One voice for the whole app. The interviewer, the Listen button, the
+   * story bank and the practice questions all speak through here, in the
+   * one Gemini voice you picked, with the same accent. The plain browser
+   * voice is only a backup for when Gemini cannot be reached.
+   * ------------------------------------------------------------------- */
+  function appVoice() { return getSettings().liveVoiceName || DEFAULT_SETTINGS.liveVoiceName; }
+  var backupNoticeShown = false;
+  var missingKeyPromptShown = false;
+  function speakApp(text, opts) {
+    opts = opts || {};
+    if (!text) { if (opts.onDone) opts.onDone(); return; }
+    function useBackup(why, info) {
+      if (info && info.auth && opts.onAuthFail) { opts.onAuthFail(); return; }
+      if (info && info.auth) showKeyProblem("broken");
+      else if (!hasGeminiKey()) {
+        // Say once why the voice is the plain one, instead of leaving you
+        // wondering. After that, stay quiet and just use the backup.
+        if (!missingKeyPromptShown) { missingKeyPromptShown = true; showKeyProblem("missing"); }
+      }
+      else if (!backupNoticeShown) {
+        backupNoticeShown = true;
+        showToast("The Gemini voice could not be reached just now, so the plain backup voice is reading instead.");
+      }
+      if (opts.onStart) opts.onStart();
+      speakBrowser(text, opts.onDone);
+    }
+    if (!hasGeminiKey() || !window.WebSocket) { useBackup("no key"); return; }
+    speakWithGemini(chunkForSpeech(text), {
+      voice: appVoice(),
+      onStart: opts.onStart,
+      onDone: opts.onDone,
+      onFail: useBackup
     });
   }
-  function testElevenVoice() {
-    var settings = getSettings();
-    var statusEl = $("#eleven-status");
-    if (!settings.elevenKey) { statusEl.textContent = "Add a key above first."; return; }
-    statusEl.textContent = "Testing…";
-    var voiceId = settings.elevenVoiceId || "qTx8G3QX5lqjb2hAokQl";
-    fetch("https://api.elevenlabs.io/v1/text-to-speech/" + encodeURIComponent(voiceId), {
-      method: "POST",
-      headers: { "xi-api-key": settings.elevenKey, "Content-Type": "application/json", "Accept": "audio/mpeg" },
-      body: JSON.stringify({ text: "This is your interview prep voice, working.", model_id: "eleven_flash_v2_5" })
-    }).then(function (r) {
-      if (!r.ok) return r.text().then(function (t) { throw new Error("HTTP " + r.status + ", " + t.slice(0, 200)); });
-      return r.blob();
-    }).then(function (blob) {
-      statusEl.textContent = "Connected. Playing a short sample now.";
-      var url = URL.createObjectURL(blob);
-      var audio = new Audio(url);
-      audio.onended = function () { URL.revokeObjectURL(url); };
-      audio.play().catch(function () {
-        statusEl.textContent = "Connected, but your browser blocked it from playing on its own. Tap Test voice again.";
-      });
-    }).catch(function (err) {
-      statusEl.textContent = "Could not connect. " + String(err.message || err);
-    });
+  // Kept under its old name, since a few buttons still call it.
+  function speakReal(text, btnSel) {
+    var btn = btnSel ? $(btnSel) : null;
+    if (btn) btn.classList.add("active");
+    speakApp(text, { onDone: function () { if (btn) btn.classList.remove("active"); } });
   }
 
   /* ---------------------------------------------------------------------
@@ -5316,16 +5411,20 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       /UNAVAILABLE|RESOURCE_EXHAUSTED|overloaded|high demand|try again later/i.test(m);
   }
   // A model can be missing, or not allowed for a key. Skip it and move on.
+  // A bad key is never a model problem. Trying other models with a key
+  // Google has refused only wastes time, so it stops at once instead.
   function isModelUnavailableError(err) {
+    if (isAuthError(err)) return false;
     var m = String((err && err.message) || err || "");
-    return /\b(400|401|403|404)\b/.test(m) ||
+    return /\b(400|403|404)\b/.test(m) ||
       /NOT_FOUND|PERMISSION_DENIED|INVALID_ARGUMENT|is not found|not supported/i.test(m);
   }
   // A model that is simply gone, or not allowed for this key. No point
   // asking it a second time in a different mode, that just burns quota.
   function isModelGoneError(err) {
+    if (isAuthError(err)) return true;
     var m = String((err && err.message) || err || "");
-    return /\b(401|403|404)\b/.test(m) || /NOT_FOUND|PERMISSION_DENIED|is not found/i.test(m);
+    return /\b(403|404)\b/.test(m) || /NOT_FOUND|PERMISSION_DENIED|is not found/i.test(m);
   }
   // Other text models to fall back on when the chosen one is busy. All of
   // these are real model names from Google's own model list.
@@ -5825,7 +5924,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     var text = $("#record-text").value.trim();
     if (!text) { showToast("There is no text to score. Type what you said, or record again."); return; }
     var settings = getSettings();
-    if (!settings.geminiKey) { showToast("Add your Gemini API key in Settings first."); return; }
+    if (!hasGeminiKey()) { showKeyProblem("missing"); return; }
     var item = recorder.item;
     var st = deliveryStats(text, recorder.seconds);
     var statusEl = $("#record-status");
@@ -5865,7 +5964,12 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       if (currentItem) renderRightPanelStudy();
     }).catch(function (err) {
       $("#btn-score-recording").disabled = false;
-      statusEl.textContent = "Could not score it. " + String(err.message || err) + " Your recording is still here, try again.";
+      if (isAuthError(err)) {
+        statusEl.textContent = "Your recording is safe here. It cannot be scored until your Gemini key works. Fix the key in Settings, then tap Score this answer again.";
+        showKeyProblem("broken");
+      } else {
+        statusEl.textContent = "Could not score it. " + String(err.message || err).slice(0, 160) + " Your recording is still here, try again.";
+      }
       statusEl.classList.remove("hidden");
     });
   }
@@ -5968,7 +6072,8 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
             responseModalities: ["AUDIO"],
             speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: opts.voice || settings.liveVoiceName || DEFAULT_SETTINGS.liveVoiceName } } }
           },
-          systemInstruction: { parts: [{ text: READER_BRIEF }] }
+          // Same accent as the interviewer, so the app sounds like one voice.
+          systemInstruction: { parts: [{ text: (opts.brief || READER_BRIEF) + " " + accentStyle(settings).replace(/You are an? [^.]*interviewer[^.]*\./i, "") }] }
         }
       }));
     };
@@ -6013,11 +6118,24 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       if (typeof ev.data === "string") handle(ev.data);
       else if (ev.data && ev.data.text) ev.data.text().then(handle);
     };
+    function fail(why, info) {
+      if (geminiSpeech !== s || s.gotAudio || s.failed) return;
+      s.failed = true;
+      stopGeminiSpeech();
+      if (opts.onFail) opts.onFail(why, info || {});
+    }
     ws.onerror = function () {
-      if (geminiSpeech === s && !s.gotAudio) { stopGeminiSpeech(); if (opts.onFail) opts.onFail("Could not reach the voice line."); }
+      // The close event that follows carries Google's reason, so wait a
+      // moment for it before giving up without one.
+      setTimeout(function () { fail("Could not reach the voice line."); }, 400);
     };
-    ws.onclose = function () {
-      if (geminiSpeech === s && !s.gotAudio) { stopGeminiSpeech(); if (opts.onFail) opts.onFail("The voice line closed early."); }
+    ws.onclose = function (ev) {
+      var reason = (ev && ev.reason) || "";
+      if (isAuthError(reason) || (ev && ev.code === 1008 && /auth|credential|key/i.test(reason))) {
+        fail("Your Gemini key was turned down.", { auth: true });
+      } else {
+        fail("The voice line closed early." + (reason ? " " + reason.slice(0, 120) : ""));
+      }
     };
   }
 
@@ -6101,7 +6219,14 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       else if (ev.data && ev.data.text) ev.data.text().then(handle);
     };
     ws.onerror = function () { clearTimeout(timer); statusEl.textContent = "Could not reach the voice line."; };
-    ws.onclose = function () { if (voiceTestSession === sess) voiceTestSession = null; };
+    ws.onclose = function (ev) {
+      if (voiceTestSession === sess) voiceTestSession = null;
+      var reason = (ev && ev.reason) || "";
+      if (!sess.got && (isAuthError(reason) || /credential|api key/i.test(reason))) {
+        clearTimeout(timer);
+        statusEl.textContent = "Google turned your Gemini key down, so no voice can play. Make a new key at aistudio.google.com/apikey and paste it above.";
+      }
+    };
   }
 
   // How long a silence must last before Gemini decides your turn is over.
@@ -6165,7 +6290,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
           model: "models/" + (settings.liveModel || DEFAULT_SETTINGS.liveModel),
           generationConfig: {
             responseModalities: ["AUDIO"],
-            speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: settings.liveVoiceName || "Puck" } } }
+            speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: appVoice() } } }
           },
           systemInstruction: { parts: [{ text: buildLiveSystemPrompt(item) }] },
           inputAudioTranscription: {},
@@ -6192,15 +6317,20 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     };
     ws.onerror = function () {
       clearTimeout(openTimer);
-      if (live && !live.ready) liveFailed("The voice line could not connect.");
+      // The close event right after this carries Google's reason, so give
+      // it a moment and let onclose decide what went wrong.
+      setTimeout(function () { if (live && !live.ready && !live.closed) liveFailed("The voice line could not connect."); }, 500);
     };
     ws.onclose = function (ev) {
       clearTimeout(openTimer);
       if (!live || live.closed) return;
+      var reason = (ev && ev.reason) || "";
+      if (!live.ready && (isAuthError(reason) || /credential|api key/i.test(reason))) {
+        interviewKeyFailed();
+        return;
+      }
       if (!live.ready) {
-        liveFailed("The voice line closed straight away. Your key may not have live voice access yet." +
-          (ev && ev.code ? " Code " + ev.code + "." : "") +
-          (ev && ev.reason ? " " + String(ev.reason).slice(0, 160) : ""));
+        liveFailed("The voice line closed straight away." + (reason ? " " + String(reason).slice(0, 160) : ""));
       } else if (!live.finished) {
         // Ended mid interview, score whatever was said.
         setLiveStatus("The voice line ended. Scoring what you said…", false);
@@ -6227,24 +6357,63 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
 
     if (sc.interrupted) { stopLivePlayback(); }
 
+    // Your words appear as you say them, every word, not just the first few.
     if (sc.inputTranscription && sc.inputTranscription.text) {
       live.inBuf += sc.inputTranscription.text;
-      setLiveStatus("🔴 Live, just talk", true);
+      updateDraftBubble("candidate", live.inBuf);
+      setLiveStatus("🔴 You are talking, take your time", true);
     }
     if (sc.outputTranscription && sc.outputTranscription.text) {
       live.outBuf += sc.outputTranscription.text;
+      updateDraftBubble("interviewer", live.outBuf);
     }
     var parts = sc.modelTurn && sc.modelTurn.parts;
     if (parts) {
       parts.forEach(function (p) {
-        if (p.inlineData && p.inlineData.data) playLiveChunk(p.inlineData.data);
-        else if (p.text) live.outBuf += p.text;
+        if (p.inlineData && p.inlineData.data) {
+          playLiveChunk(p.inlineData.data);
+          setLiveStatus("🔊 The interviewer is speaking. You can cut in any time.", false);
+        } else if (p.text) { live.outBuf += p.text; updateDraftBubble("interviewer", live.outBuf); }
       });
     }
     if (sc.turnComplete || sc.generationComplete) {
       // A turn just ended, commit both sides into the visible chat log.
       flushLiveTranscripts();
+      if (live && !live.finished) setLiveStatus("🔴 Your turn, just talk", true);
     }
+  }
+
+  // A bubble that fills in while someone is still talking, then becomes a
+  // normal chat bubble once their turn ends.
+  function draftBubble(who) {
+    var chat = $("#interview-chat");
+    if (!chat) return null;
+    var cls = who === "interviewer" ? "interviewer" : "candidate";
+    var el = chat.querySelector(".chat-bubble.draft." + cls);
+    if (!el) {
+      el = document.createElement("div");
+      el.className = "chat-bubble draft " + cls;
+      // Your words can arrive a moment after the interviewer starts, keep
+      // them above the reply so the order still reads right.
+      var theirDraft = cls === "candidate" ? chat.querySelector(".chat-bubble.draft.interviewer") : null;
+      if (theirDraft) chat.insertBefore(el, theirDraft); else chat.appendChild(el);
+    }
+    return el;
+  }
+  function updateDraftBubble(who, text) {
+    var el = draftBubble(who);
+    if (!el) return;
+    el.textContent = String(text || "").trim() || "…";
+    var chat = $("#interview-chat");
+    chat.scrollTop = chat.scrollHeight;
+  }
+  function finalizeDraftBubble(who, text) {
+    var chat = $("#interview-chat");
+    if (!chat) return false;
+    var el = chat.querySelector(".chat-bubble.draft." + (who === "interviewer" ? "interviewer" : "candidate"));
+    if (!el) return false;
+    if (text) { el.textContent = text; el.classList.remove("draft"); } else { el.remove(); }
+    return true;
   }
 
   function flushLiveTranscripts() {
@@ -6252,11 +6421,11 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     var mine = live.inBuf.trim(), theirs = live.outBuf.trim();
     live.inBuf = ""; live.outBuf = "";
     if (mine) {
-      appendChatBubble("candidate", mine);
+      if (!finalizeDraftBubble("candidate", mine)) appendChatBubble("candidate", mine);
       if (interviewState) interviewState.history.push({ role: "user", text: mine });
-    }
+    } else { finalizeDraftBubble("candidate", ""); }
     if (theirs) {
-      appendChatBubble("interviewer", theirs);
+      if (!finalizeDraftBubble("interviewer", theirs)) appendChatBubble("interviewer", theirs);
       if (interviewState) interviewState.history.push({ role: "model", text: theirs });
       if (theirs.toLowerCase().indexOf(LIVE_CLOSING_PHRASE) !== -1) {
         // The interviewer said its closing line, wrap up and score.
@@ -6383,11 +6552,47 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
         var opening = "Let's talk through this one. " + interviewState.item.question;
         appendChatBubble("interviewer", opening);
         interviewState.history.push({ role: "model", text: opening });
-        speakBrowser(opening, function () { startInterviewListening(); });
+        interviewerSays(opening, function () { startInterviewListening(); });
       } else {
         startInterviewListening();
       }
     }, 1200);
+  }
+
+  // Google refused the key. Everything in the interviewer runs on that one
+  // key, so falling back to typing would only fail again. Stop cleanly,
+  // say what to do, and never leave you stuck on this question.
+  function interviewKeyFailed() {
+    stopLiveSession();
+    stopInterviewListening();
+    stopGeminiSpeech();
+    if (!interviewState) return;
+    var chat = $("#interview-chat");
+    if (chat && !chat.querySelector(".chat-note.key-note")) {
+      var note = document.createElement("div");
+      note.className = "chat-note key-note";
+      note.textContent = "The interviewer cannot start, because Google turned your Gemini key down. Add a new free key in Settings, then tap Practice again.";
+      chat.appendChild(note);
+      chat.scrollTop = chat.scrollHeight;
+    }
+    $("#interview-status").classList.add("hidden");
+    $("#interview-input-row").classList.add("hidden");
+    $("#interview-live-row").classList.add("hidden");
+    $("#interview-finish-row").classList.remove("hidden");
+    unlockSessionArrows();
+    showKeyProblem("broken");
+  }
+  // The practice session arrows are never kept locked. An error, a closed
+  // pop up or a skipped question must never trap you on one question.
+  function unlockSessionArrows() {
+    var p = $("#btn-session-prev"), n = $("#btn-session-next");
+    if (p) p.disabled = false;
+    if (n) n.disabled = false;
+  }
+  // The interviewer speaks in the one app voice. If you are cut off by the
+  // voice failing, listening still starts, so the interview carries on.
+  function interviewerSays(text, then) {
+    speakApp(text, { onDone: then, onAuthFail: interviewKeyFailed });
   }
 
   // Takes everything that was said on the voice call and asks the normal
@@ -6442,6 +6647,14 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       interviewState.pendingScore = null;
       finishInterview(parsed || { score: 5, verdict: "Unclear", what_worked: "", what_to_improve: String(content).slice(0, 200), missing_point: "" });
     }).catch(function (err) {
+      if (isAuthError(err)) {
+        setLiveStatus("Your interview is saved here, but it cannot be scored until your Gemini key works. Fix the key in Settings, then tap Try scoring again.", false);
+        $("#interview-finish-row").classList.remove("hidden");
+        if (retryBtn) retryBtn.classList.remove("hidden");
+        unlockSessionArrows();
+        showKeyProblem("broken");
+        return;
+      }
       var busy = isBusyGeminiError(err) || isModelUnavailableError(err);
       setLiveStatus(busy
         ? "Every Gemini model your key can use is busy right now. Your interview is safe, nothing is lost. Tap Try scoring again in a minute."
@@ -6451,19 +6664,21 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     });
   }
 
-  // How long to wait after you stop talking before we treat it as your
-  // turn being over and send it by itself, no button needed.
-  var INTERVIEW_SILENCE_MS = 2000;
+  // How long to wait after you stop talking before your turn is sent. It
+  // follows the pause setting in Settings, the same one the live line uses.
   var interviewSilenceTimer = null;
+  var interviewCountdown = null;
   var interviewListenActive = false; // true while we intend to keep listening
+  var interviewFailStreak = 0;
   function interviewSpeechSupported() { return !!(window.SpeechRecognition || window.webkitSpeechRecognition); }
   function startInterview(item, sourceContext) {
     if (!item) return;
     var settings = getSettings();
-    if (!settings.geminiKey) { showToast("Add your Gemini API key in Settings first."); return; }
+    if (!hasGeminiKey()) { showKeyProblem("missing"); return; }
     stopLiveSession();
     stopInterviewListening();
-    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    stopSpeak();
+    interviewFailStreak = 0;
     interviewState = { item: item, history: [], followupCount: 0, sourceContext: sourceContext, done: false };
     $("#interview-modal-question").textContent = item.question;
     $("#interview-chat").innerHTML = "";
@@ -6489,15 +6704,16 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     interviewState.history.push({ role: "model", text: opening });
     // The mic only starts listening once the interviewer has finished
     // talking, so it never picks up its own voice.
-    speakBrowser(opening, function () { startInterviewListening(); });
+    interviewerSays(opening, function () { startInterviewListening(); });
   }
   function closeInterviewModal() {
     var wasStudy = interviewState && interviewState.sourceContext === "study";
     $("#interview-modal").classList.add("hidden");
     stopLiveSession();
     stopInterviewListening();
-    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    stopSpeak();
     interviewState = null;
+    unlockSessionArrows();
     // Study mode, refresh the tip panel so the just earned score shows.
     // Session mode already updated its own panel live as the interview
     // finished, so there is nothing more to refresh there.
@@ -6505,15 +6721,24 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   }
   function stopInterviewListening() {
     interviewListenActive = false;
-    if (interviewSilenceTimer) { clearTimeout(interviewSilenceTimer); interviewSilenceTimer = null; }
+    clearSilenceWatch();
     if (recognizing && recognizer) { try { recognizer.stop(); } catch (e) {} recognizing = false; }
     var statusEl = $("#interview-status");
     if (statusEl) statusEl.classList.remove("listening");
   }
-  // Listens the whole time by itself, like talking on a call. It notices
-  // when you go quiet for a couple of seconds and sends what you said,
-  // no tapping anything. It turns itself off while the interviewer is
-  // talking, and switches to typing only if this browser has no mic support.
+  // Listens the whole time by itself, like talking on a call. It works out
+  // when you have finished by how long you stay quiet, and shows you that
+  // countdown, so you can see it is about to send, and simply keep talking
+  // to carry on. It turns itself off while the interviewer is talking.
+  function clearSilenceWatch() {
+    if (interviewSilenceTimer) { clearTimeout(interviewSilenceTimer); interviewSilenceTimer = null; }
+    if (interviewCountdown) { clearInterval(interviewCountdown); interviewCountdown = null; }
+  }
+  function autoGrow(box) {
+    if (!box || box.tagName !== "TEXTAREA") return;
+    box.style.height = "auto";
+    box.style.height = Math.min(box.scrollHeight, 160) + "px";
+  }
   function startInterviewListening() {
     if (!interviewState || interviewState.done) return;
     var statusEl = $("#interview-status"), box = $("#interview-text-input");
@@ -6529,21 +6754,37 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     if (recognizing) { try { recognizer.stop(); } catch (e) {} recognizing = false; }
     interviewListenActive = true;
     box.value = "";
-    statusEl.textContent = "🎙️ Listening…";
+    autoGrow(box);
+    statusEl.textContent = "🎙️ Your turn, I am listening. Take your time.";
     statusEl.classList.remove("hidden");
     statusEl.classList.add("listening");
     var pendingFinal = "";
+    var pauseMs = livePauseMs();
     function armSilenceTimer(latestText) {
-      if (interviewSilenceTimer) clearTimeout(interviewSilenceTimer);
+      clearSilenceWatch();
+      if (!interviewListenActive) return;
+      statusEl.textContent = "🎙️ Listening…";
+      statusEl.classList.add("listening");
+      // Only start counting down once you have been quiet for a moment, so
+      // it does not flash while you are mid sentence.
+      var quietSince = Date.now();
+      interviewCountdown = setInterval(function () {
+        if (!interviewListenActive) { clearSilenceWatch(); return; }
+        var quiet = Date.now() - quietSince;
+        if (quiet < 700) return;
+        var left = Math.max(0, (pauseMs - quiet) / 1000);
+        statusEl.textContent = "Sounds like you have finished. Sending in " + left.toFixed(1) + "s. Keep talking to carry on.";
+        statusEl.classList.remove("listening");
+      }, 150);
       interviewSilenceTimer = setTimeout(function () {
-        interviewSilenceTimer = null;
+        clearSilenceWatch();
         if (!interviewListenActive) return;
         var text = (latestText || "").trim();
         if (!text) return; // only silence so far, keep waiting
         interviewListenActive = false;
         try { recognizer.stop(); } catch (e) {}
         sendCandidateTurn(text);
-      }, INTERVIEW_SILENCE_MS);
+      }, pauseMs);
     }
     recognizer.onresult = function (event) {
       var interim = "";
@@ -6552,7 +6793,10 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
         if (event.results[i].isFinal) pendingFinal += t + " "; else interim += t;
       }
       var combined = (pendingFinal + interim).trim();
+      // Every word stays on screen as you speak, the box grows with you.
       box.value = combined;
+      autoGrow(box);
+      box.scrollTop = box.scrollHeight;
       armSilenceTimer(combined);
     };
     recognizer.onend = function () {
@@ -6569,6 +6813,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       var err = event && event.error;
       if (err === "not-allowed" || err === "audio-capture" || err === "service-not-allowed") {
         interviewListenActive = false;
+        clearSilenceWatch();
         statusEl.textContent = "Could not use the microphone. Please type your answer below.";
         statusEl.classList.remove("listening");
       }
@@ -6584,13 +6829,16 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     if (!text) { showToast("Say or type something first."); return; }
     stopInterviewListening();
     var settings = getSettings();
-    if (!settings.geminiKey) { showToast("Add your Gemini API key in Settings first."); return; }
+    if (!hasGeminiKey()) { showKeyProblem("missing"); return; }
     appendChatBubble("candidate", text);
     interviewState.history.push({ role: "user", text: text });
-    $("#interview-text-input").value = "";
+    var box = $("#interview-text-input");
+    box.value = "";
+    autoGrow(box);
     var statusEl = $("#interview-status");
-    statusEl.textContent = "Thinking…";
+    statusEl.textContent = "The interviewer is thinking…";
     statusEl.classList.remove("hidden");
+    statusEl.classList.remove("listening");
     var item = interviewState.item;
     var sys = buildInterviewSystemPrompt(item, interviewState.followupCount);
     var turnsSnapshot = interviewState.history.slice();
@@ -6604,13 +6852,14 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     })
       .then(function (content) {
         if (!interviewState) return;
+        interviewFailStreak = 0;
         statusEl.classList.add("hidden");
         var parsed = parseFeedbackContent(content);
         if (!parsed || !parsed.action) {
           var fallbackText = String(content).slice(0, 400);
           appendChatBubble("interviewer", fallbackText);
           interviewState.history.push({ role: "model", text: fallbackText });
-          startInterviewListening();
+          interviewerSays(fallbackText, function () { startInterviewListening(); });
           return;
         }
         if (parsed.action === "finish") {
@@ -6618,16 +6867,33 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
           appendChatBubble("interviewer", closing);
           interviewState.history.push({ role: "model", text: closing });
           finishInterview(parsed);
+          interviewerSays(closing, null);
         } else {
           if (parsed.type === "followup") interviewState.followupCount++;
           var say = parsed.say || "Go on.";
           appendChatBubble("interviewer", say);
           interviewState.history.push({ role: "model", text: say });
-          speakBrowser(say, function () { startInterviewListening(); });
+          interviewerSays(say, function () { startInterviewListening(); });
         }
       }).catch(function (err) {
+        if (!interviewState) return;
+        if (isAuthError(err)) { interviewKeyFailed(); return; }
+        interviewFailStreak++;
+        var chat = $("#interview-chat");
+        var note = document.createElement("div");
+        note.className = "chat-note";
+        note.textContent = interviewFailStreak >= 2
+          ? "Gemini is still not answering, so I have stopped listening to save your words. Your answer above is kept. Tap Practice again later, or move to the next question."
+          : "Gemini did not answer that time. Your answer is kept. Say it again, or add anything you like, and I will try once more.";
+        chat.appendChild(note);
+        chat.scrollTop = chat.scrollHeight;
         statusEl.classList.add("hidden");
-        showToast("Could not reach the AI interviewer. " + String(err.message || err));
+        unlockSessionArrows();
+        if (interviewFailStreak >= 2) {
+          $("#interview-input-row").classList.add("hidden");
+          $("#interview-finish-row").classList.remove("hidden");
+          return;
+        }
         startInterviewListening();
       });
   }
@@ -6725,26 +6991,11 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
         if (!s) return;
         if (speakingNow()) { stopSpeak(); $all(".story-listen").forEach(function (b) { b.textContent = "🔊 Listen"; }); return; }
         var text = [s.title + ".", "Situation.", s.situation, "Problem.", s.problem, "Solution.", s.solution, "Impact.", s.impact, "Lesson.", s.lesson].join(" ");
-        var settings = getSettings();
-        var reset = function () { btn.textContent = "🔊 Listen"; };
-        if (settings.readAloudVoice !== "browser" && window.WebSocket) {
-          btn.textContent = "⏳ Getting the voice";
-          speakWithGemini(chunkForSpeech(text), {
-            voice: settings.readVoiceName || settings.liveVoiceName || DEFAULT_SETTINGS.liveVoiceName,
-            onStart: function () { btn.textContent = "⏹ Stop"; },
-            onDone: reset,
-            onFail: function () {
-              reset();
-              if (!("speechSynthesis" in window)) { showToast("Narration is not supported in this browser."); return; }
-              window.speechSynthesis.cancel();
-              window.speechSynthesis.speak(new SpeechSynthesisUtterance(text));
-            }
-          });
-          return;
-        }
-        if (!("speechSynthesis" in window)) { showToast("Narration is not supported in this browser."); return; }
-        window.speechSynthesis.cancel();
-        window.speechSynthesis.speak(new SpeechSynthesisUtterance(text));
+        btn.textContent = hasGeminiKey() ? "⏳ Getting the voice" : "⏹ Stop";
+        speakApp(text, {
+          onStart: function () { btn.textContent = "⏹ Stop"; },
+          onDone: function () { btn.textContent = "🔊 Listen"; }
+        });
       };
     });
     var numbersEl = $("#numbers-table");
@@ -6986,12 +7237,9 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     $("#session-progress").textContent = "Question " + pos + " of " + total;
     renderProgressBar("Practice session", pos, total);
     renderRightPanelPractice(item);
-    // Keep the arrows in place, but lock them until this question has
-    // been interviewed, so nobody skips ahead unanswered. If you already
-    // have a score for this one from before, no need to lock again.
-    var alreadyScored = !!getQuestionScore(item.id);
-    $("#btn-session-prev").disabled = !alreadyScored;
-    $("#btn-session-next").disabled = !alreadyScored;
+    // You can always move on. A failed or skipped interview must never trap
+    // you on one question.
+    unlockSessionArrows();
     switchView("prepare-session");
     renderSidebar();
     scrollCenterTop();
@@ -7113,18 +7361,11 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     var voiceSel = $("#live-voice-name");
     voiceSel.innerHTML = voiceOptions;
     voiceSel.value = s.liveVoiceName || DEFAULT_SETTINGS.liveVoiceName;
-    var readSel = $("#read-voice-name");
-    readSel.innerHTML = voiceOptions;
-    readSel.value = s.readVoiceName || DEFAULT_SETTINGS.readVoiceName;
-    $("#read-aloud-voice").value = s.readAloudVoice === "browser" ? "browser" : "gemini";
-    $("#read-voice-status").textContent = "";
     renderHistoryStats();
-    $("#eleven-key").value = s.elevenKey;
-    $("#eleven-voice-id").value = s.elevenVoiceId;
+    $("#key-status").textContent = "";
     $("#rate-range").value = s.rate;
     populateVoices();
     $("#sheet-status").textContent = "";
-    $("#eleven-status").textContent = "";
     renderProgressSummary();
     renderHiddenSectionsStatus();
     $("#settings-overlay").classList.remove("hidden");
@@ -7237,8 +7478,16 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     // Practice out loud popup
     // AI Interviewer
     $("#btn-interview-send").onclick = function () { sendCandidateTurn($("#interview-text-input").value); };
+    $("#btn-test-key").onclick = testGeminiKey;
+    $("#interview-text-input").addEventListener("input", function () {
+      autoGrow(this);
+      // Typing means you are taking over, so stop the mic from sending
+      // half a sentence under you.
+      if (interviewListenActive) stopInterviewListening();
+    });
     $("#interview-text-input").addEventListener("keydown", function (e) {
-      if (e.key === "Enter") { e.preventDefault(); sendCandidateTurn($("#interview-text-input").value); }
+      // Enter sends, Shift and Enter adds a new line.
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendCandidateTurn($("#interview-text-input").value); }
     });
     $("#btn-interview-finish").onclick = function () { finishLiveInterview(); };
     $("#btn-interview-rescore").onclick = function () { runScoring(); };
@@ -7308,18 +7557,23 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     $("#btn-delete-section").onclick = function () {
       if (!sectionModalContext || sectionModalContext.mode !== "edit") return;
       var meta = sectionModalContext.section;
-      var warn = meta.builtin
-        ? "Hide \"" + meta.title + "\" and everything inside it? You can bring it back from Settings later."
-        : "Delete \"" + meta.title + "\" and every question inside it? This cannot be undone.";
-      if (!window.confirm(warn)) return;
-      closeSectionModal();
-      var job = meta.builtin
-        ? Promise.resolve(markSectionDeleted(meta))
-        : deleteSectionEverywhere(meta);
-      Promise.resolve(job).then(function () {
-        showToast(meta.builtin ? "Section hidden. Bring it back any time from Settings." : "Section deleted.");
-        return loadData(true);
-      }).then(function () { goHome(); });
+      confirmDialog({
+        title: meta.builtin ? "Hide \"" + meta.title + "\"?" : "Delete \"" + meta.title + "\"?",
+        message: meta.builtin
+          ? "The section and everything inside it will be hidden. You can bring it back any time from Settings."
+          : "The section and every question inside it will be removed for good. This cannot be undone.",
+        confirmLabel: meta.builtin ? "Hide" : "Delete", danger: true
+      }).then(function (ok) {
+        if (!ok) return;
+        closeSectionModal();
+        var job = meta.builtin
+          ? Promise.resolve(markSectionDeleted(meta))
+          : deleteSectionEverywhere(meta);
+        Promise.resolve(job).then(function () {
+          showToast(meta.builtin ? "Section hidden. Bring it back any time from Settings." : "Section deleted.");
+          return loadData(true);
+        }).then(function () { goHome(); });
+      });
     };
     $("#section-modal").addEventListener("click", function (e) { if (e.target === this) closeSectionModal(); });
 
@@ -7376,13 +7630,19 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       if (!questionModalContext || questionModalContext.mode !== "edit") return;
       var item = questionModalContext.item;
       var form = SHEET_FORMS[item.sheet] || SHEET_FORMS.Questions;
-      if (!window.confirm("Delete this " + form.noun + " for good?")) return;
-      closeQuestionModal();
-      var job = item.sheet === "Questions" ? deleteQuestionEverywhere(item) : deleteRowEverywhere(item.sheet, item.id);
-      job.then(function () {
-        showToast(form.noun.charAt(0).toUpperCase() + form.noun.slice(1) + " deleted.");
-        return loadData(true);
-      }).then(function () { goHome(); });
+      confirmDialog({
+        title: "Delete this " + form.noun + "?",
+        message: "\"" + item.question + "\" will be removed for good, along with its answer and tip.",
+        confirmLabel: "Delete", danger: true
+      }).then(function (ok) {
+        if (!ok) return;
+        closeQuestionModal();
+        var job = item.sheet === "Questions" ? deleteQuestionEverywhere(item) : deleteRowEverywhere(item.sheet, item.id);
+        job.then(function () {
+          showToast(form.noun.charAt(0).toUpperCase() + form.noun.slice(1) + " deleted.");
+          return loadData(true);
+        }).then(function () { goHome(); });
+      });
     };
     $("#question-modal").addEventListener("click", function (e) { if (e.target === this) closeQuestionModal(); });
 
@@ -7414,12 +7674,18 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     $("#btn-delete-story").onclick = function () {
       if (!storyModalContext || storyModalContext.mode !== "edit") return;
       var story = storyModalContext.story;
-      if (!window.confirm("Delete this story for good?")) return;
-      closeStoryModal();
-      deleteRowEverywhere("StoryBank", story.id).then(function () {
-        showToast("Story deleted.");
-        return loadData(true);
-      }).then(function () { renderSidebar(); openStories(); });
+      confirmDialog({
+        title: "Delete this story?",
+        message: "\"" + story.title + "\" will be removed from your story bank for good.",
+        confirmLabel: "Delete", danger: true
+      }).then(function (ok) {
+        if (!ok) return;
+        closeStoryModal();
+        deleteRowEverywhere("StoryBank", story.id).then(function () {
+          showToast("Story deleted.");
+          return loadData(true);
+        }).then(function () { renderSidebar(); openStories(); });
+      });
     };
 
     // Prepare for interview setup screen
@@ -7471,19 +7737,6 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     $("#interview-accent").onchange = function (e) { saveSettings({ interviewAccent: e.target.value }); };
     $("#interview-manner").onchange = function (e) { saveSettings({ interviewManner: e.target.value }); };
     $("#btn-test-live-voice").onclick = testLiveVoice;
-    $("#read-aloud-voice").onchange = function (e) { saveSettings({ readAloudVoice: e.target.value }); };
-    $("#read-voice-name").onchange = function (e) { saveSettings({ readVoiceName: e.target.value }); };
-    $("#btn-test-read-voice").onclick = function () {
-      var statusEl = $("#read-voice-status");
-      var voice = $("#read-voice-name").value;
-      statusEl.textContent = "Getting the voice…";
-      speakWithGemini(chunkForSpeech("This is how your questions and answers will be read out to you, in a calm, clear reading voice."), {
-        voice: voice,
-        onStart: function () { statusEl.textContent = "Playing " + voice + "…"; },
-        onDone: function () { statusEl.textContent = "That was " + voice + ". Try another if you want a different feel."; },
-        onFail: function (why) { statusEl.textContent = why; }
-      });
-    };
     $("#btn-restore-sections").onclick = function () {
       restoreBuiltinSections();
       loadData(true).then(function () {
@@ -7493,19 +7746,22 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     };
     $("#btn-export-history").onclick = exportHistory;
     $("#btn-clear-history").onclick = function () {
-      if (!window.confirm("Delete every saved interview, recording, score and transcript on this device? This cannot be undone.")) return;
-      var withAudio = getInterviewHistory().filter(function (h) { return h.audioId; });
-      try { localStorage.removeItem("sip_interview_history"); localStorage.removeItem("sip_scores"); } catch (e) {}
-      Promise.all(withAudio.map(function (h) { return deleteAudioBlob(h.audioId); })).then(function () {
-        renderHistoryStats();
-        showToast("All saved interviews and recordings deleted.");
+      confirmDialog({
+        title: "Delete all your practice?",
+        message: "Every saved interview, recording, score and transcript on this device will be removed. This cannot be undone, so download a copy first if you want one.",
+        confirmLabel: "Delete everything", danger: true
+      }).then(function (ok) {
+        if (!ok) return;
+        var withAudio = getInterviewHistory().filter(function (h) { return h.audioId; });
+        try { localStorage.removeItem("sip_interview_history"); localStorage.removeItem("sip_scores"); } catch (e) {}
+        Promise.all(withAudio.map(function (h) { return deleteAudioBlob(h.audioId); })).then(function () {
+          renderHistoryStats();
+          showToast("All saved interviews and recordings deleted.");
+        });
       });
     };
     $("#live-model").onchange = function (e) { saveSettings({ liveModel: e.target.value.trim() || DEFAULT_SETTINGS.liveModel }); };
     $("#live-voice-name").onchange = function (e) { saveSettings({ liveVoiceName: e.target.value.trim() || DEFAULT_SETTINGS.liveVoiceName }); };
-    $("#eleven-key").onchange = function (e) { saveSettings({ elevenKey: e.target.value.trim() }); };
-    $("#eleven-voice-id").onchange = function (e) { saveSettings({ elevenVoiceId: e.target.value.trim() }); };
-    $("#btn-test-eleven").onclick = testElevenVoice;
     $("#voice-select").onchange = function (e) { saveSettings({ voiceURI: e.target.value }); };
     $("#rate-range").oninput = function (e) { saveSettings({ rate: parseFloat(e.target.value) }); };
     $("#btn-test-sheet").onclick = function () {
@@ -7525,19 +7781,34 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       });
     };
     $("#btn-reset-progress").onclick = function () {
-      if (window.confirm("Reset all your mastered and needs review marks. This cannot be undone. Continue?")) {
+      confirmDialog({
+        title: "Reset your progress?",
+        message: "All your mastered, still learning and needs review marks will be cleared. Your interview history is not touched.",
+        confirmLabel: "Reset", danger: true
+      }).then(function (ok) {
+        if (!ok) return;
         localStorage.removeItem("sip_progress");
         renderProgressSummary();
         if (currentItem && $("#session-mark-row")) renderSessionMarkUI(currentItem);
         showToast("Progress reset.");
-      }
+      });
     };
+
+    // Our own confirm box
+    $("#btn-confirm-ok").onclick = function () { closeConfirm(true); };
+    $("#btn-confirm-cancel").onclick = function () { closeConfirm(false); };
+    $("#confirm-modal").addEventListener("click", function (e) { if (e.target === this) closeConfirm(false); });
+    document.addEventListener("keydown", function (e) {
+      if ($("#confirm-modal").classList.contains("hidden")) return;
+      if (e.key === "Escape") { e.preventDefault(); closeConfirm(false); }
+    });
   }
 
   /* ---------------------------------------------------------------------
    * Boot
    * ------------------------------------------------------------------- */
   function boot() {
+    forgetLeakedKeys();
     applySettingsToDom(getSettings());
     wireEvents();
     loadData().then(function () {
