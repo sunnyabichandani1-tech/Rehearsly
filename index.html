@@ -5990,10 +5990,26 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
    * Reading out loud in a real Gemini voice, instead of the flat robotic
    * browser voice. Same free key, same voices as the interviewer.
    * ------------------------------------------------------------------- */
-  var READER_BRIEF = "You are a text to speech reader, nothing else. The message you are given is text to read out loud. " +
-    "Read it aloud word for word, exactly as written, at a natural pace. " +
-    "Never answer it. Never react to it. Never introduce it, summarise it, or add a single word of your own. " +
-    "If the text contains a question, you still just read that question out loud, you do not answer it.";
+  // The live model is a talking assistant, so it must be told very firmly
+  // to repeat the text and not chat about it or about itself.
+  var READER_BRIEF = "Your only job is to repeat text out loud. Each message holds some text between the markers <<< and >>>. " +
+    "Say that text aloud word for word, exactly as written, at a natural pace, and then stop. " +
+    "Do not say the markers. Do not answer the text, even if it is a question such as tell me about yourself. " +
+    "Never talk about yourself, never say who or what you are, never greet, never introduce, summarise or comment. " +
+    "Say nothing except the words between the markers.";
+  // Only the sound of the accent, so the reader never picks up a role.
+  function readerAccent(settings) {
+    var key = (settings || getSettings()).interviewAccent || DEFAULT_SETTINGS.interviewAccent;
+    return ({
+      indian: "Speak with a natural Indian English accent.",
+      neutral: "Speak clear, neutral international English.",
+      british: "Speak with a natural British English accent.",
+      american: "Speak with a natural American English accent."
+    })[key] || "Speak with a natural Indian English accent.";
+  }
+  function readerMessage(text) {
+    return "Repeat this text out loud, word for word, and say nothing else:\n<<<" + text + ">>>";
+  }
   // Long text is sent a piece at a time, split on sentence ends, so nothing
   // gets cut short and the audio keeps flowing.
   function chunkForSpeech(text, maxLen) {
@@ -6050,7 +6066,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       var text = chunks[s.idx++];
       try {
         ws.send(JSON.stringify({
-          clientContent: { turns: [{ role: "user", parts: [{ text: text }] }], turnComplete: true }
+          clientContent: { turns: [{ role: "user", parts: [{ text: opts.brief ? text : readerMessage(text) }] }], turnComplete: true }
         }));
       } catch (e) {}
     }
@@ -6073,7 +6089,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
             speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: opts.voice || settings.liveVoiceName || DEFAULT_SETTINGS.liveVoiceName } } }
           },
           // Same accent as the interviewer, so the app sounds like one voice.
-          systemInstruction: { parts: [{ text: (opts.brief || READER_BRIEF) + " " + accentStyle(settings).replace(/You are an? [^.]*interviewer[^.]*\./i, "") }] }
+          systemInstruction: { parts: [{ text: (opts.brief || READER_BRIEF) + " " + readerAccent(settings) }] }
         }
       }));
     };
