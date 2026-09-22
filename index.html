@@ -1127,9 +1127,205 @@ button, input, select, textarea { font-family: inherit; }
 a.btn, a.tool-btn { text-decoration: none; display: inline-flex; align-items: center; }
 .sync-dot { cursor: pointer; }
 
+/* Login page, two panels like a normal site */
+body.locked { overflow: hidden; }
+.login-view { position: fixed; inset: 0; z-index: 120; display: flex; background: var(--bg, #f7f5ef); overflow: auto; }
+.login-left { flex: 1 1 46%; background: linear-gradient(160deg, #15131f 0%, #2b2440 55%, #3c2f52 100%); color: #fff;
+  display: flex; align-items: center; justify-content: center; padding: 48px 44px; }
+.login-left-inner { max-width: 430px; }
+.login-right { flex: 1 1 54%; display: flex; align-items: center; justify-content: center; padding: 40px 24px; overflow: auto; }
+.login-form-card { width: 100%; max-width: 400px; }
+.login-brand { font-family: var(--serif, Georgia, serif); font-size: 26px; font-weight: 700; margin-bottom: 26px; }
+.login-title { font-family: var(--serif, Georgia, serif); font-size: 34px; line-height: 1.22; margin: 0 0 16px; color: #fff; }
+.login-sub { font-size: 15px; line-height: 1.65; margin: 0 0 26px; color: rgba(255,255,255,.82); }
+.login-points { list-style: none; margin: 0; padding: 0; font-size: 14px; line-height: 1.6; color: rgba(255,255,255,.82); }
+.login-points li { margin-bottom: 14px; padding-left: 22px; position: relative; }
+.login-points li:before { content: "✓"; position: absolute; left: 0; color: #9fe3b5; font-weight: 700; }
+.login-points b { color: #fff; }
+.login-tabs { display: flex; gap: 6px; background: rgba(0,0,0,.05); padding: 4px; border-radius: 999px; margin-bottom: 22px; }
+.login-tab { flex: 1; border: 0; background: transparent; padding: 9px 10px; border-radius: 999px; cursor: pointer;
+  font-size: 14px; font-weight: 600; color: var(--muted, #666); }
+.login-tab.active { background: #fff; color: #111; box-shadow: 0 1px 4px rgba(0,0,0,.12); }
+.login-form-title { font-family: var(--serif, Georgia, serif); font-size: 24px; margin: 0 0 4px; }
+.login-form-sub { font-size: 14px; color: var(--muted, #666); margin: 0 0 20px; }
+.login-field { margin-bottom: 14px; }
+.login-field label { display: block; font-size: 13px; margin-bottom: 5px; color: var(--muted, #555); }
+.login-field input { width: 100%; padding: 11px 13px; font-size: 15px; border-radius: 10px;
+  border: 1px solid rgba(0,0,0,.16); background: #fff; color: #111; box-sizing: border-box; }
+.login-field input:focus { outline: none; border-color: #111; }
+.login-primary { width: 100%; padding: 13px; font-size: 15px; font-weight: 600; border-radius: 10px;
+  border: 0; background: #111; color: #fff; cursor: pointer; margin-top: 6px; }
+.login-primary:disabled { opacity: .6; cursor: default; }
+.login-link { background: none; border: 0; padding: 0; font-size: 13px; color: var(--muted, #666);
+  text-decoration: underline; cursor: pointer; margin-top: 10px; }
+.login-or { display: flex; align-items: center; gap: 10px; margin: 18px 0; color: var(--muted, #999); font-size: 12px; }
+.login-or:before, .login-or:after { content: ""; flex: 1; height: 1px; background: rgba(0,0,0,.12); }
+.login-google { display: flex; width: 100%; align-items: center; justify-content: center; gap: 10px; font-size: 15px; font-weight: 600;
+  padding: 12px 18px; border-radius: 10px; border: 1px solid rgba(0,0,0,.16); background: #fff; color: #222; cursor: pointer; }
+.login-google:hover { box-shadow: 0 2px 10px rgba(0,0,0,.1); }
+.login-google .g-mark { font-weight: 700; color: #4285f4; font-size: 17px; }
+.login-status { min-height: 20px; margin: 14px 0 0; font-size: 13.5px; line-height: 1.5; color: #b3261e; }
+.login-status.good { color: #1b7a3d; }
+.login-switch { font-size: 13px; color: var(--muted, #666); margin: 14px 0 0; }
+.login-legal { font-size: 11.5px; color: var(--muted, #999); margin-top: 16px; line-height: 1.55; }
+.login-owner { margin-top: 18px; font-size: 12px; color: var(--muted, #999); }
+.login-owner summary { cursor: pointer; }
+.login-owner textarea, .login-owner input { width: 100%; margin-top: 8px; padding: 8px; font-size: 12px;
+  border-radius: 8px; border: 1px solid rgba(0,0,0,.16); box-sizing: border-box; font-family: monospace; }
+@media (max-width: 860px) {
+  .login-view { display: block; }
+  .login-left { padding: 34px 22px 26px; }
+  .login-title { font-size: 26px; }
+  .login-points { display: none; }
+  .login-right { padding: 26px 20px 50px; }
+}
+.setup-card { max-width: 620px; }
+.setup-dots { display: flex; gap: 8px; flex-wrap: wrap; margin: 6px 0 18px; }
+.setup-dot { font-size: 12px; padding: 4px 10px; border-radius: 999px; border: 1px solid rgba(0,0,0,.15); color: var(--muted, #777); }
+.setup-dot.done { background: #111; color: #fff; border-color: #111; }
+.setup-progress { height: 8px; border-radius: 999px; background: rgba(0,0,0,.08); overflow: hidden; margin: 10px 0 14px; }
+.setup-progress-bar { height: 100%; width: 0; background: #111; transition: width .3s ease; }
+.setup-progress-text { font-size: 15px; margin: 6px 0; }
+.draft-banner { position: fixed; left: 50%; transform: translateX(-50%); bottom: 16px; z-index: 80;
+  background: #111; color: #fff; padding: 9px 16px; border-radius: 999px; font-size: 13px; max-width: 90vw; }
+.account-chip { display: inline-flex; align-items: center; gap: 7px; margin-left: 10px; padding: 4px 10px 4px 4px;
+  border-radius: 999px; border: 1px solid rgba(0,0,0,.14); background: transparent; cursor: pointer; font-size: 13px; color: inherit; }
+.account-chip-initial { width: 22px; height: 22px; border-radius: 50%; background: #111; color: #fff;
+  display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; }
+.account-chip-name { max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 760px) { .account-chip-name { display: none; } }
+
 </style>
 </head>
 <body>
+
+<div class="login-view hidden" id="login-view">
+  <div class="login-left">
+    <div class="login-left-inner">
+      <div class="login-brand">📖 Rehearsly</div>
+      <h1 class="login-title">Practice the interview before the interview</h1>
+      <p class="login-sub">Give Rehearsly your resume and the job you are going for. It writes your question set, drafts your answers in your own words, then plays the interviewer out loud and scores you.</p>
+      <ul class="login-points">
+        <li><b>Questions built for you</b>, from the gap between your resume and that job advert.</li>
+        <li><b>A real voice interview.</b> Just talk, cut in, and get a score with what to fix.</li>
+        <li><b>Your content stays yours.</b> Everything is saved in your own Google Drive.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="login-right">
+    <div class="login-form-card">
+      <div class="login-tabs">
+        <button class="login-tab active" id="tab-login">Log in</button>
+        <button class="login-tab" id="tab-signup">Sign up</button>
+      </div>
+
+      <h2 class="login-form-title" id="login-form-title">Welcome back</h2>
+      <p class="login-form-sub" id="login-form-sub">Log in to pick up where you left off.</p>
+
+      <div class="login-field hidden" id="field-name">
+        <label for="auth-name">Your name</label>
+        <input type="text" id="auth-name" placeholder="Sunny Abichandani" autocomplete="name" />
+      </div>
+      <div class="login-field">
+        <label for="auth-email">Email</label>
+        <input type="email" id="auth-email" placeholder="you@gmail.com" autocomplete="email" />
+      </div>
+      <div class="login-field">
+        <label for="auth-password">Password</label>
+        <input type="password" id="auth-password" placeholder="At least 8 characters" autocomplete="current-password" />
+      </div>
+      <div class="login-field hidden" id="field-password2">
+        <label for="auth-password2">Type the password again</label>
+        <input type="password" id="auth-password2" placeholder="Repeat your password" autocomplete="new-password" />
+      </div>
+
+      <button class="login-primary" id="btn-auth-submit">Log in</button>
+      <button class="login-link" id="btn-forgot">Forgot your password?</button>
+
+      <div class="login-or"><span>or</span></div>
+      <button class="login-google" id="btn-login-google">
+        <span class="g-mark">G</span> <span id="google-btn-text">Continue with Google</span>
+      </button>
+
+      <p class="login-status" id="login-status"></p>
+      <p class="login-switch" id="login-switch">New here? <button class="login-link" id="btn-switch-signup">Create your account</button></p>
+      <p class="login-legal">Your password is stored by Google Firebase, hashed, so nobody at Rehearsly can read it. Your resume and the job description are sent to Google Gemini with your own key, so your questions can be written.</p>
+      <details class="login-owner">
+        <summary>App owner set up</summary>
+        <p class="settings-hint">Paste the Firebase web config and the Google Client ID once, then publish. Visitors never see this.</p>
+        <textarea id="owner-firebase" rows="5" placeholder='{"apiKey":"...","authDomain":"...","projectId":"...","appId":"..."}'></textarea>
+        <input type="text" id="owner-client-id" placeholder="Google Client ID, ends with .apps.googleusercontent.com" />
+        <button class="btn" id="btn-owner-save">Save and reload</button>
+      </details>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay hidden" id="setup-modal">
+  <div class="modal-card setup-card">
+    <h3>Welcome, <span id="setup-name">there</span>. Let's set you up.</h3>
+    <div class="setup-dots">
+      <span class="setup-dot done" id="setup-dot-1">1. Drive</span>
+      <span class="setup-dot" id="setup-dot-2">2. Key</span>
+      <span class="setup-dot" id="setup-dot-3">3. Resume</span>
+      <span class="setup-dot" id="setup-dot-4">4. The job</span>
+      <span class="setup-dot" id="setup-dot-5">5. Your questions</span>
+    </div>
+
+    <div class="setup-step" id="setup-step-1">
+      <p class="settings-hint">Rehearsly keeps your questions and answers in your own Google Drive, in a folder called Rehearsly. One Google Doc for each question, yours to read and edit any time. Rehearsly only ever sees the files it makes for you.</p>
+      <p class="settings-status" id="setup-drive-status"></p>
+      <div class="modal-actions"><button class="btn" id="btn-setup-drive">Connect my Google Drive</button></div>
+    </div>
+
+    <div class="setup-step hidden" id="setup-step-2">
+      <p class="settings-hint">Rehearsly runs on one free key from Google. It powers the interviewer, the scoring and the voice. Get yours at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>, tap Create API key, and paste it here. It stays in your browser only.</p>
+      <div class="modal-field">
+        <label>Your Gemini key</label>
+        <input type="password" id="setup-key-input" placeholder="paste your key here" autocomplete="off" />
+      </div>
+      <p class="settings-status" id="setup-key-status"></p>
+      <div class="modal-actions"><button class="btn" id="btn-setup-key">Check and continue</button></div>
+    </div>
+
+    <div class="setup-step hidden" id="setup-step-3">
+      <p class="settings-hint">Upload your resume as a PDF or Word file. It is saved in your own Rehearsly folder as "My Resume", and used to write questions and draft answers in your own words.</p>
+      <div class="modal-field">
+        <label>Your resume</label>
+        <input type="file" id="setup-resume-input" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+      </div>
+      <p class="settings-status" id="setup-resume-status"></p>
+      <div class="modal-actions"><button class="btn btn-ghost" id="btn-setup-back-1">Back</button></div>
+    </div>
+
+    <div class="setup-step hidden" id="setup-step-4">
+      <p class="settings-hint">Paste the job description you are preparing for. The whole advert works best. Rehearsly builds your questions from the gap between this and your resume.</p>
+      <div class="modal-field">
+        <label>Role name</label>
+        <input type="text" id="setup-role-input" placeholder="Senior Product Manager, Swiggy" />
+      </div>
+      <div class="modal-field">
+        <label>Job description</label>
+        <textarea id="setup-jd-input" rows="8" placeholder="Paste the full job description here"></textarea>
+      </div>
+      <p class="settings-status" id="setup-jd-status"></p>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="btn-setup-back-2">Back</button>
+        <button class="btn" id="btn-setup-build">Build my questions</button>
+      </div>
+    </div>
+
+    <div class="setup-step hidden" id="setup-step-5">
+      <p class="setup-progress-text" id="setup-progress-text">Working…</p>
+      <div class="setup-progress"><div class="setup-progress-bar" id="setup-progress-bar"></div></div>
+      <p class="settings-hint">This takes about two minutes. Keep this tab open.</p>
+      <div class="modal-actions"><button class="btn hidden" id="setup-retry">Try again</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="draft-banner hidden" id="draft-banner"></div>
 
 <div id="app" class="app">
 
@@ -1137,6 +1333,10 @@ a.btn, a.tool-btn { text-decoration: none; display: inline-flex; align-items: ce
     <button class="icon-btn" id="btn-toggle-nav" aria-label="Contents" title="Contents">☰</button>
     <button class="icon-btn" id="btn-home" aria-label="Home" title="Home">📖</button>
     <span class="brandmark" id="brandmark">Rehearsly</span>
+    <button class="account-chip hidden" id="account-chip" title="Your account">
+      <span class="account-chip-initial" id="account-chip-initial">R</span>
+      <span class="account-chip-name" id="account-chip-name"></span>
+    </button>
     <div class="topbar-actions">
       <button class="icon-btn" id="btn-open-search" aria-label="Search" title="Search">🔍</button>
       <button class="icon-btn fontsize-btn" id="btn-font-dec" aria-label="Smaller text" title="Smaller text">A-</button>
@@ -1309,6 +1509,12 @@ a.btn, a.tool-btn { text-decoration: none; display: inline-flex; align-items: ce
           <h3>Reading</h3>
           <label class="settings-row"><span>Theme</span><select id="theme-select"><option value="light">Soft paper (light)</option><option value="dark">Dark</option></select></label>
           <label class="settings-row"><span>Text size</span><input type="range" id="font-size-range" min="10" max="22" step="1" /></label>
+        </section>
+
+        <section class="settings-group hidden" id="account-box">
+          <h3>Your account</h3>
+          <p class="settings-hint">Signed in as <b id="account-name"></b>, <span id="account-email"></span>. Your questions live in your own Google Drive.</p>
+          <div class="settings-actions"><button class="btn btn-ghost" id="btn-sign-out">Sign out</button></div>
         </section>
 
         <section class="settings-group">
@@ -4103,6 +4309,8 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     // Google Drive as the master copy. The Client ID is not a secret, it
     // only says which app is asking, so it is fine to keep in Settings.
     googleClientId: "", driveOn: false, driveRootId: "",
+    // Who is signed in, and what the question set was built from.
+    authEmail: "", authName: "", authPicture: "", resumeText: "", jdText: "", targetRole: "", profileSummary: "",
     // No key is ever written into the app itself. The app is public, so a
     // key in the code can be copied by anyone and Google switches it off.
     // Each person pastes their own key in Settings, it stays in their browser.
@@ -4687,7 +4895,11 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
    * question, story or page. Edit in the app or right in the Sheet, the
    * two stay in step. It only ever sees the files it made itself.
    * ------------------------------------------------------------------- */
-  var DRIVE_SCOPE = "https://www.googleapis.com/auth/drive.file";
+  // The Client ID says which app is asking. It is not a secret, so it
+  // ships with the app and every user signs in with their own Google
+  // account. Anyone hosting their own copy can put theirs in Settings.
+  var BUILT_IN_CLIENT_ID = "";
+  var DRIVE_SCOPE = "openid email profile https://www.googleapis.com/auth/drive.file";
   var DRIVE_API = "https://www.googleapis.com/drive/v3";
   var DRIVE_UPLOAD = "https://www.googleapis.com/upload/drive/v3/files";
   var DOC_MIME = "application/vnd.google-apps.document";
@@ -4754,7 +4966,15 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       if (t && t.token && Date.now() < t.exp - 60000) { driveToken = t.token; driveTokenExp = t.exp; return Promise.resolve(driveToken); }
     } catch (e) {}
     if (!interactive) { driveNeedsSignIn = true; return Promise.reject(driveErr("Sign in to Google Drive to sync.", { needSignIn: true })); }
-    var cid = (getSettings().googleClientId || "").trim();
+    // With accounts switched on, the same Google window gives both the
+    // sign in and the ticket for your Drive.
+    if (firebaseConfig()) {
+      return firebaseGoogleFlow(true).then(function () {
+        if (!driveToken) throw driveErr("Google did not hand over the Drive ticket. Try once more.");
+        return driveToken;
+      }, function (err) { throw driveErr(friendlyAuthError(err)); });
+    }
+    var cid = (getSettings().googleClientId || BUILT_IN_CLIENT_ID || "").trim();
     if (!cid) return Promise.reject(driveErr("Add your Google Client ID in Settings first.", { noClientId: true }));
     return loadGis().then(function () {
       return new Promise(function (resolve, reject) {
@@ -5285,6 +5505,573 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       sheetBtn.classList.toggle("hidden", !fid);
       if (fid) sheetBtn.href = "https://docs.google.com/document/d/" + fid + "/edit";
     }
+  }
+
+
+  /* ---------------------------------------------------------------------
+   * Signing in, and the first run set up.
+   * You sign in with Google, the app makes your own Rehearsly folder in
+   * your Drive, you add a free Gemini key, your resume and the job you
+   * are going for, and it writes your question set from those two.
+   * ------------------------------------------------------------------- */
+  // Accounts run on Google Firebase. Passwords are hashed and salted by
+  // Google, so nobody here, not even the owner, can read them. The same
+  // sign in also hands us the ticket for your Google Drive.
+  // Rehearsly's own Firebase project. These values are public by design,
+  // they only name the project. What keeps it safe is the list of web
+  // addresses allowed to use it, set in the Firebase console.
+  var FIREBASE_CONFIG = {
+    apiKey: "AIzaSyAaL8MPFC84nRl03eEdRdVtn9bJ3C6iraw",
+    authDomain: "rehearsly-a8055.firebaseapp.com",
+    projectId: "rehearsly-a8055",
+    storageBucket: "rehearsly-a8055.firebasestorage.app",
+    messagingSenderId: "439715436556",
+    appId: "1:439715436556:web:5bae9c47b0899409dcb629"
+  };
+  var fbAuth = null, fbUser = null, fbReady = false;
+  function firebaseConfig() {
+    if (FIREBASE_CONFIG && FIREBASE_CONFIG.apiKey) return FIREBASE_CONFIG;
+    try {
+      var saved = JSON.parse(localStorage.getItem("sip_firebase") || "null");
+      if (saved && saved.apiKey) return saved;
+    } catch (e) {}
+    return null;
+  }
+  function loadScript(src) {
+    return new Promise(function (resolve, reject) {
+      var tag = document.createElement("script");
+      tag.src = src; tag.async = true;
+      tag.onload = function () { resolve(); };
+      tag.onerror = function () { reject(new Error("Could not load " + src)); };
+      document.head.appendChild(tag);
+    });
+  }
+  var FB_VER = "10.12.2";
+  function loadFirebase() {
+    var cfg = firebaseConfig();
+    if (!cfg) return Promise.reject(new Error("Accounts are not switched on for this copy yet. If this is your copy, open App owner set up just below and paste your Firebase config."));
+    if (fbAuth) return Promise.resolve(fbAuth);
+    return loadScript("https://www.gstatic.com/firebasejs/" + FB_VER + "/firebase-app-compat.js")
+      .then(function () { return loadScript("https://www.gstatic.com/firebasejs/" + FB_VER + "/firebase-auth-compat.js"); })
+      .then(function () {
+        if (!window.firebase.apps.length) window.firebase.initializeApp(cfg);
+        fbAuth = window.firebase.auth();
+        return fbAuth.setPersistence(window.firebase.auth.Auth.Persistence.LOCAL).catch(function () {}).then(function () { return fbAuth; });
+      });
+  }
+  function authedUser() {
+    var s = getSettings();
+    return s.authEmail ? { email: s.authEmail, name: s.authName || "", picture: s.authPicture || "" } : null;
+  }
+  // Someone who set the app up before accounts existed is already in.
+  function signedIn() { return !!(authedUser() || getSettings().driveOn); }
+  function rememberUser(u) {
+    if (!u) return;
+    saveSettings({
+      authEmail: u.email || "",
+      authName: u.displayName || getSettings().authName || (u.email || "").split("@")[0],
+      authPicture: u.photoURL || "", authUid: u.uid || ""
+    });
+  }
+  function friendlyAuthError(err) {
+    var code = (err && err.code) || "";
+    if (code === "auth/email-already-in-use") return "That email already has an account. Log in instead, or use Forgot your password.";
+    if (code === "auth/invalid-email") return "That email does not look right.";
+    if (code === "auth/weak-password") return "Pick a longer password, at least 8 characters.";
+    if (code === "auth/invalid-credential" || code === "auth/wrong-password" || code === "auth/user-not-found") return "That email and password do not match. Try again, or use Forgot your password.";
+    if (code === "auth/too-many-requests") return "Too many tries. Wait a minute, then try again.";
+    if (code === "auth/popup-closed-by-user") return "The Google window was closed before it finished.";
+    if (code === "auth/popup-blocked") return "Chrome blocked the Google window. Allow pop ups for this site, then try again.";
+    if (code === "auth/unauthorized-domain") return "This web address is not allowed in the Firebase project yet. Add it under Authentication, Settings, Authorised domains.";
+    if (code === "auth/operation-not-allowed") return "Turn on this sign in method in Firebase, under Authentication, Sign in method.";
+    return String((err && err.message) || err);
+  }
+  function googleProviderWithDrive() {
+    var provider = new window.firebase.auth.GoogleAuthProvider();
+    provider.addScope("https://www.googleapis.com/auth/drive.file");
+    provider.setCustomParameters({ prompt: "select_account" });
+    return provider;
+  }
+  // Signing in with Google also gives the ticket that opens your Drive.
+  function firebaseGoogleFlow(link) {
+    return loadFirebase().then(function (auth) {
+      var provider = googleProviderWithDrive();
+      var cur = auth.currentUser;
+      var job = (link && cur && cur.linkWithPopup) ? cur.linkWithPopup(provider).catch(function (err) {
+        // Already linked, or a different account: a normal sign in still
+        // gives a fresh Drive ticket.
+        return auth.signInWithPopup(provider);
+      }) : auth.signInWithPopup(provider);
+      return job;
+    }).then(function (res) {
+      var token = res && res.credential && res.credential.accessToken;
+      if (token) rememberToken(token, 3600);
+      if (res && res.user) { fbUser = res.user; rememberUser(res.user); }
+      return res;
+    });
+  }
+  function signOut() {
+    forgetToken();
+    var after = function () {
+      saveSettings({ authEmail: "", authName: "", authPicture: "", authUid: "", driveOn: false });
+      try { localStorage.removeItem("sip_drive_cache"); localStorage.removeItem("sip_drive_queue"); localStorage.removeItem("sip_cache"); } catch (e) {}
+      location.reload();
+    };
+    if (fbAuth) fbAuth.signOut().then(after, after); else after();
+  }
+  function showLogin(show) {
+    var el = $("#login-view");
+    if (!el) return;
+    el.classList.toggle("hidden", !show);
+    document.body.classList.toggle("locked", !!show);
+  }
+  function loginStatus(text, good) {
+    var el = $("#login-status");
+    if (!el) return;
+    el.textContent = text || "";
+    el.classList.toggle("good", !!good);
+  }
+  var authMode = "login";
+  function setAuthMode(mode) {
+    authMode = mode;
+    var signup = mode === "signup";
+    $("#tab-login").classList.toggle("active", !signup);
+    $("#tab-signup").classList.toggle("active", signup);
+    $("#login-form-title").textContent = signup ? "Create your account" : "Welcome back";
+    $("#login-form-sub").textContent = signup
+      ? "Three minutes to set up, then your first practice interview."
+      : "Log in to pick up where you left off.";
+    $("#field-name").classList.toggle("hidden", !signup);
+    $("#field-password2").classList.toggle("hidden", !signup);
+    $("#btn-auth-submit").textContent = signup ? "Create my account" : "Log in";
+    $("#google-btn-text").textContent = signup ? "Sign up with Google" : "Continue with Google";
+    $("#btn-forgot").classList.toggle("hidden", signup);
+    $("#login-switch").innerHTML = signup
+      ? "Already have an account? <button class=\"login-link\" id=\"btn-switch-login\">Log in</button>"
+      : "New here? <button class=\"login-link\" id=\"btn-switch-signup\">Create your account</button>";
+    var sw = $("#btn-switch-signup") || $("#btn-switch-login");
+    if (sw) sw.onclick = function () { setAuthMode(signup ? "login" : "signup"); };
+    $("#auth-password").setAttribute("autocomplete", signup ? "new-password" : "current-password");
+    loginStatus("");
+  }
+  function submitAuthForm() {
+    var email = $("#auth-email").value.trim();
+    var pass = $("#auth-password").value;
+    var name = $("#auth-name").value.trim();
+    if (!email || !pass) { loginStatus("Fill in your email and password."); return; }
+    if (authMode === "signup") {
+      if (pass.length < 8) { loginStatus("Pick a longer password, at least 8 characters."); return; }
+      if (pass !== $("#auth-password2").value) { loginStatus("The two passwords do not match."); return; }
+    }
+    var btn = $("#btn-auth-submit");
+    btn.disabled = true;
+    loginStatus(authMode === "signup" ? "Creating your account…" : "Checking your details…");
+    loadFirebase().then(function (auth) {
+      return authMode === "signup"
+        ? auth.createUserWithEmailAndPassword(email, pass).then(function (res) {
+            if (name && res.user) return res.user.updateProfile({ displayName: name }).then(function () { return res; });
+            return res;
+          })
+        : auth.signInWithEmailAndPassword(email, pass);
+    }).then(function (res) {
+      fbUser = res.user;
+      if (name) saveSettings({ authName: name });
+      rememberUser(res.user);
+      btn.disabled = false;
+      afterSignedIn(authMode === "signup");
+    }).catch(function (err) {
+      btn.disabled = false;
+      loginStatus(friendlyAuthError(err));
+    });
+  }
+  function forgotPassword() {
+    var email = $("#auth-email").value.trim();
+    if (!email) { loginStatus("Type your email above first, then tap this again."); return; }
+    loadFirebase().then(function (auth) { return auth.sendPasswordResetEmail(email); })
+      .then(function () { loginStatus("Check your inbox, a reset link is on its way to " + email + ".", true); })
+      .catch(function (err) { loginStatus(friendlyAuthError(err)); });
+  }
+  function loginWithGoogle() {
+    loginStatus("Opening Google…");
+    firebaseGoogleFlow(false).then(function () {
+      loginStatus("");
+      afterSignedIn(false);
+    }).catch(function (err) { loginStatus(friendlyAuthError(err)); });
+  }
+  // One path after any kind of sign in: find their folder, or set them up.
+  function afterSignedIn(isNew) {
+    loginStatus("Checking your account…");
+    var haveDrive = !!driveToken;
+    if (!haveDrive) {
+      // Signed up with email, so their Drive is not connected yet.
+      showLogin(false);
+      openSetupWizard(null);
+      return;
+    }
+    driveListAll().then(function (files) {
+      var root = files.filter(function (f) { return f.appProperties && f.appProperties.rkind === "root"; })[0];
+      if (root && root.appProperties.seeded === "1") {
+        saveSettings({ driveOn: true, driveRootId: root.id });
+        loginStatus("Getting your questions…");
+        return driveSync(true).then(function () {
+          showLogin(false);
+          renderSidebar(); renderHome(); goHome(); updateAccountUi();
+          showToast("Welcome back, " + (getSettings().authName || "").split(" ")[0] + ".");
+        });
+      }
+      showLogin(false);
+      openSetupWizard(root ? root.id : null);
+      return null;
+    }).catch(function (err) {
+      loginStatus(friendlyAuthError(err));
+    });
+  }
+  // Firebase shows the config as JavaScript, with no quotes round the
+  // names, so take it exactly as it is copied from the console.
+  function readLooseConfig(raw) {
+    var text = String(raw || "");
+    var first = text.indexOf("{"), last = text.lastIndexOf("}");
+    if (first === -1 || last === -1) return null;
+    text = text.slice(first, last + 1)
+      .replace(/\/\/[^\n]*/g, "")
+      .replace(/'/g, "\"")
+      .replace(/([{,]\s*)([A-Za-z_$][\w$]*)\s*:/g, "$1\"$2\":")
+      .replace(/,(\s*[}\]])/g, "$1");
+    try {
+      var cfg = JSON.parse(text);
+      return cfg && cfg.apiKey ? cfg : null;
+    } catch (e) { return null; }
+  }
+  function saveOwnerSetup() {
+    var raw = $("#owner-firebase").value.trim();
+    var cid = $("#owner-client-id").value.trim();
+    if (raw) {
+      var cfg = readLooseConfig(raw);
+      if (!cfg) { loginStatus("That did not look like a Firebase config. Copy everything from the { to the } in the Firebase console, including apiKey."); return; }
+      try { localStorage.setItem("sip_firebase", JSON.stringify(cfg)); } catch (e) {}
+    } else if (!firebaseConfig()) {
+      loginStatus("Paste the Firebase config first. Firebase console, Project settings, Your apps, the web app.");
+      return;
+    }
+    if (cid) saveSettings({ googleClientId: cid });
+    loginStatus("Saved. Reloading…", true);
+    setTimeout(function () { location.reload(); }, 600);
+  }
+
+  /* ---- First run set up: key, resume, target role ---- */
+  var setupState = null;
+  function openSetupWizard(rootId) {
+    setupState = { rootId: rootId || null, resumeText: "", resumeFile: null, step: 1 };
+    $("#setup-modal").classList.remove("hidden");
+    $("#setup-name").textContent = (getSettings().authName || "there").split(" ")[0];
+    $("#setup-key-input").value = getSettings().geminiKey || "";
+    setupGo(driveToken ? 2 : 1);
+  }
+  // People who signed up with an email have not let us near their Drive
+  // yet, so that is the first thing the set up asks for.
+  function setupConnectDrive() {
+    setupStatus("#setup-drive-status", "Opening Google…");
+    getDriveToken(true).then(function () {
+      setupStatus("#setup-drive-status", "Your Drive is connected.");
+      return driveListAll();
+    }).then(function (files) {
+      var root = files.filter(function (f) { return f.appProperties && f.appProperties.rkind === "root"; })[0];
+      if (root && root.appProperties.seeded === "1") {
+        saveSettings({ driveOn: true, driveRootId: root.id });
+        $("#setup-modal").classList.add("hidden");
+        return driveSync(true).then(function () {
+          renderSidebar(); renderHome(); goHome(); updateAccountUi();
+          showToast("Found your Rehearsly folder, everything is back.");
+        });
+      }
+      if (root) setupState.rootId = root.id;
+      setupGo(2);
+      return null;
+    }).catch(function (err) {
+      setupStatus("#setup-drive-status", String((err && err.message) || err));
+    });
+  }
+  function setupGo(step) {
+    setupState.step = step;
+    [1, 2, 3, 4, 5].forEach(function (n) {
+      var pane = $("#setup-step-" + n);
+      if (pane) pane.classList.toggle("hidden", n !== step);
+      var dot = $("#setup-dot-" + n);
+      if (dot) dot.classList.toggle("done", n <= step);
+    });
+  }
+  function setupStatus(id, text) { var el = $(id); if (el) el.textContent = text || ""; }
+
+  function setupCheckKey() {
+    var typed = $("#setup-key-input").value.trim();
+    if (!typed) { setupStatus("#setup-key-status", "Paste your key first. The link above shows where to get one, it is free."); return; }
+    saveSettings({ geminiKey: typed });
+    setupStatus("#setup-key-status", "Checking with Google…");
+    callGeminiResilient(getSettings(), "Reply with the single word OK.", "Say OK.", null)
+      .then(function () { setupStatus("#setup-key-status", "Your key works."); setupGo(3); })
+      .catch(function (err) {
+        setupStatus("#setup-key-status", isAuthError(err)
+          ? "Google turned this key down. Make a new one at aistudio.google.com/apikey."
+          : "Could not check the key. " + String(err.message || err).slice(0, 140));
+      });
+  }
+
+  // The resume is saved in your Drive as a Google Doc, and Google's own
+  // converter turns your PDF or Word file into text we can read.
+  function driveUploadConverted(file, name, parentId, props) {
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onerror = function () { reject(driveErr("Could not read that file.")); };
+      reader.onload = function () {
+        var bytes = new Uint8Array(reader.result);
+        var meta = { name: name, mimeType: DOC_MIME, parents: parentId ? [parentId] : undefined, appProperties: Object.assign({ rapp: "1" }, props) };
+        var boundary = "rehearsly" + Date.now().toString(36);
+        var head = "--" + boundary + "\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n" + JSON.stringify(meta) +
+          "\r\n--" + boundary + "\r\nContent-Type: " + (file.type || "application/octet-stream") + "\r\nContent-Transfer-Encoding: base64\r\n\r\n";
+        var tail = "\r\n--" + boundary + "--";
+        var b64 = b64FromBytes(bytes);
+        driveJson(DRIVE_UPLOAD + "?uploadType=multipart&fields=id,modifiedTime", {
+          method: "POST", headers: { "Content-Type": "multipart/related; boundary=" + boundary },
+          body: head + b64 + tail
+        }).then(resolve, reject);
+      };
+      reader.readAsArrayBuffer(file);
+    });
+  }
+  function setupUseResume(file) {
+    if (!file) return;
+    setupState.resumeFile = file;
+    setupStatus("#setup-resume-status", "Reading " + file.name + "…");
+    ensureRootFolder().then(function (rootId) {
+      return driveUploadConverted(file, "My Resume", rootId, { rkind: "resume" });
+    }).then(function (res) {
+      setupState.resumeFileId = res.id;
+      return driveFetch(DRIVE_API + "/files/" + res.id + "/export?mimeType=text%2Fplain").then(function (r) { return r.text(); });
+    }).then(function (text) {
+      var clean = String(text || "").replace(/\r/g, "").replace(/\n{3,}/g, "\n\n").trim();
+      if (clean.length < 120) throw driveErr("That file came out almost empty. Try a PDF or Word file with selectable text, not a photo.");
+      setupState.resumeText = clean.slice(0, 18000);
+      saveSettings({ resumeText: setupState.resumeText });
+      setupStatus("#setup-resume-status", "Got it, " + Math.round(clean.length / 1000) + "k characters read from " + file.name + ".");
+      setupGo(4);
+    }).catch(function (err) {
+      setupStatus("#setup-resume-status", String((err && err.message) || err));
+    });
+  }
+  function ensureRootFolder() {
+    if (setupState && setupState.rootId) return Promise.resolve(setupState.rootId);
+    var s = getSettings();
+    if (s.driveRootId) return Promise.resolve(s.driveRootId);
+    return driveCreateFolder(DRIVE_ROOT_NAME, null, { rkind: "root" }, "Your Rehearsly interview prep. One folder per section, one Google Doc per question.")
+      .then(function (r) {
+        if (setupState) setupState.rootId = r.id;
+        saveSettings({ driveRootId: r.id });
+        return r.id;
+      });
+  }
+
+  var QSET_SYS = "You are an experienced interview coach. You are given a candidate's resume and the job description they are going for. " +
+    "Write the interview question set they should practise. Use simple everyday English, no markdown, no dashes. " +
+    "Mix the questions: a few opening and story questions, the core questions for this role, a few hard ones on the gaps between the resume and the job, and one or two on their motivation. " +
+    "Ground every question in the resume or the job description, so it feels like a real panel that read both. " +
+    "Reply with ONLY compact JSON of this exact shape: " +
+    "{\"role_title\": \"short name for this target role\", \"profile\": \"60 words about the candidate, written for an interviewer to read\", " +
+    "\"questions\": [{\"question\": \"...\", \"category\": \"one of Opening, Experience, Role skills, Case, Motivation, Gap\", \"tip\": \"one line on what a strong answer must contain\"}]} " +
+    "Give exactly COUNT questions.";
+  var ANSWER_SYS = "You are helping a candidate prepare. You are given their resume, the job description, and some interview questions. " +
+    "For each question, draft the answer in the candidate's own voice, first person, using real details from their resume. " +
+    "Keep each answer under 220 words, simple everyday English, no markdown headings, no dashes. Where a number is needed and the resume has none, write [add your number] so they can fill it in. " +
+    "Reply with ONLY compact JSON: {\"answers\": [{\"id\": \"the id given\", \"answer\": \"...\"}]}";
+
+  function setupBuild() {
+    var roleTitle = $("#setup-role-input").value.trim();
+    var jd = $("#setup-jd-input").value.trim();
+    if (!jd || jd.length < 80) { setupStatus("#setup-jd-status", "Paste the job description first, the whole advert works best."); return; }
+    if (!setupState.resumeText) { setupStatus("#setup-jd-status", "Add your resume first."); setupGo(3); return; }
+    setupState.jd = jd.slice(0, 12000);
+    setupState.roleTitle = roleTitle;
+    setupGo(5);
+    setupProgress("Reading your resume and the job description…", 5);
+    var settings = getSettings();
+    var count = 26;
+    var userMsg = "RESUME:\n" + setupState.resumeText + "\n\nJOB DESCRIPTION:\n" + setupState.jd +
+      (roleTitle ? "\n\nThe candidate calls this role: " + roleTitle : "");
+    retryWhenBusy(function () {
+      return callGeminiResilient(settings, QSET_SYS.replace("COUNT", String(count)), userMsg, null);
+    }, 3, function (n, wait) { setupProgress("Gemini is busy, trying again in " + Math.round(wait / 1000) + " seconds…", 8); })
+      .then(function (content) {
+        var parsed = parseFeedbackContent(content);
+        if (!parsed || !parsed.questions || !parsed.questions.length) throw new Error("Gemini did not send back a question list. Try once more.");
+        return writeStarterSet(parsed);
+      })
+      .then(function (res) {
+        $("#setup-modal").classList.add("hidden");
+        renderSidebar(); renderHome(); goHome(); updateAccountUi();
+        showToast("Your question set is ready.");
+        draftAnswersInBackground(res.sectionRid);
+      })
+      .catch(function (err) {
+        setupProgress(String((err && err.message) || err), 0);
+        $("#setup-retry").classList.remove("hidden");
+      });
+  }
+  function setupProgress(text, pct) {
+    setupStatus("#setup-progress-text", text);
+    var bar = $("#setup-progress-bar");
+    if (bar) bar.style.width = Math.max(0, Math.min(100, pct || 0)) + "%";
+  }
+  // Writes the new section folder and one Doc per question into your Drive.
+  function writeStarterSet(parsed) {
+    var title = (setupState.roleTitle || parsed.role_title || "My target role").slice(0, 80);
+    var rid = newRid("sec"), role = makeRoleSlug(title);
+    var rootId;
+    saveSettings({ profileSummary: String(parsed.profile || "").slice(0, 1200), targetRole: title, jdText: setupState.jd });
+    return ensureRootFolder().then(function (id) {
+      rootId = id;
+      setupProgress("Making your section folder…", 12);
+      return driveCreateFolder(title, rootId, { rkind: "qa", rid: rid, role: role, icon: "🎯", order: "1" }, "Questions for " + title);
+    }).then(function (folder) {
+      var cache = driveCache() || { rootId: rootId, folders: {}, items: {}, extras: {} };
+      cache.rootId = rootId;
+      cache.folders[rid] = { folderId: folder.id, kind: "qa", title: title, desc: "Questions for " + title, icon: "🎯", role: role, order: 1 };
+      saveDriveCache(cache);
+      var qs = parsed.questions.slice(0, 40);
+      var made = 0;
+      return runPool(qs.map(function (q, i) {
+        return function () {
+          var row = {
+            question: String(q.question || "").trim(), answer: "", tips: String(q.tip || "").trim(),
+            approach_to_learn: "", part_title: title, category: String(q.category || "").trim()
+          };
+          if (!row.question) return Promise.resolve();
+          var qrid = newRid("q");
+          return driveCreateDoc("Questions", qrid, row, folder.id, i + 1).then(function (res) {
+            var c = driveCache();
+            c.items[qrid] = { fileId: res.id, kind: "Questions", sectionRid: rid, row: row, order: i + 1, modifiedTime: res.modifiedTime || null };
+            saveDriveCache(c);
+            made++;
+            setupProgress("Writing your questions, " + made + " of " + qs.length + "…", 15 + (made / qs.length) * 80);
+          });
+        };
+      }), 3);
+    }).then(function () {
+      return driveJson(DRIVE_API + "/files/" + rootId + "?fields=id", {
+        method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ appProperties: { seeded: "1" } })
+      });
+    }).then(function () {
+      // Keep the job description in Drive too, so it is there on any device.
+      return driveDocUpload("ActionPlan", { section: "Target role, " + title, content: setupState.jd, tip: "", part_title: "Set up" },
+        { name: "Target role, " + title, mimeType: DOC_MIME, parents: [rootId], appProperties: { rapp: "1", rkind: "jd" } }, null).catch(function () { return null; });
+    }).then(function () {
+      saveSettings({ driveOn: true, driveRootId: rootId });
+      clearLocalOverlay();
+      // A fresh account starts with only their own questions, so the three
+      // sections that ship with the app stay out of the way until they
+      // bring them back from Settings.
+      saveLocalJson("sip_local_deleted", { sections: FIXED_SECTIONS.map(function (f) { return f.key; }) });
+      var cache = driveCache();
+      cache.extras = cache.extras || {};
+      if (!cache.extras.meta) cache.extras.meta = {
+        title: ((getSettings().authName || "Your") + "'s interview practice").replace(/s's/, "s'"),
+        preface: "Built from your resume and the job you are going for. Add, edit or delete anything, it all lives in your Google Drive.",
+        sections: []
+      };
+      cache.extras.storybank_numbers = cache.extras.storybank_numbers || [];
+      saveDriveCache(cache);
+      applyData(driveRaw(cache));
+      setSyncDot("drive");
+      setupProgress("Done.", 100);
+      return { sectionRid: rid };
+    });
+  }
+  // The answers are drafted after the questions are on screen, a few at a
+  // time, so you can start reading straight away.
+  function draftAnswersInBackground(sectionRid) {
+    var cache = driveCache();
+    if (!cache) return;
+    var todo = Object.keys(cache.items).filter(function (rid) {
+      var it = cache.items[rid];
+      return it.sectionRid === sectionRid && it.kind === "Questions" && !String(it.row.answer || "").trim();
+    });
+    if (!todo.length) return;
+    var settings = getSettings();
+    var batches = [];
+    for (var i = 0; i < todo.length; i += 5) batches.push(todo.slice(i, i + 5));
+    var done = 0;
+    showToast("Drafting your answers from your resume, you can read the questions meanwhile.");
+    setDraftBanner("Drafting your answers from your resume, " + done + " of " + todo.length + " done.");
+    function runBatch(n) {
+      if (n >= batches.length) {
+        setDraftBanner("");
+        showToast("Your draft answers are ready. Edit any of them in your own words.");
+        return;
+      }
+      var c = driveCache();
+      var list = batches[n].map(function (rid) { return { id: rid, question: (c.items[rid] || { row: {} }).row.question }; })
+        .filter(function (x) { return x.question; });
+      var msg = "RESUME:\n" + (getSettings().resumeText || "") + "\n\nJOB DESCRIPTION:\n" + (getSettings().jdText || "") +
+        "\n\nQUESTIONS:\n" + JSON.stringify(list);
+      retryWhenBusy(function () { return callGeminiResilient(settings, ANSWER_SYS, msg, null); }, 2, function () {})
+        .then(function (content) {
+          var parsed = parseFeedbackContent(content);
+          var answers = (parsed && parsed.answers) || [];
+          return runPool(answers.map(function (a) {
+            return function () {
+              var cc = driveCache();
+              var it = cc.items[a.id];
+              if (!it || !a.answer) return Promise.resolve();
+              it.row.answer = String(a.answer).trim();
+              saveDriveCache(cc);
+              return driveWriteDoc(it.fileId, it.kind, it.row).then(function (res) {
+                var c2 = driveCache();
+                if (c2.items[a.id]) { c2.items[a.id].modifiedTime = res.modifiedTime || null; saveDriveCache(c2); }
+              });
+            };
+          }), 2);
+        })
+        .then(function () {
+          done += batches[n].length;
+          setDraftBanner("Drafting your answers from your resume, " + Math.min(done, todo.length) + " of " + todo.length + " done.");
+          applyData(driveRaw(driveCache()));
+          renderSidebar();
+          if (currentItem && !editing && !$("#view-reader").classList.contains("hidden")) {
+            var found = findItemWithList(currentItem.id);
+            if (found) openItem(found.item, found.list, found.idx, "same");
+          }
+          runBatch(n + 1);
+        })
+        .catch(function () {
+          setDraftBanner("Could not draft the rest of the answers just now. Your questions are safe, try Settings, Draft my answers.");
+        });
+    }
+    runBatch(0);
+  }
+  function setDraftBanner(text) {
+    var el = $("#draft-banner");
+    if (!el) return;
+    el.textContent = text || "";
+    el.classList.toggle("hidden", !text);
+  }
+  function updateAccountUi() {
+    var u = authedUser();
+    var box = $("#account-box");
+    if (box) {
+      box.classList.toggle("hidden", !u);
+      if (u) {
+        $("#account-name").textContent = u.name || u.email;
+        $("#account-email").textContent = u.email;
+      }
+    }
+    var chip = $("#account-chip");
+    if (chip) {
+      chip.classList.toggle("hidden", !u);
+      if (u) {
+        var name = (u.name || u.email || "").trim();
+        $("#account-chip-initial").textContent = (name.charAt(0) || "R").toUpperCase();
+        $("#account-chip-name").textContent = name.split(" ")[0];
+      }
+    }
+    updateDriveUi();
   }
 
   /* ---------------------------------------------------------------------
@@ -6916,11 +7703,21 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     if (!v || isNaN(v)) v = DEFAULT_SETTINGS.livePauseMs;
     return Math.max(500, Math.min(10000, v));
   }
+  // A short note about who is sitting in front of you, taken from their
+  // own resume, so the questions and the scoring fit their real story.
+  function candidateBrief() {
+    var s = getSettings();
+    var bits = [];
+    if (s.profileSummary) bits.push("About the candidate, from their own resume: " + s.profileSummary);
+    if (s.targetRole) bits.push("They are preparing for this role: " + s.targetRole + ".");
+    return bits.length ? " " + bits.join(" ") + " " : "";
+  }
   function buildLiveSystemPrompt(item) {
     return "You are a genuinely rigorous interviewer, holding a real spoken one on one interview about ONE interview question. " +
       accentStyle() + " " + mannerStyle() +
       " The candidate speaks English, so always listen for English and always reply in English. You are on a live voice call, so talk like a real person talks. Short, plain, everyday English. Never read out lists, never use markdown, never use dashes. " +
-      "You are interviewing the candidate for a " + (item.role || "product") + " role. " +
+      "You are interviewing the candidate for a " + (getSettings().targetRole || item.role || "product") + " role. " +
+      candidateBrief() +
       "You privately know the ideal answer and a coaching tip below. Never read them out and never say you have them, use them only to judge and to decide what to dig into. " +
       "\n\nQuestion: " + item.question +
       "\n\nIdeal answer, private, for judging only: " + stripMd(item.answer) +
@@ -8484,6 +9281,30 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
         loadData(false).then(function () { renderSidebar(); renderHome(); updateDriveUi(); setSyncDot("bundled"); driveStatus("Disconnected."); });
       });
     };
+    $("#tab-login").onclick = function () { setAuthMode("login"); };
+    $("#tab-signup").onclick = function () { setAuthMode("signup"); };
+    $("#btn-auth-submit").onclick = submitAuthForm;
+    $("#btn-forgot").onclick = forgotPassword;
+    $("#btn-login-google").onclick = loginWithGoogle;
+    $("#btn-owner-save").onclick = saveOwnerSetup;
+    $("#btn-setup-drive").onclick = setupConnectDrive;
+    ["#auth-email", "#auth-password", "#auth-password2", "#auth-name"].forEach(function (sel) {
+      var el = $(sel);
+      if (el) el.onkeydown = function (e) { if (e.key === "Enter") submitAuthForm(); };
+    });
+    $("#account-chip").onclick = function () { openSettings(); };
+    $("#btn-sign-out").onclick = function () {
+      confirmDialog({
+        title: "Sign out?", confirmLabel: "Sign out",
+        message: "Your Rehearsly folder and everything in it stays safe in your Google Drive. Sign in again any time to get it back."
+      }).then(function (ok) { if (ok) signOut(); });
+    };
+    $("#btn-setup-key").onclick = setupCheckKey;
+    $("#setup-resume-input").onchange = function (e) { setupUseResume(e.target.files && e.target.files[0]); };
+    $("#btn-setup-back-1").onclick = function () { setupGo(2); };
+    $("#btn-setup-back-2").onclick = function () { setupGo(3); };
+    $("#btn-setup-build").onclick = setupBuild;
+    $("#setup-retry").onclick = function () { $("#setup-retry").classList.add("hidden"); setupBuild(); };
     $("#sync-dot").onclick = function () {
       if (!driveOn()) { openSettings(); return; }
       showToast("Syncing with your Google Drive…");
@@ -8578,9 +9399,19 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     forgetLeakedKeys();
     applySettingsToDom(getSettings());
     wireEvents();
+    if (!signedIn()) {
+      showLogin(true);
+      setAuthMode("login");
+      var cfg = firebaseConfig();
+      if (cfg) loadFirebase().catch(function () {}); else loadGis().catch(function () {});
+      if (!cfg && !(getSettings().googleClientId || BUILT_IN_CLIENT_ID)) {
+        loginStatus("This copy is not set up for sign in yet. If this is your copy, open App owner set up below.");
+      }
+    }
     loadData().then(function () {
       populateVoices();
       goHome();
+      updateAccountUi();
       if (driveOn()) {
         if (getSettings().googleClientId) loadGis().catch(function () {});
         // Brings in edits made in your Sheets since last time. If the
