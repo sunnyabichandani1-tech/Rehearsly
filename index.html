@@ -6066,7 +6066,9 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       var text = chunks[s.idx++];
       try {
         ws.send(JSON.stringify({
-          clientContent: { turns: [{ role: "user", parts: [{ text: opts.brief ? text : readerMessage(text) }] }], turnComplete: true }
+          // The 3.1 live model only takes new text this way. Text sent as
+          // clientContent is ignored, which made it talk about itself.
+          realtimeInput: { text: opts.brief ? text : readerMessage(text) }
         }));
       } catch (e) {}
     }
@@ -6194,10 +6196,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
         if (msg.setupComplete) {
           statusEl.textContent = "Playing " + voice + "…";
           ws.send(JSON.stringify({
-            clientContent: {
-              turns: [{ role: "user", parts: [{ text: "Say exactly this and nothing else: Good morning. Thanks for making the time. Let's get started, tell me about yourself." }] }],
-              turnComplete: true
-            }
+            realtimeInput: { text: "Say exactly this and nothing else: Good morning. Thanks for making the time. Let's get started, tell me about yourself." }
           }));
           return;
         }
@@ -6255,7 +6254,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   function buildLiveSystemPrompt(item) {
     return "You are a genuinely rigorous interviewer, holding a real spoken one on one interview about ONE interview question. " +
       accentStyle() + " " + mannerStyle() +
-      " You are on a live voice call, so talk like a real person talks. Short, plain, everyday English. Never read out lists, never use markdown, never use dashes. " +
+      " The candidate speaks English, so always listen for English and always reply in English. You are on a live voice call, so talk like a real person talks. Short, plain, everyday English. Never read out lists, never use markdown, never use dashes. " +
       "You are interviewing the candidate for a " + (item.role || "product") + " role. " +
       "You privately know the ideal answer and a coaching tip below. Never read them out and never say you have them, use them only to judge and to decide what to dig into. " +
       "\n\nQuestion: " + item.question +
@@ -6318,7 +6317,8 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
               // a thinking pause mid answer does not hand your turn away.
               prefixPaddingMs: 300,
               silenceDurationMs: livePauseMs(settings),
-              startOfSpeechSensitivity: "START_SENSITIVITY_LOW",
+              // Picks up your voice as soon as you start, even on a laptop mic.
+              startOfSpeechSensitivity: "START_SENSITIVITY_HIGH",
               endOfSpeechSensitivity: "END_SENSITIVITY_LOW"
             }
           }
@@ -6358,6 +6358,11 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       clearTimeout(openTimer);
       if (!live) return;
       live.ready = true;
+      // Ask the interviewer to open straight away, so you are not left
+      // waiting until the mic picks up some noise.
+      try {
+        ws.send(JSON.stringify({ realtimeInput: { text: "The candidate has just joined the call. Greet them in one short line and ask the question now." } }));
+      } catch (e) {}
       startMicStream();
     }
     live.onSetupComplete = onSetupComplete;
@@ -6471,6 +6476,15 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
         if (!live || !live.ws || live.ws.readyState !== 1) return;
         var input = e.inputBuffer.getChannelData(0);
         var floats = downsampleFloats(input, ctx.sampleRate, LIVE_IN_RATE);
+        var sum = 0;
+        for (var k = 0; k < floats.length; k++) sum += floats[k] * floats[k];
+        var level = Math.sqrt(sum / (floats.length || 1));
+        if (level > 0.02) live.heardAt = Date.now();
+        // While the interviewer is talking, your speakers leak into the mic
+        // and it hears itself. Send silence then, unless you clearly speak up
+        // to cut in.
+        var playing = live.outCtx && live.playHead > live.outCtx.currentTime;
+        if (playing && level < 0.06) floats = new Float32Array(floats.length);
         var pcm = floatsToPcm16(floats);
         var b64 = b64FromBytes(new Uint8Array(pcm.buffer));
         try {
@@ -6487,6 +6501,16 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       sink.connect(ctx.destination);
       if (ctx.state === "suspended") ctx.resume();
       setLiveStatus("🔴 Live, just talk", true);
+      // If the mic sends nothing but silence, say so, instead of leaving
+      // you talking to nobody.
+      live.micStartedAt = Date.now();
+      live.micCheck = setInterval(function () {
+        if (!live || live.closed) return;
+        var quietFor = Date.now() - (live.heardAt || live.micStartedAt);
+        if (quietFor > 12000 && !(live.outCtx && live.playHead > live.outCtx.currentTime)) {
+          setLiveStatus("🎙 We cannot hear you. Check the mic picked in Chrome (the mic icon in the address bar), or speak a little louder.", true);
+        }
+      }, 3000);
       $("#interview-input-row").classList.add("hidden");
       $("#interview-live-row").classList.remove("hidden");
     }).catch(function () {
@@ -6532,6 +6556,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   function stopLiveSession() {
     if (!live) return;
     live.closed = true;
+    clearInterval(live.micCheck);
     stopLivePlayback();
     try { if (live.node) live.node.onaudioprocess = null; } catch (e) {}
     try { if (live.source) live.source.disconnect(); } catch (e) {}
@@ -6769,12 +6794,13 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     if (!recognizer) return;
     if (recognizing) { try { recognizer.stop(); } catch (e) {} recognizing = false; }
     interviewListenActive = true;
-    box.value = "";
+    // Never wipe what you already typed, spoken words are added after it.
+    var typedBefore = (box.value || "").trim();
     autoGrow(box);
     statusEl.textContent = "🎙️ Your turn, I am listening. Take your time.";
     statusEl.classList.remove("hidden");
     statusEl.classList.add("listening");
-    var pendingFinal = "";
+    var pendingFinal = typedBefore ? typedBefore + " " : "";
     var pauseMs = livePauseMs();
     function armSilenceTimer(latestText) {
       clearSilenceWatch();
