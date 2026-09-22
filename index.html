@@ -1119,6 +1119,14 @@ button, input, select, textarea { font-family: inherit; }
   overflow-y: auto;
 }
 
+/* Google Drive settings */
+.settings-details { margin-top: 10px; font-size: 13px; }
+.settings-details summary { cursor: pointer; color: var(--muted, #666); padding: 4px 0; }
+.settings-steps { margin: 8px 0 4px 18px; padding: 0; line-height: 1.6; }
+.settings-steps li { margin-bottom: 6px; }
+a.btn, a.tool-btn { text-decoration: none; display: inline-flex; align-items: center; }
+.sync-dot { cursor: pointer; }
+
 </style>
 </head>
 <body>
@@ -1194,6 +1202,7 @@ button, input, select, textarea { font-family: inherit; }
         <div class="reader-toolbar">
           <button class="tool-btn" id="btn-narrate" title="Read aloud">🔊 Listen</button>
           <button class="tool-btn" id="btn-edit" title="Edit this answer">✏️ Edit</button>
+          <a class="tool-btn hidden" id="btn-open-sheet" href="#" target="_blank" rel="noopener" title="Open this question's Google Sheet">📄 Open Sheet</a>
         </div>
 
         <div class="edit-toolbar hidden" id="edit-toolbar">
@@ -1303,7 +1312,29 @@ button, input, select, textarea { font-family: inherit; }
         </section>
 
         <section class="settings-group">
-          <h3>Your Google Sheet</h3>
+          <h3>Your Google Drive</h3>
+          <p class="settings-hint">Keep every question and answer in your own Google Drive. The app makes a <b>Rehearsly</b> folder, one folder for each section, and one Google Sheet for each question. Edit in the app or right in the Sheet, both stay in step, on every device you sign in on.</p>
+          <label class="settings-row-col"><span>Google Client ID</span><input type="text" id="google-client-id" placeholder="1234567890-abc.apps.googleusercontent.com" autocomplete="off" /></label>
+          <div class="settings-actions">
+            <button class="btn" id="btn-drive-connect">Connect Google Drive</button>
+            <button class="btn hidden" id="btn-drive-sync">Sync now</button>
+            <a class="btn hidden" id="btn-drive-open" href="#" target="_blank" rel="noopener">Open my folder</a>
+            <button class="btn btn-ghost hidden" id="btn-drive-disconnect">Disconnect</button>
+          </div>
+          <p class="settings-status" id="drive-status"></p>
+          <details class="settings-details">
+            <summary>How to get your Google Client ID (one time, about 10 minutes)</summary>
+            <ol class="settings-steps">
+              <li>Open <a href="https://console.cloud.google.com/projectcreate" target="_blank" rel="noopener">console.cloud.google.com</a> and make a new project, name it Rehearsly.</li>
+              <li>Turn on two APIs in that project: <a href="https://console.cloud.google.com/apis/library/drive.googleapis.com" target="_blank" rel="noopener">Google Drive API</a> and <a href="https://console.cloud.google.com/apis/library/sheets.googleapis.com" target="_blank" rel="noopener">Google Sheets API</a>. Tap Enable on each.</li>
+              <li>Open <a href="https://console.cloud.google.com/auth/overview" target="_blank" rel="noopener">Google Auth Platform</a>, tap Get started. App name Rehearsly, your email, Audience External, then Create.</li>
+              <li>In Audience, add your own Gmail under Test users.</li>
+              <li>In Clients, tap Create client. Type Web application. Under Authorised JavaScript origins add <b>https://sunnyabichandani1-tech.github.io</b>. Tap Create.</li>
+              <li>Copy the Client ID, paste it above, then tap Connect Google Drive.</li>
+            </ol>
+          </details>
+          <details class="settings-details">
+            <summary>Old way: Apps Script link</summary>
           <p class="settings-hint">Paste the Apps Script Web app URL here so the app can read live data and save your edited answers. Leave blank to use the bundled copy.</p>
           <label class="settings-row-col"><span>Web app URL</span><input type="url" id="sheet-url" placeholder="https://script.google.com/macros/s/.../exec" /></label>
           <label class="settings-row-col"><span>Access token (optional)</span><input type="text" id="sheet-token" placeholder="leave blank if you did not set one" /></label>
@@ -1312,6 +1343,7 @@ button, input, select, textarea { font-family: inherit; }
             <button class="btn" id="btn-sync-sheet">Sync now</button>
           </div>
           <p class="settings-status" id="sheet-status"></p>
+          </details>
         </section>
 
         <section class="settings-group">
@@ -4068,6 +4100,9 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
 
   var DEFAULT_SETTINGS = {
     fontSize: 12, theme: "light", paperDark: false, sheetUrl: "", sheetToken: "",
+    // Google Drive as the master copy. The Client ID is not a secret, it
+    // only says which app is asking, so it is fine to keep in Settings.
+    googleClientId: "", driveOn: false, driveRootId: "",
     // No key is ever written into the app itself. The app is public, so a
     // key in the code can be copied by anyone and Google switches it off.
     // Each person pastes their own key in Settings, it stays in their browser.
@@ -4474,8 +4509,10 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   function setSyncDot(state) {
     var el = $("#sync-dot");
     el.classList.remove("live", "error");
+    if (state === "drive") { el.classList.add("live"); el.title = "Synced with your Google Drive. Tap to sync now."; return; }
+    if (state === "signin") { el.classList.add("error"); el.title = "Tap to sign in to Google Drive and sync."; return; }
     if (state === "live") { el.classList.add("live"); el.title = "Live, reading from your Google Sheet"; }
-    else if (state === "error") { el.classList.add("error"); el.title = "Could not reach your Google Sheet, using the bundled copy"; }
+    else if (state === "error") { el.classList.add("error"); el.title = driveOn() ? "Could not reach your Google Drive. Tap to try again." : "Could not reach your Google Sheet, using the bundled copy"; }
     else { el.title = "Using the bundled copy that ships with this page"; }
   }
   function normalizeMetaFromSheetRows(rows) {
@@ -4590,6 +4627,11 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     if (localDeleted.sections.indexOf("actionplan") !== -1) ACTIONPLAN_ONLY = [];
     NUMBERS_ROWS = raw.storybank_numbers || [];
     META = raw.meta || { title: "", preface: "", sections: [] };
+    LAST_MERGED = {
+      sections: mergedSections, questions: mergedQuestions, roadmaps: mergedRoadmaps,
+      storybank: mergedStorybank || [], actionplan: mergedActionplan,
+      storybank_numbers: NUMBERS_ROWS, meta: META
+    };
 
     SEARCH_CORPUS = [].concat(QUESTIONS_ONLY, ROADMAPS_ONLY, ACTIONPLAN_ONLY, STORYBANK_ITEMS.map(function (s) {
       return { id: s.id, sheet: "StoryBank", role: "Story Bank", question: s.title, answer: [s.situation, s.problem, s.solution, s.impact, s.lesson].join(" ") };
@@ -4598,6 +4640,9 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   }
   function loadData(forceRemote) {
     var settings = getSettings();
+    // Your Drive is the master copy. This reads the last synced copy, so
+    // the app opens straight away, then a sync brings in any changes.
+    if (driveOn() && applyDriveCache()) { setSyncDot(driveNeedsSignIn ? "signin" : "drive"); return Promise.resolve(); }
     if (settings.sheetUrl) {
       return loadFromSheet(settings).then(function (raw) {
         applyData(raw); setSyncDot("live");
@@ -4618,6 +4663,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     }
   }
   function saveToSheet(sheet, id, updates) {
+    if (driveOn()) return driveSaveItem(sheet, id, updates);
     recordLocalEdit(id, updates);
     var settings = getSettings();
     if (!settings.sheetUrl) return Promise.resolve({ ok: false, local: true });
@@ -4633,11 +4679,626 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       .then(function (r) { return r.json(); }).catch(function (err) { return { ok: false, error: String(err) }; });
   }
 
+
+  /* ---------------------------------------------------------------------
+   * Google Drive, the master copy of all your content.
+   * You sign in with Google. The app makes a "Rehearsly" folder in your
+   * Drive, one folder for every section, and one Google Sheet for every
+   * question, story or page. Edit in the app or right in the Sheet, the
+   * two stay in step. It only ever sees the files it made itself.
+   * ------------------------------------------------------------------- */
+  var DRIVE_SCOPE = "https://www.googleapis.com/auth/drive.file";
+  var DRIVE_API = "https://www.googleapis.com/drive/v3";
+  var DRIVE_UPLOAD = "https://www.googleapis.com/upload/drive/v3/files";
+  var SHEETS_API = "https://sheets.googleapis.com/v4/spreadsheets";
+  var SHEET_MIME = "application/vnd.google-apps.spreadsheet";
+  var FOLDER_MIME = "application/vnd.google-apps.folder";
+  var DRIVE_ROOT_NAME = "Rehearsly";
+  // What each Sheet holds, one row per field: the label you see in column
+  // A, and the value in column B.
+  var DRIVE_LAYOUTS = {
+    Questions: [["Question", "question"], ["Answer", "answer"], ["Tip", "tips"], ["How to learn it", "approach_to_learn"], ["Part", "part_title"], ["Category", "category"]],
+    Roadmaps: [["Question", "question"], ["Content", "content"], ["Tip", "tip"], ["Topic", "topic"], ["Subtopic", "subtopic"], ["Part", "part_title"]],
+    ActionPlan: [["Section", "section"], ["Content", "content"], ["Tip", "tip"], ["Part", "part_title"]],
+    StoryBank: [["Title", "title"], ["Situation", "situation"], ["Problem", "problem"], ["Solution", "solution"], ["Impact", "impact"], ["Lesson", "lesson"], ["Use for", "use_for"]]
+  };
+  var FIXED_KIND = { roadmaps: "Roadmaps", storybank: "StoryBank", actionplan: "ActionPlan" };
+  var KIND_FIXED = { Roadmaps: "roadmaps", StoryBank: "storybank", ActionPlan: "actionplan" };
+  var driveToken = null, driveTokenExp = 0, driveBusy = false, driveLastSync = 0, driveNeedsSignIn = false;
+  var LAST_MERGED = null;
+
+  function driveOn() { var s = getSettings(); return !!(s.driveOn && s.driveRootId); }
+  function driveCache() { return localJson("sip_drive_cache", null); }
+  function saveDriveCache(c) { saveLocalJson("sip_drive_cache", c); }
+  function driveQueue() { return localJson("sip_drive_queue", []); }
+  function saveDriveQueue(q) { saveLocalJson("sip_drive_queue", q); }
+  function driveErr(msg, extra) { var e = new Error(msg); if (extra) Object.assign(e, extra); return e; }
+  function newRid(prefix) { return prefix + Date.now().toString(36) + Math.floor(Math.random() * 100000).toString(36); }
+  function cleanFileName(t) {
+    var s = String(t || "Untitled").replace(/[#*_`>]/g, "").replace(/\s+/g, " ").trim();
+    return (s || "Untitled").slice(0, 120);
+  }
+  function driveStatus(text) { var el = $("#drive-status"); if (el) el.textContent = text; }
+
+  // Google's sign in script, loaded only when you use Drive.
+  var gisPromise = null;
+  function loadGis() {
+    if (window.google && google.accounts && google.accounts.oauth2) return Promise.resolve();
+    if (gisPromise) return gisPromise;
+    gisPromise = new Promise(function (resolve, reject) {
+      var s = document.createElement("script");
+      s.src = "https://accounts.google.com/gsi/client";
+      s.async = true;
+      s.onload = function () { resolve(); };
+      s.onerror = function () { gisPromise = null; reject(driveErr("Could not load Google sign in. Check your internet.")); };
+      document.head.appendChild(s);
+    });
+    return gisPromise;
+  }
+  function rememberToken(tok, secs) {
+    driveToken = tok;
+    driveTokenExp = Date.now() + (secs || 3600) * 1000;
+    driveNeedsSignIn = false;
+    try { sessionStorage.setItem("sip_drive_token", JSON.stringify({ token: tok, exp: driveTokenExp })); } catch (e) {}
+  }
+  function forgetToken() {
+    driveToken = null; driveTokenExp = 0;
+    try { sessionStorage.removeItem("sip_drive_token"); } catch (e) {}
+  }
+  // A saved token lasts about an hour. After that you tap once to sign in
+  // again, Google does not allow it to happen silently in the background.
+  function getDriveToken(interactive) {
+    if (driveToken && Date.now() < driveTokenExp - 60000) return Promise.resolve(driveToken);
+    try {
+      var t = JSON.parse(sessionStorage.getItem("sip_drive_token") || "null");
+      if (t && t.token && Date.now() < t.exp - 60000) { driveToken = t.token; driveTokenExp = t.exp; return Promise.resolve(driveToken); }
+    } catch (e) {}
+    if (!interactive) { driveNeedsSignIn = true; return Promise.reject(driveErr("Sign in to Google Drive to sync.", { needSignIn: true })); }
+    var cid = (getSettings().googleClientId || "").trim();
+    if (!cid) return Promise.reject(driveErr("Add your Google Client ID in Settings first.", { noClientId: true }));
+    return loadGis().then(function () {
+      return new Promise(function (resolve, reject) {
+        var client = google.accounts.oauth2.initTokenClient({
+          client_id: cid,
+          scope: DRIVE_SCOPE,
+          callback: function (resp) {
+            if (!resp || resp.error) { reject(driveErr("Google sign in did not finish. " + ((resp && (resp.error_description || resp.error)) || ""))); return; }
+            rememberToken(resp.access_token, resp.expires_in);
+            resolve(resp.access_token);
+          },
+          error_callback: function (err) {
+            var type = err && err.type;
+            reject(driveErr(type === "popup_closed" ? "Google sign in was closed before it finished."
+              : type === "popup_failed_to_open" ? "Chrome blocked the Google sign in window. Allow pop ups for this site, then try again."
+              : "Google sign in did not finish."));
+          }
+        });
+        client.requestAccessToken({ prompt: "" });
+      });
+    });
+  }
+  function driveApiHint(text) {
+    if (/sheets\.googleapis|Google Sheets API/i.test(text) && /disabled|not been used|SERVICE_DISABLED|accessNotConfigured/i.test(text)) return "Turn on the Google Sheets API in your Google Cloud project, then try again.";
+    if (/disabled|not been used|SERVICE_DISABLED|accessNotConfigured/i.test(text)) return "Turn on the Google Drive API in your Google Cloud project, then try again.";
+    return "";
+  }
+  // Every call to Google goes through here. Waits and tries again when
+  // Google says slow down, and asks you to sign in again when needed.
+  function driveFetch(url, opts, tries) {
+    tries = tries || 0;
+    opts = opts || {};
+    return getDriveToken(false).then(function (tok) {
+      var headers = Object.assign({ Authorization: "Bearer " + tok }, opts.headers || {});
+      return fetch(url, Object.assign({}, opts, { headers: headers }));
+    }).then(function (r) {
+      if (r.ok) return r;
+      return r.text().then(function (text) {
+        if (r.status === 401) { forgetToken(); driveNeedsSignIn = true; throw driveErr("Your Google sign in ran out. Sign in again to sync.", { needSignIn: true }); }
+        var hint = driveApiHint(text);
+        if (hint) throw driveErr(hint, { status: r.status });
+        var busy = r.status === 429 || r.status >= 500 || (r.status === 403 && /rate|quota|limit/i.test(text));
+        if (busy && tries < 6) {
+          var wait = Math.min(20000, 700 * Math.pow(2, tries)) + Math.floor(Math.random() * 400);
+          return new Promise(function (res) { setTimeout(res, wait); }).then(function () { return driveFetch(url, opts, tries + 1); });
+        }
+        if (r.status === 404) throw driveErr("That file is no longer in your Drive.", { status: 404 });
+        throw driveErr("Google Drive said " + r.status + ". " + text.slice(0, 160), { status: r.status });
+      });
+    });
+  }
+  function driveJson(url, opts) { return driveFetch(url, opts).then(function (r) { return r.json(); }); }
+
+  // Plain CSV, with quotes and line breaks inside cells handled properly.
+  function csvCell(v) {
+    var s = v == null ? "" : String(v);
+    // A cell starting with = would turn into a formula in the Sheet.
+    if (/^[=+@]/.test(s)) s = " " + s;
+    return "\"" + s.replace(/"/g, "\"\"") + "\"";
+  }
+  function toCsv(rows) { return rows.map(function (r) { return r.map(csvCell).join(","); }).join("\r\n"); }
+  function parseCsv(text) {
+    var rows = [], row = [], cell = "", q = false, i = 0, c;
+    text = String(text || "");
+    if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+    for (; i < text.length; i++) {
+      c = text[i];
+      if (q) {
+        if (c === "\"") { if (text[i + 1] === "\"") { cell += "\""; i++; } else q = false; }
+        else cell += c;
+      } else if (c === "\"") q = true;
+      else if (c === ",") { row.push(cell); cell = ""; }
+      else if (c === "\n" || c === "\r") {
+        if (c === "\r" && text[i + 1] === "\n") i++;
+        row.push(cell); rows.push(row); row = []; cell = "";
+      } else cell += c;
+    }
+    if (cell !== "" || row.length) { row.push(cell); rows.push(row); }
+    return rows;
+  }
+  function sheetRowsFor(kind, row) {
+    return [["Field", "Value"]].concat(DRIVE_LAYOUTS[kind].map(function (f) { return [f[0], row[f[1]] == null ? "" : String(row[f[1]])]; }));
+  }
+  function rowFromSheet(kind, rows) {
+    var layout = DRIVE_LAYOUTS[kind], out = {};
+    layout.forEach(function (f) { out[f[1]] = ""; });
+    rows.forEach(function (r) {
+      var label = String(r[0] || "").trim().toLowerCase();
+      if (!label || label === "field") return;
+      var f = layout.filter(function (x) { return x[0].toLowerCase() === label || x[1] === label; })[0];
+      if (f) out[f[1]] = String(r[1] == null ? "" : r[1]).replace(/^ (?=[=+@])/, "");
+    });
+    return out;
+  }
+  function itemTitle(kind, row) { return cleanFileName(row[DRIVE_LAYOUTS[kind][0][1]]); }
+
+  // Turns what is in your Drive into the same shape the rest of the app
+  // already reads, so every screen works exactly as before.
+  function driveRaw(cache) {
+    var folders = cache.folders || {}, items = cache.items || {};
+    function byOrder(a, b) { return (a.order || 0) - (b.order || 0); }
+    var qa = Object.keys(folders).map(function (rid) { return Object.assign({ rid: rid }, folders[rid]); })
+      .filter(function (f) { return f.kind === "qa"; }).sort(byOrder);
+    var roleOf = {};
+    qa.forEach(function (f) { roleOf[f.rid] = f.role; });
+    var list = Object.keys(items).map(function (rid) { return Object.assign({ rid: rid }, items[rid]); }).sort(byOrder);
+    function rowsOf(kind) {
+      return list.filter(function (it) { return it.kind === kind && folders[it.sectionRid]; }).map(function (it) {
+        var r = Object.assign({ id: it.rid }, it.row);
+        if (kind === "Questions") r.role = roleOf[it.sectionRid] || r.role;
+        return r;
+      });
+    }
+    var extras = cache.extras || {};
+    return {
+      sections: qa.map(function (f) { return { id: f.rid, icon: f.icon || "📝", title: f.title, desc: f.desc || "", role: f.role }; }),
+      questions: rowsOf("Questions").filter(function (r) { return r.role; }),
+      roadmaps: rowsOf("Roadmaps"), storybank: rowsOf("StoryBank"), actionplan: rowsOf("ActionPlan"),
+      storybank_numbers: extras.storybank_numbers || [], meta: extras.meta || { title: "", preface: "", sections: [] },
+      fromDrive: true
+    };
+  }
+  function applyDriveCache() {
+    var c = driveCache();
+    if (!c) return false;
+    applyData(driveRaw(c));
+    return true;
+  }
+
+  // Everything this app made, in one listing, so a sync is quick.
+  function driveListAll() {
+    var out = [];
+    var q = encodeURIComponent("trashed = false and appProperties has { key='rapp' and value='1' }");
+    var fields = encodeURIComponent("nextPageToken,files(id,name,mimeType,parents,modifiedTime,description,appProperties)");
+    function page(tok) {
+      return driveJson(DRIVE_API + "/files?q=" + q + "&pageSize=1000&spaces=drive&fields=" + fields + (tok ? "&pageToken=" + encodeURIComponent(tok) : ""))
+        .then(function (j) { out = out.concat(j.files || []); return j.nextPageToken ? page(j.nextPageToken) : out; });
+    }
+    return page(null);
+  }
+  function driveCreateFolder(name, parentId, props, desc) {
+    return driveJson(DRIVE_API + "/files?fields=id,modifiedTime", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: name, mimeType: FOLDER_MIME, parents: parentId ? [parentId] : undefined, description: desc || "", appProperties: Object.assign({ rapp: "1" }, props) })
+    });
+  }
+  function driveCreateSheet(kind, rid, row, folderId, order) {
+    var boundary = "rehearsly" + Date.now().toString(36);
+    var meta = { name: itemTitle(kind, row), mimeType: SHEET_MIME, parents: [folderId], appProperties: { rapp: "1", rkind: kind, rid: rid, order: String(order || 0) } };
+    var body = "--" + boundary + "\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n" + JSON.stringify(meta) +
+      "\r\n--" + boundary + "\r\nContent-Type: text/csv; charset=UTF-8\r\n\r\n" + toCsv(sheetRowsFor(kind, row)) + "\r\n--" + boundary + "--";
+    return driveJson(DRIVE_UPLOAD + "?uploadType=multipart&fields=id,modifiedTime", {
+      method: "POST", headers: { "Content-Type": "multipart/related; boundary=" + boundary }, body: body
+    });
+  }
+  function driveWriteSheet(fileId, kind, row) {
+    var rows = sheetRowsFor(kind, row);
+    var range = encodeURIComponent("A1:B" + (rows.length + 5));
+    // Rows past the fields are cleared, so nothing old is left behind.
+    while (rows.length < DRIVE_LAYOUTS[kind].length + 6) rows.push(["", ""]);
+    return driveJson(SHEETS_API + "/" + fileId + "/values/" + range + "?valueInputOption=RAW", {
+      method: "PUT", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ range: decodeURIComponent(range), majorDimension: "ROWS", values: rows })
+    }).then(function () {
+      return driveJson(DRIVE_API + "/files/" + fileId + "?fields=id,modifiedTime", {
+        method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: itemTitle(kind, row) })
+      });
+    });
+  }
+  function driveReadSheet(fileId, kind) {
+    return driveFetch(DRIVE_API + "/files/" + fileId + "/export?mimeType=text%2Fcsv").then(function (r) { return r.text(); })
+      .then(function (text) { return rowFromSheet(kind, parseCsv(text)); });
+  }
+  function driveTrash(fileId) {
+    return driveJson(DRIVE_API + "/files/" + fileId + "?fields=id", {
+      method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ trashed: true })
+    }).catch(function (err) { if (err.status === 404) return null; throw err; });
+  }
+  function drivePatchFolder(folderId, f) {
+    return driveJson(DRIVE_API + "/files/" + folderId + "?fields=id", {
+      method: "PATCH", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: cleanFileName(f.title), description: f.desc || "", appProperties: { icon: f.icon || "📝" } })
+    });
+  }
+  // Runs jobs a few at a time, kind to Google's limits.
+  function runPool(jobs, size, onEach) {
+    var i = 0, done = 0;
+    return new Promise(function (resolve, reject) {
+      if (!jobs.length) { resolve(); return; }
+      var failed = false, active = 0;
+      function next() {
+        if (failed) return;
+        if (done === jobs.length) { resolve(); return; }
+        while (active < size && i < jobs.length) {
+          var job = jobs[i++];
+          active++;
+          job().then(function () {
+            active--; done++;
+            if (onEach) onEach(done, jobs.length);
+            next();
+          }, function (err) { failed = true; reject(err); });
+        }
+      }
+      next();
+    });
+  }
+
+  /* First connect: make the folders and copy everything in. If it stops
+   * half way, running it again carries on from where it stopped. */
+  function driveConnect() {
+    driveStatus("Signing in to Google…");
+    return getDriveToken(true).then(function () {
+      driveStatus("Looking in your Drive…");
+      return driveListAll();
+    }).then(function (files) {
+      var roots = files.filter(function (f) { return f.appProperties && f.appProperties.rkind === "root"; });
+      var s = getSettings();
+      var root = roots.filter(function (f) { return f.id === s.driveRootId; })[0] || roots[0];
+      if (root && root.appProperties.seeded === "1") {
+        // Already set up, from this or another device. Drive wins.
+        saveSettings({ driveOn: true, driveRootId: root.id });
+        clearLocalOverlay();
+        return driveSync(true).then(function () { return { reused: true }; });
+      }
+      return (root ? Promise.resolve(root) : driveCreateFolder(DRIVE_ROOT_NAME, null, { rkind: "root" }, "Your Rehearsly questions and answers. One folder per section, one Sheet per question."))
+        .then(function (r) { return seedDrive(r.id, files); });
+    });
+  }
+  function seedDrive(rootId, existing) {
+    if (!LAST_MERGED) return Promise.reject(driveErr("The app has not finished loading yet. Try again in a moment."));
+    var have = {};
+    existing.forEach(function (f) { if (f.appProperties && f.appProperties.rid) have[f.appProperties.rid] = f; });
+    var cache = { rootId: rootId, folders: {}, items: {}, extras: { storybank_numbers: LAST_MERGED.storybank_numbers, meta: LAST_MERGED.meta } };
+    var overrides = builtinOverrides();
+    var folderDefs = LAST_MERGED.sections.map(function (sec, i) {
+      return { rid: sec.id, kind: "qa", title: sec.title, desc: sec.desc || "", icon: sec.icon || "📝", role: sec.role || sec.id, order: i + 1 };
+    }).concat(FIXED_SECTIONS.map(function (fx, i) {
+      var o = overrides[fx.key] || {};
+      return { rid: fx.key, kind: "fixed", title: o.title || fx.title, desc: o.desc || fx.desc, icon: o.icon || fx.icon, order: 100 + i };
+    }));
+    driveStatus("Making your section folders…");
+    var folderJobs = folderDefs.map(function (fd) {
+      return function () {
+        var found = have[fd.rid];
+        var job = found ? Promise.resolve(found) : driveCreateFolder(fd.title, rootId,
+          { rkind: fd.kind, rid: fd.rid, role: fd.role || "", icon: fd.icon, order: String(fd.order) }, fd.desc);
+        return job.then(function (res) {
+          cache.folders[fd.rid] = { folderId: res.id, kind: fd.kind, title: fd.title, desc: fd.desc, icon: fd.icon, role: fd.role || "", order: fd.order };
+        });
+      };
+    });
+    var itemDefs = [];
+    var order = 0;
+    function addItems(kind, rows, sectionRidOf) {
+      rows.forEach(function (r) {
+        var sec = sectionRidOf(r);
+        if (!sec) return;
+        var row = {};
+        DRIVE_LAYOUTS[kind].forEach(function (f) { row[f[1]] = r[f[1]] == null ? "" : r[f[1]]; });
+        itemDefs.push({ kind: kind, rid: r.id, row: row, sectionRid: sec, order: ++order });
+      });
+    }
+    var roleToSection = {};
+    LAST_MERGED.sections.forEach(function (sec) { roleToSection[sec.role || sec.id] = sec.id; });
+    addItems("Questions", LAST_MERGED.questions, function (r) { return roleToSection[r.role]; });
+    addItems("Roadmaps", LAST_MERGED.roadmaps, function () { return "roadmaps"; });
+    addItems("StoryBank", LAST_MERGED.storybank, function () { return "storybank"; });
+    addItems("ActionPlan", LAST_MERGED.actionplan, function () { return "actionplan"; });
+
+    return runPool(folderJobs, 3).then(function () {
+      var jobs = itemDefs.map(function (it) {
+        return function () {
+          var found = have[it.rid];
+          var job = found ? Promise.resolve(found) : driveCreateSheet(it.kind, it.rid, it.row, cache.folders[it.sectionRid].folderId, it.order);
+          return job.then(function (res) {
+            cache.items[it.rid] = { fileId: res.id, kind: it.kind, sectionRid: it.sectionRid, row: it.row, order: it.order, modifiedTime: res.modifiedTime || null };
+          });
+        };
+      });
+      return runPool(jobs, 3, function (n, total) { driveStatus("Copying to your Drive, " + n + " of " + total + "…"); });
+    }).then(function () {
+      return driveJson(DRIVE_API + "/files/" + rootId + "?fields=id", {
+        method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ appProperties: { seeded: "1" } })
+      });
+    }).then(function () {
+      saveDriveCache(cache);
+      saveSettings({ driveOn: true, driveRootId: rootId });
+      clearLocalOverlay();
+      applyData(driveRaw(cache));
+      driveLastSync = Date.now();
+      setSyncDot("drive");
+      return { created: itemDefs.length };
+    });
+  }
+  // Once Drive holds everything, the copies kept on this device are not
+  // needed. Only the choice of hidden built in sections stays here.
+  function clearLocalOverlay() {
+    ["sip_local_sections", "sip_local_questions", "sip_local_edits", "sip_local_roadmaps", "sip_local_actionplan", "sip_local_storybank"]
+      .forEach(function (k) { try { localStorage.removeItem(k); } catch (e) {} });
+    var d = getLocalDeleted();
+    var fixedKeys = FIXED_SECTIONS.map(function (s) { return s.key; });
+    saveLocalJson("sip_local_deleted", { sections: d.sections.filter(function (k) { return fixedKeys.indexOf(k) !== -1; }) });
+  }
+
+  /* Sync: send anything waiting, then read what changed in Drive. Only
+   * Sheets that were edited since last time are downloaded again. */
+  function driveSync(interactive) {
+    if (!driveOn()) return Promise.resolve();
+    if (driveBusy) return Promise.resolve();
+    driveBusy = true;
+    return getDriveToken(!!interactive).then(function () { return flushDriveQueue(); }).then(function () {
+      if (driveQueue().length) throw driveErr("Some changes are still waiting to be saved.");
+      return driveListAll();
+    }).then(function (files) {
+      var old = driveCache() || { folders: {}, items: {} };
+      var s = getSettings();
+      var cache = { rootId: s.driveRootId, folders: {}, items: {}, extras: old.extras || {} };
+      var folderRidById = {};
+      files.forEach(function (f) {
+        var p = f.appProperties || {};
+        if (f.mimeType !== FOLDER_MIME || (p.rkind !== "qa" && p.rkind !== "fixed")) return;
+        if (!f.parents || f.parents.indexOf(s.driveRootId) === -1) return;
+        folderRidById[f.id] = p.rid;
+        cache.folders[p.rid] = { folderId: f.id, kind: p.rkind, title: f.name, desc: f.description || "", icon: p.icon || "📝", role: p.role || "", order: parseFloat(p.order) || 0 };
+      });
+      var toRead = [];
+      files.forEach(function (f) {
+        var p = f.appProperties || {};
+        if (f.mimeType !== SHEET_MIME || !DRIVE_LAYOUTS[p.rkind]) return;
+        var secRid = (f.parents || []).map(function (id) { return folderRidById[id]; }).filter(Boolean)[0];
+        if (!secRid) return;
+        var kindOk = cache.folders[secRid].kind === "qa" ? p.rkind === "Questions" : FIXED_KIND[secRid] === p.rkind;
+        if (!kindOk) return;
+        var was = old.items && old.items[p.rid];
+        var entry = { fileId: f.id, kind: p.rkind, sectionRid: secRid, row: was ? was.row : null, order: parseFloat(p.order) || 0, modifiedTime: f.modifiedTime };
+        cache.items[p.rid] = entry;
+        if (!was || was.fileId !== f.id || was.modifiedTime !== f.modifiedTime || !was.row) toRead.push(entry);
+      });
+      if (toRead.length) driveStatus("Reading " + toRead.length + " changed Sheet" + (toRead.length === 1 ? "" : "s") + "…");
+      return runPool(toRead.map(function (entry) {
+        return function () { return driveReadSheet(entry.fileId, entry.kind).then(function (row) { entry.row = row; }); };
+      }), 6).then(function () { return { cache: cache, changed: toRead.length }; });
+    }).then(function (res) {
+      Object.keys(res.cache.items).forEach(function (rid) { if (!res.cache.items[rid].row) delete res.cache.items[rid]; });
+      if (!res.cache.extras || !res.cache.extras.meta) {
+        return loadBundled().then(function (b) {
+          res.cache.extras = { storybank_numbers: b.storybank_numbers || [], meta: b.meta };
+          return res;
+        }, function () { return res; });
+      }
+      return res;
+    }).then(function (res) {
+      saveDriveCache(res.cache);
+      applyData(driveRaw(res.cache));
+      driveLastSync = Date.now();
+      driveBusy = false;
+      setSyncDot("drive");
+      driveStatus("Synced with your Google Drive just now.");
+      return res;
+    }).catch(function (err) {
+      driveBusy = false;
+      setSyncDot(err && err.needSignIn ? "signin" : "error");
+      driveStatus(String((err && err.message) || err));
+      throw err;
+    });
+  }
+
+  // Changes are written to Drive in the order you made them. If you are
+  // offline or signed out, they wait here and go the next time you sync.
+  var flushing = null;
+  function flushDriveQueue() {
+    if (flushing) return flushing;
+    flushing = (function step() {
+      var q = driveQueue();
+      if (!q.length) return Promise.resolve();
+      return runDriveOp(q[0]).then(function () {
+        var rest = driveQueue();
+        rest.shift();
+        saveDriveQueue(rest);
+        return step();
+      });
+    })().then(function () { flushing = null; }, function (err) { flushing = null; throw err; });
+    return flushing;
+  }
+  function runDriveOp(op) {
+    var cache = driveCache();
+    if (!cache) return Promise.resolve();
+    function save() { saveDriveCache(cache); }
+    if (op.type === "item") {
+      var it = cache.items[op.rid];
+      if (!it) return Promise.resolve();
+      var folder = cache.folders[it.sectionRid];
+      if (!folder || !folder.folderId) return Promise.resolve();
+      var job = it.fileId
+        ? driveWriteSheet(it.fileId, it.kind, it.row)
+        : driveCreateSheet(it.kind, op.rid, it.row, folder.folderId, it.order);
+      return job.then(function (res) {
+        cache = driveCache() || cache;
+        var cur = cache.items[op.rid];
+        if (cur) { cur.fileId = res.id; cur.modifiedTime = res.modifiedTime || null; save(); }
+      });
+    }
+    if (op.type === "trash") return op.fileId ? driveTrash(op.fileId) : Promise.resolve();
+    if (op.type === "folder") {
+      var f = cache.folders[op.rid];
+      if (!f) return Promise.resolve();
+      var fjob = f.folderId ? drivePatchFolder(f.folderId, f)
+        : driveCreateFolder(cleanFileName(f.title), cache.rootId, { rkind: "qa", rid: op.rid, role: f.role, icon: f.icon, order: String(f.order) }, f.desc);
+      return fjob.then(function (res) {
+        cache = driveCache() || cache;
+        if (cache.folders[op.rid]) { cache.folders[op.rid].folderId = res.id; save(); }
+      });
+    }
+    return Promise.resolve();
+  }
+  function queueDriveOp(op) {
+    var q = driveQueue();
+    // Several edits to the same Sheet only need one write.
+    if (op.type === "item" || op.type === "folder") {
+      if (q.some(function (x) { return x.type === op.type && x.rid === op.rid; })) return;
+    }
+    q.push(op);
+    saveDriveQueue(q);
+  }
+  function pushDriveChanges() {
+    return getDriveToken(false).then(function () { return flushDriveQueue(); }).then(function () {
+      setSyncDot("drive");
+      return { ok: true };
+    }).catch(function (err) {
+      setSyncDot(err && err.needSignIn ? "signin" : "error");
+      var msg = err && err.needSignIn
+        ? "Saved on this device. Tap the Drive dot at the top to sign in, then it goes to your Drive."
+        : "Saved on this device. It will go to your Drive at the next sync. " + String((err && err.message) || "");
+      return { ok: false, drivePending: true, error: msg };
+    });
+  }
+
+  // The same actions the app already uses, done in your Drive.
+  function driveSaveItem(sheet, id, updates) {
+    var cache = driveCache();
+    if (!cache) return Promise.resolve({ ok: false, error: "Drive is not ready." });
+    if (sheet === "Sections") {
+      var f = cache.folders[id];
+      if (!f) return Promise.resolve({ ok: false, error: "Section not found in Drive." });
+      Object.assign(f, updates);
+      saveDriveCache(cache);
+      queueDriveOp({ type: "folder", rid: id });
+      return pushDriveChanges();
+    }
+    var it = cache.items[id];
+    if (!it) return Promise.resolve({ ok: false, error: "Not found in Drive." });
+    Object.keys(updates).forEach(function (k) { it.row[k] = updates[k]; });
+    saveDriveCache(cache);
+    queueDriveOp({ type: "item", rid: id });
+    return pushDriveChanges();
+  }
+  function driveCreateItem(kind, fields, sectionRid) {
+    var cache = driveCache();
+    var rid = newRid(kind === "Questions" ? "q" : kind.toLowerCase().slice(0, 3));
+    var row = {};
+    DRIVE_LAYOUTS[kind].forEach(function (f) { row[f[1]] = fields[f[1]] == null ? "" : fields[f[1]]; });
+    cache.items[rid] = { fileId: null, kind: kind, sectionRid: sectionRid, row: row, order: Date.now(), modifiedTime: null };
+    saveDriveCache(cache);
+    queueDriveOp({ type: "item", rid: rid });
+    return pushDriveChanges().then(function (res) {
+      return { ok: true, row: Object.assign({ id: rid }, fields), savedToSheet: !!res.ok, drivePending: !res.ok, error: res.error };
+    });
+  }
+  function driveDeleteItem(id) {
+    var cache = driveCache();
+    var it = cache && cache.items[id];
+    if (!it) return Promise.resolve({ ok: true });
+    delete cache.items[id];
+    saveDriveCache(cache);
+    saveDriveQueue(driveQueue().filter(function (x) { return !(x.type === "item" && x.rid === id); }));
+    if (it.fileId) queueDriveOp({ type: "trash", fileId: it.fileId });
+    return pushDriveChanges();
+  }
+  function driveCreateSection(fields, role) {
+    var cache = driveCache();
+    var rid = newRid("sec");
+    var maxOrder = 0;
+    Object.keys(cache.folders).forEach(function (k) { if (cache.folders[k].kind === "qa") maxOrder = Math.max(maxOrder, cache.folders[k].order || 0); });
+    cache.folders[rid] = { folderId: null, kind: "qa", title: fields.title, desc: fields.desc || "", icon: fields.icon || "📝", role: role, order: maxOrder + 1 };
+    saveDriveCache(cache);
+    queueDriveOp({ type: "folder", rid: rid });
+    return pushDriveChanges().then(function (res) {
+      return { ok: true, row: { id: rid, icon: fields.icon || "📝", title: fields.title, desc: fields.desc || "", role: role }, savedToSheet: !!res.ok };
+    });
+  }
+  function driveDeleteSection(section) {
+    var cache = driveCache();
+    var f = cache && cache.folders[section.key];
+    if (!f) return Promise.resolve({ ok: true });
+    Object.keys(cache.items).forEach(function (rid) { if (cache.items[rid].sectionRid === section.key) delete cache.items[rid]; });
+    delete cache.folders[section.key];
+    saveDriveCache(cache);
+    saveDriveQueue(driveQueue().filter(function (x) { return x.rid !== section.key; }));
+    // Trashing the folder takes its Sheets with it, and you can still get
+    // them back from the Drive bin for 30 days.
+    if (f.folderId) queueDriveOp({ type: "trash", fileId: f.folderId });
+    return pushDriveChanges();
+  }
+  function driveSectionRidForRole(role) {
+    var cache = driveCache() || { folders: {} };
+    return Object.keys(cache.folders).filter(function (rid) { return cache.folders[rid].kind === "qa" && cache.folders[rid].role === role; })[0] || null;
+  }
+  function driveFileIdFor(id) {
+    var cache = driveCache();
+    var it = cache && cache.items[id];
+    return it ? it.fileId : null;
+  }
+  function driveSyncAndRender(interactive) {
+    return driveSync(interactive).then(function (res) {
+      renderSidebar();
+      if (!$("#view-home").classList.contains("hidden")) renderHome();
+      if (currentItem && !editing && !$("#view-reader").classList.contains("hidden")) {
+        var found = findItemWithList(currentItem.id);
+        if (found) openItem(found.item, found.list, found.idx, "same");
+      }
+      updateDriveUi();
+      return res;
+    });
+  }
+  function updateDriveUi() {
+    var on = driveOn(), s = getSettings();
+    var el;
+    if ((el = $("#btn-drive-connect"))) el.textContent = on ? "Sign in again" : "Connect Google Drive";
+    ["#btn-drive-sync", "#btn-drive-open", "#btn-drive-disconnect"].forEach(function (sel) { var b = $(sel); if (b) b.classList.toggle("hidden", !on); });
+    if ((el = $("#btn-drive-open"))) el.href = on ? "https://drive.google.com/drive/folders/" + s.driveRootId : "#";
+    var sheetBtn = $("#btn-open-sheet");
+    if (sheetBtn) {
+      var fid = on && currentItem ? driveFileIdFor(currentItem.id) : null;
+      sheetBtn.classList.toggle("hidden", !fid);
+      if (fid) sheetBtn.href = "https://docs.google.com/spreadsheets/d/" + fid + "/edit";
+    }
+  }
+
   /* ---------------------------------------------------------------------
    * Create and delete your own sections and questions
    * ------------------------------------------------------------------- */
   function createSection(fields) {
     var role = makeRoleSlug(fields.title);
+    if (driveOn()) return driveCreateSection(fields, role);
     var localId = "sec" + Date.now() + Math.floor(Math.random() * 1000);
     var fieldsToSend = { icon: fields.icon || "📝", title: fields.title, desc: fields.desc || "", role: role };
     return sheetAction("create", { sheet: "Sections", fields: fieldsToSend }).then(function (res) {
@@ -4648,6 +5309,10 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     });
   }
   function createQuestion(fields) {
+    if (driveOn()) {
+      var secRid = driveSectionRidForRole(fields.role);
+      if (secRid) return driveCreateItem("Questions", fields, secRid);
+    }
     var localId = "q" + Date.now() + Math.floor(Math.random() * 1000);
     var fieldsToSend = {
       role: fields.role, part_title: fields.part_title || "", category: fields.category || "",
@@ -4663,6 +5328,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   // Add or delete a row in any of the other sections, the learning
   // roadmaps, the story bank, or the action plan. Same idea as questions.
   function createRow(sheet, fields) {
+    if (driveOn() && KIND_FIXED[sheet]) return driveCreateItem(sheet, fields, KIND_FIXED[sheet]);
     var localId = sheet.toLowerCase().slice(0, 3) + Date.now() + Math.floor(Math.random() * 1000);
     return sheetAction("create", { sheet: sheet, fields: fields }).then(function (res) {
       var id = (res && res.ok && res.id) ? res.id : localId;
@@ -4672,18 +5338,21 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     });
   }
   function deleteRowEverywhere(sheet, id) {
+    if (driveOn()) return driveDeleteItem(id);
     return sheetAction("delete", { sheet: sheet, id: id }).then(function (res) {
       markRowDeleted(sheet, id);
       return res;
     });
   }
   function deleteSectionEverywhere(section) {
+    if (driveOn()) return driveDeleteSection(section);
     return sheetAction("delete_section", { id: section.key }).then(function (res) {
       markSectionDeleted(section);
       return res;
     });
   }
   function deleteQuestionEverywhere(question) {
+    if (driveOn()) return driveDeleteItem(question.id);
     return sheetAction("delete", { sheet: "Questions", id: question.id }).then(function (res) {
       markQuestionDeleted(question.id);
       return res;
@@ -4996,6 +5665,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     closeMobileSidebar();
     scrollCenterTop();
     playPageTurn($("#reader-card"), turnDir);
+    updateDriveUi();
   }
 
   // A fixed size reading box means the page itself does not scroll, so
@@ -5005,7 +5675,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     var inner = card.querySelector(".reader-card-inner");
     if (inner) inner.scrollTop = 0;
     card.classList.remove("turn-next", "turn-prev");
-    if (!dir) return;
+    if (!dir || dir === "same") return;
     void card.offsetWidth; // force reflow so the animation restarts every time
     card.classList.add(dir === "next" ? "turn-next" : "turn-prev");
   }
@@ -5052,8 +5722,9 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       updates[item.fieldMap[uiField]] = newVal;
       item[uiField] = newVal;
       saveToSheet(item.sheet, item.id, updates).then(function (res) {
-        if (res.ok) showToast("Saved to your Google Sheet.");
-        else if (res.local) showToast("Saved on this device only. Connect your Google Sheet in Settings to keep it for good.");
+        if (res.ok) showToast(driveOn() ? "Saved to your Google Drive." : "Saved to your Google Sheet.");
+        else if (res.drivePending) showToast(res.error);
+        else if (res.local) showToast("Saved on this device only. Connect Google Drive in Settings to keep it for good.");
         else showToast("Could not save, kept your edit on this device.");
         onDone();
       });
@@ -7388,6 +8059,8 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     $("#theme-select").value = s.theme === "dark" ? "dark" : "light";
     $("#font-size-range").value = s.fontSize;
     $("#sheet-url").value = s.sheetUrl;
+    $("#google-client-id").value = s.googleClientId || "";
+    updateDriveUi();
     $("#sheet-token").value = s.sheetToken;
     $("#gemini-key").value = s.geminiKey;
     $("#gemini-model").value = s.geminiModel;
@@ -7570,7 +8243,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       var desc = $("#section-form-desc").value.trim();
       if (sectionModalContext.mode === "create") {
         createSection({ icon: icon, title: title, desc: desc }).then(function (res) {
-          showToast(res.savedToSheet ? "Section created and saved to your Google Sheet." : "Section created, saved on this device.");
+          showToast(res.savedToSheet ? (driveOn() ? "Section created in your Google Drive." : "Section created and saved to your Google Sheet.") : (driveOn() ? "Section created. It goes to your Drive at the next sync." : "Section created, saved on this device."));
           closeSectionModal();
           return loadData(true).then(function () { return res; });
         }).then(function (res) {
@@ -7589,7 +8262,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
           loadData(true).then(function () { renderSidebar(); renderHome(); });
         } else {
           saveToSheet("Sections", meta.key, { icon: icon, title: title, desc: desc }).then(function (res) {
-            showToast(res.ok ? "Saved to your Google Sheet." : "Saved on this device.");
+            showToast(res.ok ? (driveOn() ? "Saved to your Google Drive." : "Saved to your Google Sheet.") : (res.drivePending ? res.error : "Saved on this device."));
           });
           closeSectionModal();
           loadData(true).then(function () { renderSidebar(); renderHome(); });
@@ -7646,8 +8319,8 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
           ? createQuestion(Object.assign({ role: questionModalContext.role }, fields))
           : createRow(sheet, fields);
         job.then(function (res) {
-          showToast(res.savedToSheet ? form.noun.charAt(0).toUpperCase() + form.noun.slice(1) + " added and saved to your Google Sheet."
-            : form.noun.charAt(0).toUpperCase() + form.noun.slice(1) + " added, saved on this device.");
+          showToast(res.savedToSheet ? form.noun.charAt(0).toUpperCase() + form.noun.slice(1) + (driveOn() ? " added to your Google Drive." : " added and saved to your Google Sheet.")
+            : form.noun.charAt(0).toUpperCase() + form.noun.slice(1) + (driveOn() ? " added. It goes to your Drive at the next sync." : " added, saved on this device."));
           closeQuestionModal();
           return loadData(true).then(function () { return res; });
         }).then(function (res) {
@@ -7661,7 +8334,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
         if (map.approach) item.approach = approach;
         if (map.group) item.part_title = group;
         saveToSheet(item.sheet, item.id, fields).then(function (res) {
-          showToast(res.ok ? "Saved to your Google Sheet." : "Saved on this device.");
+          showToast(res.ok ? (driveOn() ? "Saved to your Google Drive." : "Saved to your Google Sheet.") : (res.drivePending ? res.error : "Saved on this device."));
         });
         closeQuestionModal();
         openItem(item, currentList, currentIndex);
@@ -7698,7 +8371,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       if (!fields.title) { showToast("Give the story a title first."); return; }
       if (storyModalContext.mode === "create") {
         createRow("StoryBank", fields).then(function (res) {
-          showToast(res.savedToSheet ? "Story added and saved to your Google Sheet." : "Story added, saved on this device.");
+          showToast(res.savedToSheet ? (driveOn() ? "Story added to your Google Drive." : "Story added and saved to your Google Sheet.") : (driveOn() ? "Story added. It goes to your Drive at the next sync." : "Story added, saved on this device."));
           closeStoryModal();
           return loadData(true).then(function () { return res; });
         }).then(function (res) { renderSidebar(); openStories(res.row.id); });
@@ -7706,7 +8379,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
         var story = storyModalContext.story;
         STORY_FIELDS.forEach(function (f) { story[f] = fields[f]; });
         saveToSheet("StoryBank", story.id, fields).then(function (res) {
-          showToast(res.ok ? "Saved to your Google Sheet." : "Saved on this device.");
+          showToast(res.ok ? (driveOn() ? "Saved to your Google Drive." : "Saved to your Google Sheet.") : (res.drivePending ? res.error : "Saved on this device."));
         });
         closeStoryModal();
         renderStories();
@@ -7771,6 +8444,64 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     // Settings inputs
     $("#font-size-range").oninput = function (e) { saveSettings({ fontSize: parseInt(e.target.value, 10) }); };
     $("#sheet-url").onchange = function (e) { saveSettings({ sheetUrl: e.target.value.trim() }); };
+    $("#google-client-id").onchange = function (e) {
+      saveSettings({ googleClientId: e.target.value.trim() });
+      if (e.target.value.trim()) loadGis().catch(function () {});
+    };
+    $("#btn-drive-connect").onclick = function () {
+      var cid = $("#google-client-id").value.trim();
+      if (cid) saveSettings({ googleClientId: cid });
+      if (!cid) { driveStatus("Paste your Google Client ID above first. The steps are just below."); return; }
+      var btn = this;
+      btn.disabled = true;
+      var job = driveOn() ? driveSyncAndRender(true) : driveConnect().then(function (res) {
+        renderSidebar(); renderHome(); updateDriveUi();
+        return res;
+      });
+      job.then(function (res) {
+        btn.disabled = false;
+        updateDriveUi();
+        if (res && res.created != null) {
+          driveStatus("Done. " + res.created + " Sheets are in your Rehearsly folder. From now on your Drive is the master copy.");
+          showToast("Your content is now in Google Drive.");
+        } else {
+          showToast("Synced with your Google Drive.");
+        }
+      }).catch(function (err) {
+        btn.disabled = false;
+        driveStatus(String((err && err.message) || err));
+      });
+    };
+    $("#btn-drive-sync").onclick = function () {
+      driveStatus("Syncing…");
+      driveSyncAndRender(true).then(function () { showToast("Synced with your Google Drive."); }).catch(function () {});
+    };
+    $("#btn-drive-disconnect").onclick = function () {
+      confirmDialog({
+        title: "Disconnect Google Drive?",
+        message: "Your Drive folder and Sheets stay safe. This device will go back to its own copy until you connect again.",
+        confirmLabel: "Disconnect"
+      }).then(function (ok) {
+        if (!ok) return;
+        var c = driveCache();
+        if (c) { try { localStorage.setItem("sip_cache", JSON.stringify(driveRaw(c))); } catch (e) {} }
+        saveSettings({ driveOn: false });
+        forgetToken();
+        loadData(false).then(function () { renderSidebar(); renderHome(); updateDriveUi(); setSyncDot("bundled"); driveStatus("Disconnected."); });
+      });
+    };
+    $("#sync-dot").onclick = function () {
+      if (!driveOn()) { openSettings(); return; }
+      showToast("Syncing with your Google Drive…");
+      driveSyncAndRender(true).then(function () { showToast("Synced with your Google Drive."); })
+        .catch(function (err) { showToast(String((err && err.message) || err)); });
+    };
+    document.addEventListener("visibilitychange", function () {
+      // Coming back to the tab, pick up any edits you made in the Sheets.
+      if (document.visibilityState !== "visible" || !driveOn()) return;
+      if (Date.now() - driveLastSync < 30000) return;
+      driveSyncAndRender(false).catch(function () {});
+    });
     $("#sheet-token").onchange = function (e) { saveSettings({ sheetToken: e.target.value.trim() }); };
     $("#gemini-key").onchange = function (e) { saveSettings({ geminiKey: e.target.value.trim() }); };
     $("#gemini-model").onchange = function (e) { saveSettings({ geminiModel: e.target.value.trim() }); };
@@ -7856,6 +8587,12 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     loadData().then(function () {
       populateVoices();
       goHome();
+      if (driveOn()) {
+        if (getSettings().googleClientId) loadGis().catch(function () {});
+        // Brings in edits made in your Sheets since last time. If the
+        // sign in has run out, the dot at the top turns red, tap it.
+        driveSyncAndRender(false).catch(function () {});
+      }
     }).catch(function (err) {
       console.error(err);
       $("#home-sub").textContent = "Could not load your book. " + (err && err.message ? err.message : String(err));
