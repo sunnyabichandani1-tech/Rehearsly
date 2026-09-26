@@ -1212,6 +1212,21 @@ body.locked { overflow: hidden; }
 .case-mark b { font-variant-numeric: tabular-nums; }
 .case-mark i { position: absolute; left: 0; bottom: 0; height: 2px; background: var(--accent-strong, #111); border-radius: 2px; }
 
+/* Explore mode and the one page set up form */
+.explore-banner { display: flex; gap: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap;
+  background: #111; color: #fff; border-radius: 14px; padding: 16px 18px; margin: 0 0 22px; }
+.explore-banner b { display: block; font-size: 15px; margin-bottom: 3px; }
+.explore-banner span { font-size: 13px; opacity: .8; line-height: 1.5; display: block; max-width: 640px; }
+.explore-banner .btn { background: #fff; color: #111; border: 0; white-space: nowrap; }
+.setup-form { max-height: 62vh; overflow: auto; padding-right: 4px; }
+.setup-form .modal-field { margin-bottom: 18px; }
+.setup-form label { font-weight: 600; display: block; margin-bottom: 6px; }
+.setup-form select, .setup-form input[type="text"], .setup-form input[type="password"], .setup-form textarea {
+  width: 100%; padding: 9px 11px; border-radius: 9px; border: 1px solid rgba(0,0,0,.16); box-sizing: border-box; font-size: 14px; }
+.setup-form textarea { margin-top: 8px; }
+.modal-x { position: absolute; top: 12px; right: 14px; border: 0; background: none; font-size: 18px; cursor: pointer; color: var(--muted, #888); }
+.modal-card { position: relative; }
+
 </style>
 </head>
 <body>
@@ -1281,70 +1296,57 @@ body.locked { overflow: hidden; }
 
 <div class="modal-overlay hidden" id="setup-modal">
   <div class="modal-card setup-card">
-    <h3>Welcome, <span id="setup-name">there</span>. Let's set you up.</h3>
-    <div class="setup-dots">
-      <span class="setup-dot done" id="setup-dot-1">1. Drive</span>
-      <span class="setup-dot" id="setup-dot-2">2. Key</span>
-      <span class="setup-dot" id="setup-dot-3">3. Resume</span>
-      <span class="setup-dot" id="setup-dot-4">4. Your role</span>
-      <span class="setup-dot" id="setup-dot-5">5. The job</span>
-      <span class="setup-dot" id="setup-dot-6">6. Your questions</span>
-    </div>
+    <button class="modal-x" id="btn-setup-close" title="Close">✕</button>
+    <h3>Set up your practice space, <span id="setup-name">there</span></h3>
+    <p class="settings-hint">One form, about two minutes. Everything you enter is saved in your own Google Drive, and you can change any of it later.</p>
 
-    <div class="setup-step" id="setup-step-1">
-      <p class="settings-hint">Rehearsly keeps your questions and answers in your own Google Drive, in a folder called Rehearsly. One Google Doc for each question, yours to read and edit any time. Rehearsly only ever sees the files it makes for you.</p>
-      <p class="settings-status" id="setup-drive-status"></p>
-      <div class="modal-actions"><button class="btn" id="btn-setup-drive">Connect my Google Drive</button></div>
-    </div>
-
-    <div class="setup-step hidden" id="setup-step-2">
-      <p class="settings-hint">Rehearsly runs on one free key from Google. It powers the interviewer, the scoring and the voice. Get yours at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>, tap Create API key, and paste it here. It stays in your browser only.</p>
+    <div class="setup-form" id="setup-form">
       <div class="modal-field">
-        <label>Your Gemini key</label>
-        <input type="password" id="setup-key-input" placeholder="paste your key here" autocomplete="off" />
+        <label>1. Which role are you preparing for?</label>
+        <div class="role-grid" id="role-grid"></div>
       </div>
-      <p class="settings-status" id="setup-key-status"></p>
-      <div class="modal-actions"><button class="btn" id="btn-setup-key">Check and continue</button></div>
-    </div>
 
-    <div class="setup-step hidden" id="setup-step-3">
-      <p class="settings-hint">Upload your resume as a PDF or Word file. It is saved in your own Rehearsly folder as "My Resume", and used to write questions and draft answers in your own words.</p>
       <div class="modal-field">
-        <label>Your resume</label>
+        <label for="setup-exp">2. How much experience do you have?</label>
+        <select id="setup-exp">
+          <option value="fresher">Fresher, less than one year</option>
+          <option value="1-3">1 to 3 years</option>
+          <option value="4-7" selected>4 to 7 years</option>
+          <option value="8-12">8 to 12 years</option>
+          <option value="12+">More than 12 years</option>
+        </select>
+      </div>
+
+      <div class="modal-field">
+        <label>3. Your resume, so the questions and answers sound like you</label>
         <input type="file" id="setup-resume-input" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+        <details class="settings-details"><summary>Or paste it as text</summary>
+          <textarea id="setup-resume-text" rows="5" placeholder="Paste your resume here"></textarea>
+        </details>
+        <p class="settings-status" id="setup-resume-status"></p>
       </div>
-      <p class="settings-status" id="setup-resume-status"></p>
-      <div class="modal-actions"><button class="btn btn-ghost" id="btn-setup-back-1">Back</button></div>
-    </div>
 
-    <div class="setup-step hidden" id="setup-step-4">
-      <p class="settings-hint">Pick the role you are interviewing for. Rehearsly gives you its question bank, its situation cases with the approach and framework for each, plus the sections everyone needs.</p>
-      <div class="role-grid" id="role-grid"></div>
-      <p class="settings-status" id="setup-role-status"></p>
-      <div class="modal-actions">
-        <button class="btn btn-ghost" id="btn-setup-back-3">Back</button>
-        <button class="btn" id="btn-setup-role-next">Continue</button>
-      </div>
-    </div>
-
-    <div class="setup-step hidden" id="setup-step-5">
-      <p class="settings-hint">Paste the job description you are preparing for. The whole advert works best. Rehearsly builds your questions from the gap between this and your resume.</p>
       <div class="modal-field">
-        <label>Role name</label>
+        <label for="setup-role-input">4. The job you are going for, optional</label>
         <input type="text" id="setup-role-input" placeholder="Senior Product Manager, Swiggy" />
+        <textarea id="setup-jd-input" rows="4" placeholder="Paste the job description here. Leave it blank if you do not have one yet."></textarea>
       </div>
+
       <div class="modal-field">
-        <label>Job description</label>
-        <textarea id="setup-jd-input" rows="8" placeholder="Paste the full job description here"></textarea>
+        <label for="setup-key-input">5. Your free Gemini key, for the interviewer, the voice and the scoring</label>
+        <input type="password" id="setup-key-input" placeholder="paste your key here" autocomplete="off" />
+        <p class="settings-hint">Get one free at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>, tap Create API key. It stays in your browser only.</p>
+        <p class="settings-status" id="setup-key-status"></p>
       </div>
-      <p class="settings-status" id="setup-jd-status"></p>
+
+      <p class="settings-status" id="setup-form-status"></p>
       <div class="modal-actions">
-        <button class="btn btn-ghost" id="btn-setup-back-2">Back</button>
-        <button class="btn" id="btn-setup-build">Build my questions</button>
+        <button class="btn btn-ghost" id="btn-setup-later">I will do this later</button>
+        <button class="btn" id="btn-setup-build">Build my practice space</button>
       </div>
     </div>
 
-    <div class="setup-step hidden" id="setup-step-6">
+    <div class="setup-step hidden" id="setup-progress-pane">
       <p class="setup-progress-text" id="setup-progress-text">Working…</p>
       <div class="setup-progress"><div class="setup-progress-bar" id="setup-progress-bar"></div></div>
       <p class="settings-hint">This takes about two minutes. Keep this tab open.</p>
@@ -1395,6 +1397,13 @@ body.locked { overflow: hidden; }
 
       <!-- HOME / TABLE OF CONTENTS -->
       <section id="view-home">
+        <div class="explore-banner hidden" id="explore-banner">
+          <div>
+            <b>You are looking around the library.</b>
+            <span>Read any question, any situation case and the frameworks. To practise out loud, get scored and save your own answers, set up your space. Two minutes.</span>
+          </div>
+          <button class="btn" id="btn-open-setup">Set up my practice space</button>
+        </div>
         <div class="home-wrap">
           <h1 class="home-title" id="home-title">Rehearsly</h1>
           <p class="home-sub" id="home-sub">Loading your book…</p>
@@ -4829,13 +4838,13 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     var mergedStorybank = applyEdits(mergeById(raw.storybank, localJson("sip_local_storybank", []), localDeleted.storybank));
 
     QA_SECTIONS = mergedSections.map(function (s) {
-      return { key: s.id, title: s.title, desc: s.desc || "", icon: s.icon || "📝", type: "questions", role: s.role || s.id, editable: true };
+      return { key: s.id, title: s.title, desc: s.desc || "", icon: s.icon || "📝", type: "questions", role: s.role || s.id, editable: !raw.preview };
     });
     PRACTICE_ROLES = QA_SECTIONS.map(function (s) { return s.role; });
     // The built in sections, with any renaming you did, and minus any you
     // have hidden. They get the same pencil and delete as your own.
     var overrides = builtinOverrides();
-    var visibleFixed = FIXED_SECTIONS
+    var visibleFixed = (raw.preview ? [] : FIXED_SECTIONS)
       .filter(function (s) { return localDeleted.sections.indexOf(s.key) === -1; })
       .map(function (s) { return Object.assign({}, s, overrides[s.key] || {}, { editable: true, builtin: true }); });
     SECTIONS_META = QA_SECTIONS.concat(visibleFixed);
@@ -4884,7 +4893,16 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     var settings = getSettings();
     // Your Drive is the master copy. This reads the last synced copy, so
     // the app opens straight away, then a sync brings in any changes.
-    if (driveOn() && applyDriveCache()) { setSyncDot(driveNeedsSignIn ? "signin" : "drive"); return Promise.resolve(); }
+    if (driveOn() && applyDriveCache()) { PREVIEW = false; showExploreBanner(false); setSyncDot(driveNeedsSignIn ? "signin" : "drive"); return Promise.resolve(); }
+    // Signed in, nothing of their own yet: show the library to explore.
+    if (!driveOn() && authedUser() && getSettings().authUid) {
+      return loadLibrary().then(function () {
+        PREVIEW = true;
+        applyData(previewRaw());
+        showExploreBanner(true);
+        setSyncDot("bundled");
+      }).catch(function () { return loadBundled().then(function (raw) { applyData(raw); }); });
+    }
     if (settings.sheetUrl) {
       return loadFromSheet(settings).then(function (raw) {
         applyData(raw); setSyncDot("live");
@@ -5807,9 +5825,10 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     loginStatus("Checking your account…", "busy");
     var haveDrive = !!driveToken;
     if (!haveDrive) {
-      // Signed up with email, so their Drive is not connected yet.
+      // Signed up with an email, so nothing of theirs exists yet. Drop
+      // them into the library to look around, no forms in the way.
       showLogin(false);
-      openSetupWizard(null);
+      enterExplore();
       return;
     }
     driveListAll().then(function (files) {
@@ -5824,7 +5843,8 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
         });
       }
       showLogin(false);
-      openSetupWizard(root ? root.id : null);
+      if (root) { setupState = setupState || {}; setupState.rootId = root.id; }
+      enterExplore();
       return null;
     }).catch(function (err) {
       loginStatus(friendlyAuthError(err));
@@ -5845,6 +5865,13 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       var cfg = JSON.parse(text);
       return cfg && cfg.apiKey ? cfg : null;
     } catch (e) { return null; }
+  }
+  // Shows the library, read only, and the banner that offers set up.
+  function enterExplore() {
+    return loadData(true).then(function () {
+      renderSidebar(); renderHome(); goHome(); updateAccountUi();
+      showToast("Welcome. Look around, everything here is yours to read.");
+    });
   }
   function saveOwnerSetup() {
     var raw = $("#owner-firebase").value.trim();
@@ -5898,6 +5925,56 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       category: c.type
     };
   }
+  // Explore mode: a signed in user with no space of their own sees the
+  // library itself, read only, so they can judge the product before
+  // giving anything.
+  var PREVIEW = false;
+  function previewRaw() {
+    var sections = [], questions = [], order = 0;
+    function add(id, icon, title, desc, rows) {
+      sections.push({ id: id, icon: icon, title: title, desc: desc, role: id });
+      rows.forEach(function (r) { questions.push(Object.assign({ id: "pv" + (++order), role: id }, r)); });
+    }
+    (LIBRARY.roles || []).forEach(function (role) {
+      add("pv_" + role.id, role.icon, role.title, role.blurb, role.questions.map(function (q) {
+        return { question: q.q, answer: "", tips: q.must, approach_to_learn: "", part_title: role.title, category: "Core" };
+      }));
+      add("pv_" + role.id + "_cases", "🧠", role.title + ", situations",
+        "Case questions with the approach, the framework and the traps.",
+        roleCases(role).map(function (c) { return caseToRow(c, role.title); }));
+    });
+    add("pv_universal", "💬", "Universal Questions", "Asked in every interview, whatever the role.",
+      (LIBRARY.universal || []).map(function (q) {
+        return { question: q.q, answer: "", tips: q.must, approach_to_learn: "", part_title: "Universal", category: "Universal" };
+      }));
+    add("pv_frameworks", "🧩", "Framework Toolkit", "The frameworks interviewers expect, and when to use each.",
+      (LIBRARY.frameworks || []).map(function (f) {
+        return { question: f.name, answer: "**When to use it**\n\n" + f.use + "\n\n**How it goes**\n\n" + f.how,
+          tips: "Trap to avoid: " + f.trap, approach_to_learn: "", part_title: "Frameworks", category: "Framework" };
+      }));
+    add("pv_tips", "✅", "Interview Tips", "The week before, the day of, and after.",
+      (LIBRARY.tips || []).map(function (t) {
+        return { question: t.title, answer: t.body, tips: "", approach_to_learn: "", part_title: "Tips", category: "Tip" };
+      }));
+    return {
+      sections: sections, questions: questions, roadmaps: [], storybank: [], actionplan: [], storybank_numbers: [],
+      meta: { title: "The Rehearsly library", preface: "Every question below is yours to read. Set up your space to practise out loud, get scored, and keep your own answers in your Google Drive.", sections: [] },
+      preview: true
+    };
+  }
+  function showExploreBanner(on) {
+    var el = $("#explore-banner");
+    if (el) el.classList.toggle("hidden", !on);
+  }
+  // In explore mode there is nothing of theirs to change yet, so the app
+  // asks them to set up instead of failing quietly.
+  function nudgeSetup(what) {
+    confirmDialog({
+      title: "Set up your space first",
+      message: (what || "That") + " needs your own space: your Drive for saving, your resume so answers sound like you, and a free Gemini key for the interviewer. It takes about two minutes.",
+      confirmLabel: "Set it up now", cancelLabel: "Keep looking around"
+    }).then(function (ok) { if (ok) openSetupWizard(); });
+  }
   function renderRolePicker() {
     var grid = $("#role-grid");
     if (!grid || !LIBRARY) return;
@@ -5917,62 +5994,25 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     });
   }
 
-  /* ---- First run set up: key, resume, target role ---- */
+  /* ---- First run set up, one form, never forced ---- */
   var setupState = null;
-  function openSetupWizard(rootId) {
-    setupState = { rootId: rootId || null, resumeText: "", resumeFile: null, step: 1 };
+  function openSetupWizard() {
+    setupState = setupState || { resumeText: "", roleId: "" };
+    loadLibrary().then(renderRolePicker).catch(function () {});
     $("#setup-modal").classList.remove("hidden");
+    $("#setup-form").classList.remove("hidden");
+    $("#setup-progress-pane").classList.add("hidden");
     $("#setup-name").textContent = (getSettings().authName || "there").split(" ")[0];
     $("#setup-key-input").value = getSettings().geminiKey || "";
-    setupGo(driveToken ? 2 : 1);
+    var s = getSettings();
+    if (s.experience) $("#setup-exp").value = s.experience;
   }
-  // People who signed up with an email have not let us near their Drive
-  // yet, so that is the first thing the set up asks for.
-  function setupConnectDrive() {
-    setupStatus("#setup-drive-status", "Opening Google…");
-    getDriveToken(true).then(function () {
-      setupStatus("#setup-drive-status", "Your Drive is connected.");
-      return driveListAll();
-    }).then(function (files) {
-      var root = files.filter(function (f) { return f.appProperties && f.appProperties.rkind === "root"; })[0];
-      if (root && root.appProperties.seeded === "1") {
-        saveSettings({ driveOn: true, driveRootId: root.id });
-        $("#setup-modal").classList.add("hidden");
-        return driveSync(true).then(function () {
-          renderSidebar(); renderHome(); goHome(); updateAccountUi();
-          showToast("Found your Rehearsly folder, everything is back.");
-        });
-      }
-      if (root) setupState.rootId = root.id;
-      setupGo(2);
-      return null;
-    }).catch(function (err) {
-      setupStatus("#setup-drive-status", String((err && err.message) || err));
-    });
-  }
-  function setupGo(step) {
-    setupState.step = step;
-    [1, 2, 3, 4, 5, 6].forEach(function (n) {
-      var pane = $("#setup-step-" + n);
-      if (pane) pane.classList.toggle("hidden", n !== step);
-      var dot = $("#setup-dot-" + n);
-      if (dot) dot.classList.toggle("done", n <= step);
-    });
-  }
+  function closeSetupWizard() { $("#setup-modal").classList.add("hidden"); }
   function setupStatus(id, text) { var el = $(id); if (el) el.textContent = text || ""; }
-
-  function setupCheckKey() {
-    var typed = $("#setup-key-input").value.trim();
-    if (!typed) { setupStatus("#setup-key-status", "Paste your key first. The link above shows where to get one, it is free."); return; }
-    saveSettings({ geminiKey: typed });
-    setupStatus("#setup-key-status", "Checking with Google…");
-    callGeminiResilient(getSettings(), "Reply with the single word OK.", "Say OK.", null)
-      .then(function () { setupStatus("#setup-key-status", "Your key works."); setupGo(3); })
-      .catch(function (err) {
-        setupStatus("#setup-key-status", isAuthError(err)
-          ? "Google turned this key down. Make a new one at aistudio.google.com/apikey."
-          : "Could not check the key. " + String(err.message || err).slice(0, 140));
-      });
+  function setupProgress(text, pct) {
+    setupStatus("#setup-progress-text", text);
+    var bar = $("#setup-progress-bar");
+    if (bar) bar.style.width = Math.max(0, Math.min(100, pct || 0)) + "%";
   }
 
   // The resume is saved in your Drive as a Google Doc, and Google's own
@@ -5988,39 +6028,30 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
         var head = "--" + boundary + "\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n" + JSON.stringify(meta) +
           "\r\n--" + boundary + "\r\nContent-Type: " + (file.type || "application/octet-stream") + "\r\nContent-Transfer-Encoding: base64\r\n\r\n";
         var tail = "\r\n--" + boundary + "--";
-        var b64 = b64FromBytes(bytes);
         driveJson(DRIVE_UPLOAD + "?uploadType=multipart&fields=id,modifiedTime", {
           method: "POST", headers: { "Content-Type": "multipart/related; boundary=" + boundary },
-          body: head + b64 + tail
+          body: head + b64FromBytes(bytes) + tail
         }).then(resolve, reject);
       };
       reader.readAsArrayBuffer(file);
     });
   }
-  function setupUseResume(file) {
-    if (!file) return;
-    setupState.resumeFile = file;
+  function readResumeFile(file, rootId) {
     setupStatus("#setup-resume-status", "Reading " + file.name + "…");
-    ensureRootFolder().then(function (rootId) {
-      return driveUploadConverted(file, "My Resume", rootId, { rkind: "resume" });
-    }).then(function (res) {
-      setupState.resumeFileId = res.id;
-      return driveFetch(DRIVE_API + "/files/" + res.id + "/export?mimeType=text%2Fplain").then(function (r) { return r.text(); });
-    }).then(function (text) {
-      var clean = String(text || "").replace(/\r/g, "").replace(/\n{3,}/g, "\n\n").trim();
-      if (clean.length < 120) throw driveErr("That file came out almost empty. Try a PDF or Word file with selectable text, not a photo.");
-      setupState.resumeText = clean.slice(0, 18000);
-      saveSettings({ resumeText: setupState.resumeText });
-      setupStatus("#setup-resume-status", "Got it, " + Math.round(clean.length / 1000) + "k characters read from " + file.name + ".");
-      loadLibrary().then(renderRolePicker).catch(function () {});
-      setupGo(4);
-    }).catch(function (err) {
-      setupStatus("#setup-resume-status", String((err && err.message) || err));
-    });
+    return driveUploadConverted(file, "My Resume", rootId, { rkind: "resume" })
+      .then(function (res) {
+        return driveFetch(DRIVE_API + "/files/" + res.id + "/export?mimeType=text%2Fplain").then(function (r) { return r.text(); });
+      })
+      .then(function (text) {
+        var clean = String(text || "").replace(/\r/g, "").replace(/\n{3,}/g, "\n\n").trim();
+        if (clean.length < 120) throw driveErr("That file came out almost empty. Try a PDF or Word file with selectable text, or paste the text instead.");
+        setupStatus("#setup-resume-status", "Read " + Math.round(clean.length / 1000) + "k characters from " + file.name + ".");
+        return clean.slice(0, 18000);
+      });
   }
   function ensureRootFolder() {
-    if (setupState && setupState.rootId) return Promise.resolve(setupState.rootId);
     var s = getSettings();
+    if (setupState && setupState.rootId) return Promise.resolve(setupState.rootId);
     if (s.driveRootId) return Promise.resolve(s.driveRootId);
     return driveCreateFolder(DRIVE_ROOT_NAME, null, { rkind: "root" }, "Your Rehearsly interview prep. One folder per section, one Google Doc per question.")
       .then(function (r) {
@@ -6030,10 +6061,9 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       });
   }
 
-  var QSET_SYS = "You are an experienced interview coach. You are given a candidate's resume and the job description they are going for. " +
-    "Write the interview question set they should practise. Use simple everyday English, no markdown, no dashes. " +
-    "Mix the questions: a few opening and story questions, the core questions for this role, a few hard ones on the gaps between the resume and the job, and one or two on their motivation. " +
-    "Ground every question in the resume or the job description, so it feels like a real panel that read both. " +
+  var QSET_SYS = "You are an experienced interview coach. You are given a candidate's resume, their years of experience, and the job they are going for. " +
+    "Write the extra interview questions they should practise. Use simple everyday English, no markdown, no dashes. " +
+    "Pitch the difficulty at their experience level. Ground every question in their own history or in the job description, so it feels like a panel that read both. " +
     "Reply with ONLY compact JSON of this exact shape: " +
     "{\"role_title\": \"short name for this target role\", \"profile\": \"60 words about the candidate, written for an interviewer to read\", " +
     "\"questions\": [{\"question\": \"...\", \"category\": \"one of Opening, Experience, Role skills, Case, Motivation, Gap\", \"tip\": \"one line on what a strong answer must contain\"}]} " +
@@ -6043,35 +6073,64 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     "Keep each answer under 220 words, simple everyday English, no markdown headings, no dashes. Where a number is needed and the resume has none, write [add your number] so they can fill it in. " +
     "Reply with ONLY compact JSON: {\"answers\": [{\"id\": \"the id given\", \"answer\": \"...\"}]}";
 
+  // One button does the whole job: Drive, key, resume, questions, sections.
   function setupBuild() {
-    var roleTitle = $("#setup-role-input").value.trim();
-    var jd = $("#setup-jd-input").value.trim();
     var role = libraryRole(setupState.roleId);
-    if (!role && jd.length < 80) { setupStatus("#setup-jd-status", "Paste the job description, or go back and pick a role from the list."); return; }
-    if (!setupState.resumeText) { setupStatus("#setup-jd-status", "Add your resume first."); setupGo(3); return; }
+    var pasted = ($("#setup-resume-text").value || "").trim();
+    var file = ($("#setup-resume-input").files || [])[0];
+    var key = $("#setup-key-input").value.trim();
+    var jd = ($("#setup-jd-input").value || "").trim();
+    setupState.roleTitle = ($("#setup-role-input").value || "").trim() || (role ? role.title : "My target role");
     setupState.jd = jd.slice(0, 12000);
-    setupState.roleTitle = roleTitle || (role ? role.title : "My target role");
-    setupGo(6);
-    setupProgress("Getting your question set ready…", 5);
-    var settings = getSettings();
-    var userMsg = "RESUME:\n" + setupState.resumeText + "\n\nJOB DESCRIPTION:\n" + (setupState.jd || "Not given.") +
-      "\n\nThe candidate calls this role: " + setupState.roleTitle +
-      (role ? "\n\nThey already have these standard questions, so do NOT repeat them:\n" + role.questions.map(function (q) { return "- " + q.q; }).join("\n") : "");
-    var count = role ? 10 : 26;
-    var sys = QSET_SYS.replace("COUNT", String(count)) +
-      (role ? " These extra questions must come from the gaps between this resume and this job, and from this candidate's own history." : "");
-    // With a role picked, the library already carries the core set, so the
-    // AI only has to add the questions that are personal to them.
-    return retryWhenBusy(function () {
-      return callGeminiResilient(settings, sys, userMsg, null);
-    }, 2, function (n, wait) { setupProgress("Gemini is busy, trying again in " + Math.round(wait / 1000) + " seconds…", 8); })
-      .then(function (content) { return parseFeedbackContent(content) || {}; })
-      .catch(function () { return {}; })   // the library alone is still a full set
-      .then(function (parsed) { return writeStarterSet(parsed, role); })
+    setupState.experience = $("#setup-exp").value;
+    if (!role && !jd && !pasted && !file) {
+      setupStatus("#setup-form-status", "Pick a role, or give me your resume or a job description, so there is something to build from.");
+      return;
+    }
+    if (!key) { setupStatus("#setup-form-status", "Paste your free Gemini key. Nothing here can talk to the AI without it."); return; }
+    saveSettings({ geminiKey: key, experience: setupState.experience, roleId: setupState.roleId || "" });
+    setupStatus("#setup-form-status", "");
+    $("#setup-form").classList.add("hidden");
+    $("#setup-progress-pane").classList.remove("hidden");
+    $("#setup-retry").classList.add("hidden");
+    setupProgress("Checking your key…", 4);
+
+    return callGeminiResilient(getSettings(), "Reply with the single word OK.", "Say OK.", null)
+      .catch(function (err) {
+        throw new Error(isAuthError(err) ? "Google turned that key down. Make a new one at aistudio.google.com/apikey." : "Could not reach Gemini with that key. " + String(err.message || err).slice(0, 120));
+      })
+      .then(function () {
+        setupProgress("Connecting your Google Drive…", 8);
+        return driveToken ? driveToken : getDriveToken(true);
+      })
+      .then(function () { return ensureRootFolder(); })
+      .then(function (rootId) {
+        if (pasted) { setupState.resumeText = pasted.slice(0, 18000); return null; }
+        if (!file) return null;
+        setupProgress("Reading your resume…", 14);
+        return readResumeFile(file, rootId).then(function (text) { setupState.resumeText = text; });
+      })
+      .then(function () {
+        saveSettings({ resumeText: setupState.resumeText || "" });
+        if (!setupState.resumeText && !setupState.jd) return {};
+        setupProgress("Writing the questions that are personal to you…", 20);
+        var userMsg = "RESUME:\n" + (setupState.resumeText || "Not given.") +
+          "\n\nYEARS OF EXPERIENCE: " + setupState.experience +
+          "\n\nJOB DESCRIPTION:\n" + (setupState.jd || "Not given.") +
+          "\n\nThe candidate calls this role: " + setupState.roleTitle +
+          (role ? "\n\nThey already have these standard questions, so do NOT repeat them:\n" + role.questions.map(function (q) { return "- " + q.q; }).join("\n") : "");
+        var sys = QSET_SYS.replace("COUNT", String(role ? 10 : 26));
+        return retryWhenBusy(function () {
+          return callGeminiResilient(getSettings(), sys, userMsg, null);
+        }, 2, function (n, wait) { setupProgress("Gemini is busy, trying again in " + Math.round(wait / 1000) + " seconds…", 22); })
+          .then(function (content) { return parseFeedbackContent(content) || {}; })
+          .catch(function () { return {}; });   // the library alone is still a full set
+      })
+      .then(function (parsed) { return writeStarterSet(parsed || {}, role); })
       .then(function (res) {
-        $("#setup-modal").classList.add("hidden");
+        closeSetupWizard();
         renderSidebar(); renderHome(); goHome(); updateAccountUi();
-        showToast("Your question set is ready.");
+        showToast("Your practice space is ready.");
         draftAnswersInBackground(res.answerSections);
         if (setupState.resumeText) draftStoryBank();
       })
@@ -6079,11 +6138,6 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
         setupProgress(String((err && err.message) || err), 0);
         $("#setup-retry").classList.remove("hidden");
       });
-  }
-  function setupProgress(text, pct) {
-    setupStatus("#setup-progress-text", text);
-    var bar = $("#setup-progress-bar");
-    if (bar) bar.style.width = Math.max(0, Math.min(100, pct || 0)) + "%";
   }
 
   // Writes every section into your Drive: your role's questions, its
@@ -6200,6 +6254,8 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       };
       cache.extras.storybank_numbers = cache.extras.storybank_numbers || [];
       saveDriveCache(cache);
+      PREVIEW = false;
+      showExploreBanner(false);
       applyData(driveRaw(cache));
       setSyncDot("drive");
       setupProgress("Done.", 100);
@@ -7483,6 +7539,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   var recorder = null; // { stream, mediaRecorder, chunks, startedAt, timer, finalText, interimText, item, blob, seconds }
 
   function openRecordModal(item) {
+    if (PREVIEW) { nudgeSetup("Recording your answer"); return; }
     if (!item) return;
     if (!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) || !window.MediaRecorder) {
       showToast("This browser cannot record audio. Try Chrome.");
@@ -8469,6 +8526,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   var interviewFailStreak = 0;
   function interviewSpeechSupported() { return !!(window.SpeechRecognition || window.webkitSpeechRecognition); }
   function startInterview(item, sourceContext) {
+    if (PREVIEW) { nudgeSetup("A practice interview"); return; }
     if (!item) return;
     var settings = getSettings();
     if (!hasGeminiKey()) { showKeyProblem("missing"); return; }
@@ -9283,6 +9341,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       if (speakingNow()) stopSpeak(); else speakCurrent();
     };
     $("#btn-edit").onclick = function () {
+      if (PREVIEW) { nudgeSetup("Editing an answer"); return; }
       if (editing || !currentItem) return;
       // Every section now gets the full form, so you can change every
       // field and delete the row, not just tweak the text inline.
@@ -9601,7 +9660,6 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     $("#btn-forgot").onclick = forgotPassword;
     $("#btn-login-google").onclick = loginWithGoogle;
     $("#btn-owner-save").onclick = saveOwnerSetup;
-    $("#btn-setup-drive").onclick = setupConnectDrive;
     ["#auth-email", "#auth-password", "#auth-password2", "#auth-name"].forEach(function (sel) {
       var el = $(sel);
       if (el) el.onkeydown = function (e) { if (e.key === "Enter") submitAuthForm(); };
@@ -9613,14 +9671,11 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
         message: "Your Rehearsly folder and everything in it stays safe in your Google Drive. Sign in again any time to get it back."
       }).then(function (ok) { if (ok) signOut(); });
     };
-    $("#btn-setup-key").onclick = setupCheckKey;
-    $("#setup-resume-input").onchange = function (e) { setupUseResume(e.target.files && e.target.files[0]); };
-    $("#btn-setup-back-1").onclick = function () { setupGo(2); };
-    $("#btn-setup-back-2").onclick = function () { setupGo(4); };
-    $("#btn-setup-back-3").onclick = function () { setupGo(3); };
-    $("#btn-setup-role-next").onclick = function () {
-      if (setupState.roleId === undefined) { setupStatus("#setup-role-status", "Pick a role, or pick the last card if yours is not listed."); return; }
-      setupGo(5);
+    $("#btn-open-setup").onclick = function () { openSetupWizard(); };
+    $("#btn-setup-close").onclick = closeSetupWizard;
+    $("#btn-setup-later").onclick = function () {
+      closeSetupWizard();
+      showToast("No problem. Look around, and set up whenever you are ready.");
     };
     $("#btn-start-fresh").onclick = function () {
       confirmDialog({
@@ -9633,7 +9688,11 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       });
     };
     $("#btn-setup-build").onclick = setupBuild;
-    $("#setup-retry").onclick = function () { $("#setup-retry").classList.add("hidden"); setupBuild(); };
+    $("#setup-retry").onclick = function () {
+      $("#setup-retry").classList.add("hidden");
+      $("#setup-progress-pane").classList.add("hidden");
+      $("#setup-form").classList.remove("hidden");
+    };
     $("#sync-dot").onclick = function () {
       if (!driveOn()) { openSettings(); return; }
       showToast("Syncing with your Google Drive…");
@@ -9742,11 +9801,8 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       populateVoices();
       goHome();
       updateAccountUi();
-      if (!driveOn() && authedUser() && getSettings().authUid) {
-        // Signed in, but no Rehearsly folder yet, so walk them through it.
-        loadLibrary().catch(function () {});
-        openSetupWizard(null);
-      }
+      // Nothing is forced. A new user lands in the library and is nudged
+      // towards set up by the banner and by the practice buttons.
       if (driveOn()) {
         if (getSettings().googleClientId) loadGis().catch(function () {});
         // Brings in edits made in your Sheets since last time. If the
