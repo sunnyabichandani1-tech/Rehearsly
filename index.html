@@ -5618,6 +5618,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     if (code === "auth/popup-blocked") return "Chrome blocked the Google window. Allow pop ups for this site, then try again.";
     if (code === "auth/unauthorized-domain") return "This web address is not allowed in the Firebase project yet. Add it under Authentication, Settings, Authorised domains.";
     if (code === "auth/operation-not-allowed") return "Turn on this sign in method in Firebase, under Authentication, Sign in method.";
+    if (code === "auth/network-request-failed") return "Could not reach Google. Check your internet, and if you use an ad blocker or a strict privacy extension, allow this site and try again.";
     return String((err && err.message) || err);
   }
   function googleProviderWithDrive() {
@@ -5753,13 +5754,53 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       .then(function () { loginStatus("Check your inbox, a reset link is on its way to " + email + ".", "good"); })
       .catch(function (err) { loginStatus(friendlyAuthError(err)); });
   }
+  // Google sign in takes over the whole page, the way most sites do it.
+  // You come back to Rehearsly already signed in. If the browser blocks
+  // that route, the small window is used instead.
   function loginWithGoogle() {
-    loginStatus("Waiting for the Google window…", "busy"); loginBusy(true);
-    firebaseGoogleFlow(false).then(function () {
+    loginStatus("Taking you to Google…", "busy"); loginBusy(true);
+    loadFirebase().then(function (auth) {
+      try { sessionStorage.setItem("sip_redirect_pending", String(Date.now())); } catch (e) {}
+      return auth.signInWithRedirect(googleProviderWithDrive());
+    }).catch(function (err) {
+      try { sessionStorage.removeItem("sip_redirect_pending"); } catch (e) {}
+      // Some browsers refuse the full page route, so fall back quietly.
+      firebaseGoogleFlow(false).then(function () {
+        loginBusy(false); loginStatus("");
+        afterSignedIn(false);
+      }).catch(function (e2) { loginBusy(false); loginStatus(friendlyAuthError(e2 || err)); });
+    });
+  }
+  // Called on every load: if we are coming back from Google, finish the
+  // job and go straight in.
+  function finishRedirectLogin() {
+    var pending = null;
+    try { pending = sessionStorage.getItem("sip_redirect_pending"); } catch (e) {}
+    if (!pending || !firebaseConfig()) return Promise.resolve(false);
+    showLogin(true);
+    loginStatus("Signing you in…", "busy"); loginBusy(true);
+    return loadFirebase().then(function (auth) {
+      return auth.getRedirectResult();
+    }).then(function (res) {
+      try { sessionStorage.removeItem("sip_redirect_pending"); } catch (e) {}
       loginBusy(false);
+      if (!res || !res.user) {
+        loginStatus("That did not finish. Tap Continue with Google once more.");
+        return false;
+      }
+      var token = res.credential && res.credential.accessToken;
+      if (token) rememberToken(token, 3600);
+      fbUser = res.user;
+      rememberUser(res.user);
       loginStatus("");
       afterSignedIn(false);
-    }).catch(function (err) { loginBusy(false); loginStatus(friendlyAuthError(err)); });
+      return true;
+    }).catch(function (err) {
+      try { sessionStorage.removeItem("sip_redirect_pending"); } catch (e) {}
+      loginBusy(false);
+      loginStatus(friendlyAuthError(err));
+      return false;
+    });
   }
   // One path after any kind of sign in: find their folder, or set them up.
   function afterSignedIn(isNew) {
@@ -9690,6 +9731,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     if (!signedIn()) {
       showLogin(true);
       setAuthMode("login");
+      finishRedirectLogin().catch(function () {});
       var cfg = firebaseConfig();
       if (cfg) loadFirebase().catch(function () {}); else loadGis().catch(function () {});
       if (!cfg && !(getSettings().googleClientId || BUILT_IN_CLIENT_ID)) {
