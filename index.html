@@ -1227,6 +1227,54 @@ body.locked { overflow: hidden; }
 .modal-x { position: absolute; top: 12px; right: 14px; border: 0; background: none; font-size: 18px; cursor: pointer; color: var(--muted, #888); }
 .modal-card { position: relative; }
 
+/* Onboarding, one question per screen, works on phone and desktop */
+.onboard-view { position: fixed; inset: 0; z-index: 130; background: var(--bg, #f7f5ef); display: flex; flex-direction: column; }
+.onboard-top { display: flex; align-items: center; gap: 14px; padding: 14px 20px; border-bottom: 1px solid rgba(0,0,0,.08); }
+.onboard-brand { font-family: var(--serif, Georgia, serif); font-weight: 700; font-size: 16px; white-space: nowrap; }
+.onboard-progress { flex: 1; height: 6px; border-radius: 999px; background: rgba(0,0,0,.09); overflow: hidden; }
+.onboard-progress-bar { height: 100%; width: 0; background: #111; border-radius: 999px; transition: width .35s ease; }
+.onboard-skip { border: 0; background: none; font-size: 13px; color: var(--muted, #777); cursor: pointer; text-decoration: underline; white-space: nowrap; }
+.onboard-body { flex: 1; overflow: auto; display: flex; justify-content: center; padding: 30px 20px 10px; }
+.onboard-card { width: 100%; max-width: 560px; }
+.onboard-step { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted, #888); margin: 0 0 10px; }
+.onboard-q { font-family: var(--serif, Georgia, serif); font-size: 27px; line-height: 1.25; margin: 0 0 8px; }
+.onboard-help { font-size: 14px; color: var(--muted, #666); line-height: 1.55; margin: 0 0 20px; }
+.onboard-input { display: grid; gap: 10px; }
+.onboard-input input[type="text"], .onboard-input textarea, .onboard-input input[type="password"], .onboard-input input[type="file"] {
+  width: 100%; padding: 13px 14px; font-size: 16px; border-radius: 11px; border: 1px solid rgba(0,0,0,.16);
+  background: #fff; color: #111; box-sizing: border-box; }
+.onboard-input textarea { min-height: 110px; resize: vertical; }
+.onboard-opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; }
+.onboard-opt { text-align: left; padding: 14px 15px; border-radius: 12px; border: 1px solid rgba(0,0,0,.14);
+  background: #fff; cursor: pointer; font-size: 15px; color: inherit; line-height: 1.35; }
+.onboard-opt b { display: block; font-weight: 600; }
+.onboard-opt span { display: block; font-size: 12.5px; color: var(--muted, #777); margin-top: 3px; line-height: 1.4; }
+.onboard-opt:hover { border-color: rgba(0,0,0,.45); }
+.onboard-opt.picked { background: #111; color: #fff; border-color: #111; }
+.onboard-opt.picked span { color: rgba(255,255,255,.75); }
+.onboard-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.onboard-chip { padding: 9px 14px; border-radius: 999px; border: 1px solid rgba(0,0,0,.16); background: #fff;
+  cursor: pointer; font-size: 14px; color: inherit; }
+.onboard-chip.picked { background: #111; color: #fff; border-color: #111; }
+.onboard-status { min-height: 20px; margin-top: 14px; font-size: 13.5px; color: #b3261e; }
+.onboard-status.good { color: #1b7a3d; }
+.onboard-status.busy { color: var(--muted, #777); }
+.onboard-foot { display: flex; justify-content: space-between; gap: 12px; padding: 14px 20px 22px; max-width: 600px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+.onboard-foot .btn { min-width: 120px; padding: 12px 18px; font-size: 15px; }
+.onboard-plan { background: #fff; border: 1px solid rgba(0,0,0,.1); border-radius: 14px; padding: 16px 18px; }
+.onboard-plan h4 { margin: 0 0 10px; font-size: 15px; }
+.onboard-plan-row { display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; font-size: 14px; border-top: 1px solid rgba(0,0,0,.07); }
+.onboard-plan-row:first-of-type { border-top: 0; }
+.onboard-plan-row span { color: var(--muted, #666); }
+.onboard-plan-row b { text-align: right; }
+@media (max-width: 640px) {
+  .onboard-q { font-size: 23px; }
+  .onboard-body { padding: 22px 16px 6px; }
+  .onboard-opts { grid-template-columns: 1fr; }
+  .onboard-foot { padding: 12px 16px 18px; }
+  .onboard-foot .btn { flex: 1; }
+}
+
 </style>
 </head>
 <body>
@@ -1294,64 +1342,24 @@ body.locked { overflow: hidden; }
   </div>
 </div>
 
-<div class="modal-overlay hidden" id="setup-modal">
-  <div class="modal-card setup-card">
-    <button class="modal-x" id="btn-setup-close" title="Close">✕</button>
-    <h3>Set up your practice space, <span id="setup-name">there</span></h3>
-    <p class="settings-hint">One form, about two minutes. Everything you enter is saved in your own Google Drive, and you can change any of it later.</p>
-
-    <div class="setup-form" id="setup-form">
-      <div class="modal-field">
-        <label>1. Which role are you preparing for?</label>
-        <div class="role-grid" id="role-grid"></div>
-      </div>
-
-      <div class="modal-field">
-        <label for="setup-exp">2. How much experience do you have?</label>
-        <select id="setup-exp">
-          <option value="fresher">Fresher, less than one year</option>
-          <option value="1-3">1 to 3 years</option>
-          <option value="4-7" selected>4 to 7 years</option>
-          <option value="8-12">8 to 12 years</option>
-          <option value="12+">More than 12 years</option>
-        </select>
-      </div>
-
-      <div class="modal-field">
-        <label>3. Your resume, so the questions and answers sound like you</label>
-        <input type="file" id="setup-resume-input" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
-        <details class="settings-details"><summary>Or paste it as text</summary>
-          <textarea id="setup-resume-text" rows="5" placeholder="Paste your resume here"></textarea>
-        </details>
-        <p class="settings-status" id="setup-resume-status"></p>
-      </div>
-
-      <div class="modal-field">
-        <label for="setup-role-input">4. The job you are going for, optional</label>
-        <input type="text" id="setup-role-input" placeholder="Senior Product Manager, Swiggy" />
-        <textarea id="setup-jd-input" rows="4" placeholder="Paste the job description here. Leave it blank if you do not have one yet."></textarea>
-      </div>
-
-      <div class="modal-field">
-        <label for="setup-key-input">5. Your free Gemini key, for the interviewer, the voice and the scoring</label>
-        <input type="password" id="setup-key-input" placeholder="paste your key here" autocomplete="off" />
-        <p class="settings-hint">Get one free at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>, tap Create API key. It stays in your browser only.</p>
-        <p class="settings-status" id="setup-key-status"></p>
-      </div>
-
-      <p class="settings-status" id="setup-form-status"></p>
-      <div class="modal-actions">
-        <button class="btn btn-ghost" id="btn-setup-later">I will do this later</button>
-        <button class="btn" id="btn-setup-build">Build my practice space</button>
-      </div>
+<div class="onboard-view hidden" id="onboard-view">
+  <div class="onboard-top">
+    <span class="onboard-brand">📖 Rehearsly</span>
+    <div class="onboard-progress"><div class="onboard-progress-bar" id="onboard-bar"></div></div>
+    <button class="onboard-skip" id="btn-onboard-exit">Do this later</button>
+  </div>
+  <div class="onboard-body">
+    <div class="onboard-card">
+      <p class="onboard-step" id="onboard-step"></p>
+      <h2 class="onboard-q" id="onboard-question"></h2>
+      <p class="onboard-help" id="onboard-help"></p>
+      <div class="onboard-input" id="onboard-input"></div>
+      <p class="onboard-status" id="onboard-status"></p>
     </div>
-
-    <div class="setup-step hidden" id="setup-progress-pane">
-      <p class="setup-progress-text" id="setup-progress-text">Working…</p>
-      <div class="setup-progress"><div class="setup-progress-bar" id="setup-progress-bar"></div></div>
-      <p class="settings-hint">This takes about two minutes. Keep this tab open.</p>
-      <div class="modal-actions"><button class="btn hidden" id="setup-retry">Try again</button></div>
-    </div>
+  </div>
+  <div class="onboard-foot">
+    <button class="btn btn-ghost" id="btn-onboard-back">Back</button>
+    <button class="btn" id="btn-onboard-next">Continue</button>
   </div>
 </div>
 
@@ -5012,6 +5020,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   // A saved token lasts about an hour. After that you tap once to sign in
   // again, Google does not allow it to happen silently in the background.
   function getDriveToken(interactive) {
+    if (demoMode()) return Promise.resolve("demo-token");
     if (driveToken && Date.now() < driveTokenExp - 60000) return Promise.resolve(driveToken);
     try {
       var t = JSON.parse(sessionStorage.getItem("sip_drive_token") || "null");
@@ -5057,6 +5066,14 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   // Every call to Google goes through here. Waits and tries again when
   // Google says slow down, and asks you to sign in again when needed.
   function driveFetch(url, opts, tries) {
+    // In the demo nothing leaves the browser, so every call is answered here.
+    if (demoMode()) {
+      return demoDelay({
+        ok: true,
+        json: function () { return Promise.resolve({ id: demoId(), modifiedTime: new Date().toISOString(), files: [] }); },
+        text: function () { return Promise.resolve(""); }
+      }, 30);
+    }
     tries = tries || 0;
     opts = opts || {};
     return getDriveToken(false).then(function (tok) {
@@ -5155,6 +5172,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
 
   // Everything this app made, in one listing, so a sync is quick.
   function driveListAll() {
+    if (demoMode()) return demoDelay([]);
     var out = [];
     var q = encodeURIComponent("trashed = false and appProperties has { key='rapp' and value='1' }");
     var fields = encodeURIComponent("nextPageToken,files(id,name,mimeType,parents,modifiedTime,description,appProperties)");
@@ -5165,12 +5183,14 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     return page(null);
   }
   function driveCreateFolder(name, parentId, props, desc) {
+    if (demoMode()) return demoDelay({ id: demoId(), modifiedTime: new Date().toISOString() }, 50);
     return driveJson(DRIVE_API + "/files?fields=id,modifiedTime", {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: name, mimeType: FOLDER_MIME, parents: parentId ? [parentId] : undefined, description: desc || "", appProperties: Object.assign({ rapp: "1" }, props) })
     });
   }
   function driveDocUpload(kind, row, meta, fileId) {
+    if (demoMode()) return demoDelay({ id: fileId || demoId(), modifiedTime: new Date().toISOString() }, 30);
     var boundary = "rehearsly" + Date.now().toString(36) + Math.floor(Math.random() * 1000);
     var body = "--" + boundary + "\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n" + JSON.stringify(meta) +
       "\r\n--" + boundary + "\r\nContent-Type: text/markdown; charset=UTF-8\r\n\r\n" + docTextFor(kind, row) + "\r\n--" + boundary + "--";
@@ -5191,15 +5211,18 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     return driveDocUpload(kind, row, { name: itemTitle(kind, row), mimeType: DOC_MIME }, fileId);
   }
   function driveReadDoc(fileId, kind) {
+    if (demoMode()) return demoDelay({});
     return driveFetch(DRIVE_API + "/files/" + fileId + "/export?mimeType=text%2Fmarkdown").then(function (r) { return r.text(); })
       .then(function (text) { return rowFromDoc(kind, text); });
   }
   function driveTrash(fileId) {
+    if (demoMode()) return demoDelay({ id: fileId });
     return driveJson(DRIVE_API + "/files/" + fileId + "?fields=id", {
       method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ trashed: true })
     }).catch(function (err) { if (err.status === 404) return null; throw err; });
   }
   function drivePatchFolder(folderId, f) {
+    if (demoMode()) return demoDelay({ id: folderId });
     return driveJson(DRIVE_API + "/files/" + folderId + "?fields=id", {
       method: "PATCH", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: cleanFileName(f.title), description: f.desc || "", appProperties: { icon: f.icon || "📝" } })
@@ -5328,6 +5351,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   /* Sync: send anything waiting, then read what changed in Drive. Only
    * Sheets that were edited since last time are downloaded again. */
   function driveSync(interactive) {
+    if (demoMode()) { setSyncDot("drive"); return Promise.resolve(); }
     if (!driveOn()) return Promise.resolve();
     if (driveBusy) return Promise.resolve();
     driveBusy = true;
@@ -5446,6 +5470,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     saveDriveQueue(q);
   }
   function pushDriveChanges() {
+    if (demoMode()) { saveDriveQueue([]); return Promise.resolve({ ok: true }); }
     return getDriveToken(false).then(function () { return flushDriveQueue(); }).then(function () {
       setSyncDot("drive");
       return { ok: true };
@@ -5569,6 +5594,71 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   // Accounts run on Google Firebase. Passwords are hashed and salted by
   // Google, so nobody here, not even the owner, can read them. The same
   // sign in also hands us the ticket for your Google Drive.
+  /* ---------------------------------------------------------------------
+   * Demo account. Sign in with test@test.com and the password 123 to walk
+   * the whole product with nothing connected: no Firebase, no Google
+   * Drive, no Gemini key. Everything is made up on the spot and cleared
+   * when you sign out, so every run starts fresh.
+   * ------------------------------------------------------------------- */
+  var DEMO_EMAIL = "test@test.com", DEMO_PASS = "123";
+  function demoMode() { return !!getSettings().demoMode; }
+  function demoId() { return "demo" + Date.now().toString(36) + Math.floor(Math.random() * 10000).toString(36); }
+  function demoAnswer(q) {
+    return "This is a demo answer, so you can see the shape. In your real space this is written from your own resume, in your own words, with your own numbers. " +
+      "A strong answer here names the situation, what you did, and the number that changed.";
+  }
+  function demoGemini(sys, msg) {
+    var text = String(sys || "") + " " + String(msg || "");
+    if (/single word OK/.test(text)) return "OK";
+    if (/questions they should practise/.test(text)) {
+      var qs = [];
+      for (var i = 1; i <= 10; i++) {
+        qs.push({ question: "Demo question " + i + ", from the gap between your resume and this job.",
+          category: i < 3 ? "Gap" : "Role skills", tip: "Name the situation, your part in it, and the number that changed." });
+      }
+      return JSON.stringify({ role_title: "Demo role", profile: "A demo candidate, used to show how Rehearsly works.", questions: qs });
+    }
+    if (/best interview stories/.test(text)) {
+      var stories = [];
+      for (var j = 1; j <= 6; j++) {
+        stories.push({ title: "Demo story " + j, situation: "A demo situation from your work.", problem: "The problem that made it hard.",
+          solution: "What you did, step by step.", impact: "[add your number]", lesson: "What you would do differently.", use_for: "Leadership and ownership questions" });
+      }
+      return JSON.stringify({ stories: stories });
+    }
+    if (/draft the answer in the candidate/.test(text)) {
+      var ids = (String(msg).match(/"id":"([^"]+)"/g) || []).map(function (x) { return x.split('"')[3]; });
+      return JSON.stringify({ answers: ids.map(function (id) { return { id: id, answer: demoAnswer() }; }) });
+    }
+    if (/scoring a spoken practice interview|ideal answer, a coaching tip/.test(text)) {
+      return JSON.stringify({ score: 7, verdict: "Good start", what_worked: "Clear structure and a calm pace.",
+        what_to_improve: "Put one number against every claim.", missing_point: "You did not say what you would do differently.",
+        clarifying: 6, structure: 7, numbers: 5, tradeoffs: 6, communication: 8 });
+    }
+    if (/rigorous interviewer/.test(text)) {
+      return JSON.stringify({ action: "continue", type: "followup", say: "Interesting. What number moved because of that, and how did you measure it?" });
+    }
+    return JSON.stringify({ ok: true });
+  }
+  function demoDelay(value, ms) { return new Promise(function (r) { setTimeout(function () { r(value); }, ms || 200); }); }
+  function startDemo() {
+    try {
+      ["sip_drive_cache", "sip_drive_queue", "sip_cache", "sip_local_deleted", "sip_local_edits",
+       "sip_local_questions", "sip_local_sections", "sip_interview_history", "sip_scores", "sip_progress"]
+        .forEach(function (k) { localStorage.removeItem(k); });
+    } catch (e) {}
+    saveSettings({
+      demoMode: true, authEmail: DEMO_EMAIL, authName: "Test User", authUid: "demo", authPicture: "",
+      driveOn: false, driveRootId: "", onboarding: null, resumeText: "", jdText: "", targetRole: "",
+      profileSummary: "", roleId: "", geminiKey: "demo-key"
+    });
+    showLogin(false);
+    loadData(true).then(function () {
+      renderSidebar(); renderHome(); goHome(); updateAccountUi();
+      startOnboarding();
+    });
+  }
+
   // Rehearsly's own Firebase project. These values are public by design,
   // they only name the project. What keeps it safe is the list of web
   // addresses allowed to use it, set in the Firebase console.
@@ -5665,6 +5755,14 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   }
   function signOut() {
     forgetToken();
+    if (demoMode()) {
+      try {
+        ["sip_settings", "sip_drive_cache", "sip_drive_queue", "sip_cache", "sip_local_deleted", "sip_local_edits",
+         "sip_interview_history", "sip_scores", "sip_progress"].forEach(function (k) { localStorage.removeItem(k); });
+      } catch (e) {}
+      location.reload();
+      return;
+    }
     var after = function () {
       saveSettings({ authEmail: "", authName: "", authPicture: "", authUid: "", driveOn: false });
       try { localStorage.removeItem("sip_drive_cache"); localStorage.removeItem("sip_drive_queue"); localStorage.removeItem("sip_cache"); } catch (e) {}
@@ -5740,6 +5838,11 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     var pass = $("#auth-password").value;
     var name = $("#auth-name").value.trim();
     if (!email || !pass) { loginStatus("Fill in your email and password."); return; }
+    if (email.toLowerCase() === DEMO_EMAIL && pass === DEMO_PASS) {
+      loginStatus("Opening the demo…", "busy");
+      startDemo();
+      return;
+    }
     if (authMode === "signup") {
       if (pass.length < 8) { loginStatus("Pick a longer password, at least 8 characters."); return; }
       if (pass !== $("#auth-password2").value) { loginStatus("The two passwords do not match."); return; }
@@ -5828,7 +5931,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       // Signed up with an email, so nothing of theirs exists yet. Drop
       // them into the library to look around, no forms in the way.
       showLogin(false);
-      enterExplore();
+      enterExplore().then(function () { if (isNew || !getSettings().onboarding) startOnboarding(); });
       return;
     }
     driveListAll().then(function (files) {
@@ -5844,7 +5947,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       }
       showLogin(false);
       if (root) { setupState = setupState || {}; setupState.rootId = root.id; }
-      enterExplore();
+      enterExplore().then(function () { if (!getSettings().onboarding) startOnboarding(); });
       return null;
     }).catch(function (err) {
       loginStatus(friendlyAuthError(err));
@@ -5975,48 +6078,222 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       confirmLabel: "Set it up now", cancelLabel: "Keep looking around"
     }).then(function (ok) { if (ok) openSetupWizard(); });
   }
-  function renderRolePicker() {
-    var grid = $("#role-grid");
-    if (!grid || !LIBRARY) return;
-    grid.innerHTML = LIBRARY.roles.map(function (r) {
-      return "<button class=\"role-card\" data-role-id=\"" + r.id + "\"><b>" + r.icon + " " + escapeHtml(r.title) + "</b><span>" + escapeHtml(r.blurb) + "</span></button>";
-    }).join("") + "<button class=\"role-card\" data-role-id=\"\"><b>🎯 My role is not listed</b><span>Rehearsly builds your set from your resume and the job description alone.</span></button>";
-    $all(".role-card").forEach(function (card) {
-      card.onclick = function () {
-        $all(".role-card").forEach(function (c) { c.classList.remove("picked"); });
-        card.classList.add("picked");
-        setupState.roleId = card.dataset.roleId || "";
-        var role = libraryRole(setupState.roleId);
-        setupStatus("#setup-role-status", role
-          ? role.title + ": " + role.questions.length + " questions and " + roleCases(role).length + " situation cases, ready to practise."
-          : "No problem, your set will come from your resume and the job description.");
-      };
+  /* ---- Onboarding, one question per screen ---- */
+  var setupState = null;
+  var ONB = { step: 0, answers: {}, file: null };
+
+  function onbSteps() {
+    var roleOpts = ((LIBRARY && LIBRARY.roles) || []).map(function (r) {
+      return { value: r.id, label: r.icon + " " + r.title, help: r.blurb };
+    }).concat([{ value: "", label: "🎯 My role is not in the list", help: "Rehearsly will build your set from your resume and the job description." }]);
+    return [
+      { id: "intro", kind: "intro", q: "Let's build your prep plan, NAME", help: "Nine quick questions, about two minutes. Your answers shape every question, every case and the way the interviewer talks to you. Nothing here is shared with anyone.", next: "Start" },
+      { id: "name", kind: "text", q: "What should we call you?", help: "This is how the interviewer will greet you.", placeholder: "Your name" },
+      { id: "age", kind: "cards", q: "Which age group are you in?", help: "Optional. It helps pitch the tone, nothing else.", optional: true, options: [
+        { value: "18-24", label: "18 to 24" }, { value: "25-34", label: "25 to 34" },
+        { value: "35-44", label: "35 to 44" }, { value: "45+", label: "45 and above" },
+        { value: "", label: "Prefer not to say" }] },
+      { id: "currentRole", kind: "text", q: "What do you do today?", help: "Your current title and company, in your own words.", placeholder: "Senior Product Manager at Airtel" },
+      { id: "experience", kind: "cards", q: "How much work experience do you have?", help: "This sets how hard the questions get.", options: [
+        { value: "fresher", label: "Fresher", help: "Less than a year, or still studying" },
+        { value: "1-3", label: "1 to 3 years" }, { value: "4-7", label: "4 to 7 years" },
+        { value: "8-12", label: "8 to 12 years" }, { value: "12+", label: "More than 12 years" }] },
+      { id: "goal", kind: "cards", q: "What are you preparing for?", help: "Pick the one that fits best right now.", options: [
+        { value: "new_job", label: "A new job", help: "Switching company" },
+        { value: "promotion", label: "A promotion", help: "The next level where I am" },
+        { value: "first_job", label: "My first job", help: "Campus or early career" },
+        { value: "switch", label: "A career switch", help: "Moving into a different kind of role" },
+        { value: "comeback", label: "Coming back after a break", help: "Getting my confidence back" },
+        { value: "sharp", label: "Staying sharp", help: "No interview booked yet" }] },
+      { id: "targetRole", kind: "cards", q: "Which role are you targeting?", help: "You get that role's question bank and its situation cases. You can add more roles later.", options: roleOpts },
+      { id: "targetTitle", kind: "text", q: "What is the exact role and company, if you know it?", help: "Optional. Leave it blank if you are still looking.", optional: true, placeholder: "Senior Product Manager, Swiggy" },
+      { id: "jd", kind: "textarea", q: "Paste the job description, if you have one", help: "Optional, and the single most useful thing you can give. Rehearsly finds the gap between it and your resume, and asks you about that gap.", optional: true, placeholder: "Paste the whole advert here" },
+      { id: "timeline", kind: "cards", q: "When is your interview?", help: "This decides how hard your plan pushes you.", options: [
+        { value: "this_week", label: "This week", help: "Sprint mode" },
+        { value: "2-4w", label: "In 2 to 4 weeks", help: "Steady build" },
+        { value: "1-3m", label: "In 1 to 3 months", help: "Deep preparation" },
+        { value: "none", label: "No date yet", help: "Keeping myself ready" }] },
+      { id: "minutes", kind: "cards", q: "How much time can you give each day?", help: "Be honest, a small habit beats a big plan.", options: [
+        { value: "10", label: "10 minutes", help: "One question a day" },
+        { value: "20", label: "20 minutes", help: "Two questions, or one case" },
+        { value: "30", label: "30 minutes", help: "A short mock interview" },
+        { value: "60", label: "An hour or more", help: "Full mock plus review" }] },
+      { id: "struggles", kind: "chips", q: "Where do you struggle most?", help: "Pick as many as are true. Your plan starts with these.", options: [
+        "Opening answer, tell me about yourself", "Structure, I ramble", "Numbers and metrics", "Case and situation questions",
+        "Nerves and blanking out", "Speaking fluently in English", "Selling my own work", "Salary and negotiation",
+        "Questions about gaps or job changes", "Thinking out loud"] },
+      { id: "win", kind: "textarea", q: "What would make this a win for you?", help: "One or two lines, in your words. The interviewer and the scoring read this, so say what you actually want.", optional: true, placeholder: "Clear the Swiggy PM loop and move from execution to strategy work." },
+      { id: "resume", kind: "file", q: "Add your resume", help: "PDF or Word. Rehearsly reads it to write your questions and to draft your answers in your own words. It is saved in your own Google Drive, nowhere else.", optional: true },
+      { id: "key", kind: "key", q: "Last step, your free Gemini key", help: "The interviewer, the voice and the scoring all run on your own free key from Google. It stays in your browser and is never sent to us." },
+      { id: "plan", kind: "plan", q: "Here is your plan, NAME", help: "Tap Build my space and Rehearsly writes all of this into your Google Drive. Two minutes." }
+    ];
+  }
+  function onbFirstName() { return String(ONB.answers.name || getSettings().authName || "there").trim().split(" ")[0]; }
+  function startOnboarding() {
+    ONB = { step: 0, answers: Object.assign({ name: getSettings().authName || "" }, ONB.answers || {}), file: null };
+    loadLibrary().catch(function () {}).then(function () {
+      $("#onboard-view").classList.remove("hidden");
+      document.body.classList.add("locked");
+      onbRender();
     });
   }
-
-  /* ---- First run set up, one form, never forced ---- */
-  var setupState = null;
-  function openSetupWizard() {
-    setupState = setupState || { resumeText: "", roleId: "" };
-    loadLibrary().then(renderRolePicker).catch(function () {});
-    $("#setup-modal").classList.remove("hidden");
-    $("#setup-form").classList.remove("hidden");
-    $("#setup-progress-pane").classList.add("hidden");
-    $("#setup-name").textContent = (getSettings().authName || "there").split(" ")[0];
-    $("#setup-key-input").value = getSettings().geminiKey || "";
-    var s = getSettings();
-    if (s.experience) $("#setup-exp").value = s.experience;
+  function exitOnboarding() {
+    $("#onboard-view").classList.add("hidden");
+    document.body.classList.remove("locked");
   }
-  function closeSetupWizard() { $("#setup-modal").classList.add("hidden"); }
+  function onbStatus(text, kind) {
+    var el = $("#onboard-status");
+    if (!el) return;
+    el.textContent = text || "";
+    el.classList.remove("good", "busy");
+    if (kind) el.classList.add(kind);
+  }
+  function onbRender() {
+    var steps = onbSteps(), st = steps[ONB.step];
+    var total = steps.length;
+    $("#onboard-bar").style.width = Math.round((ONB.step / (total - 1)) * 100) + "%";
+    $("#onboard-step").textContent = st.kind === "intro" ? "Welcome" : "Step " + ONB.step + " of " + (total - 1);
+    $("#onboard-question").textContent = st.q.replace("NAME", onbFirstName());
+    $("#onboard-help").textContent = st.help || "";
+    $("#btn-onboard-back").classList.toggle("hidden", ONB.step === 0);
+    $("#btn-onboard-next").textContent = st.next || (st.kind === "plan" ? "Build my space" : (st.optional ? "Continue" : "Continue"));
+    onbStatus("");
+    var box = $("#onboard-input");
+    box.innerHTML = "";
+    var a = ONB.answers;
+
+    if (st.kind === "text" || st.kind === "key") {
+      var inp = document.createElement("input");
+      inp.type = st.kind === "key" ? "password" : "text";
+      inp.placeholder = st.placeholder || "";
+      inp.value = st.kind === "key" ? (getSettings().geminiKey || "") : (a[st.id] || "");
+      inp.onkeydown = function (e) { if (e.key === "Enter") onbNext(); };
+      box.appendChild(inp);
+      if (st.kind === "key") {
+        var link = document.createElement("p");
+        link.className = "onboard-help";
+        link.innerHTML = 'Get one free at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>, tap Create API key, then paste it above.';
+        box.appendChild(link);
+      }
+      setTimeout(function () { inp.focus(); }, 60);
+    } else if (st.kind === "textarea") {
+      var ta = document.createElement("textarea");
+      ta.placeholder = st.placeholder || "";
+      ta.value = a[st.id] || "";
+      box.appendChild(ta);
+    } else if (st.kind === "cards") {
+      var grid = document.createElement("div");
+      grid.className = "onboard-opts";
+      st.options.forEach(function (o) {
+        var b = document.createElement("button");
+        b.className = "onboard-opt" + (a[st.id] === o.value ? " picked" : "");
+        b.innerHTML = "<b>" + escapeHtml(o.label) + "</b>" + (o.help ? "<span>" + escapeHtml(o.help) + "</span>" : "");
+        b.onclick = function () {
+          a[st.id] = o.value;
+          onbRender();
+          setTimeout(onbNext, 160);   // picking is the answer, keep it moving
+        };
+        grid.appendChild(b);
+      });
+      box.appendChild(grid);
+    } else if (st.kind === "chips") {
+      var wrap = document.createElement("div");
+      wrap.className = "onboard-chips";
+      var picked = a[st.id] || [];
+      st.options.forEach(function (o) {
+        var c = document.createElement("button");
+        c.className = "onboard-chip" + (picked.indexOf(o) !== -1 ? " picked" : "");
+        c.textContent = o;
+        c.onclick = function () {
+          var list = ONB.answers[st.id] || [];
+          var i = list.indexOf(o);
+          if (i === -1) list.push(o); else list.splice(i, 1);
+          ONB.answers[st.id] = list;
+          onbRender();
+        };
+        wrap.appendChild(c);
+      });
+      box.appendChild(wrap);
+    } else if (st.kind === "file") {
+      var f = document.createElement("input");
+      f.type = "file";
+      f.accept = ".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+      f.onchange = function (e) {
+        ONB.file = (e.target.files || [])[0] || null;
+        onbStatus(ONB.file ? "Ready: " + ONB.file.name : "", "good");
+      };
+      box.appendChild(f);
+      var or = document.createElement("p");
+      or.className = "onboard-help";
+      or.textContent = "Or paste the text of your resume instead.";
+      box.appendChild(or);
+      var ta2 = document.createElement("textarea");
+      ta2.placeholder = "Paste your resume here";
+      ta2.value = a.resumeText || "";
+      ta2.oninput = function (e) { ONB.answers.resumeText = e.target.value; };
+      box.appendChild(ta2);
+      if (ONB.file) onbStatus("Ready: " + ONB.file.name, "good");
+    } else if (st.kind === "plan") {
+      box.appendChild(onbPlanCard());
+    }
+  }
+  // The wow moment: their answers turned into a plan they can see.
+  function onbPlanCard() {
+    var a = ONB.answers;
+    var role = libraryRole(a.targetRole);
+    var qCount = (role ? role.questions.length : 0) + ((a.jd || a.resumeText || ONB.file) ? 10 : 0);
+    var cases = role ? roleCases(role).length : 0;
+    var perDay = parseInt(a.minutes || "20", 10);
+    var totalItems = qCount + cases + 20;
+    var days = Math.max(3, Math.ceil(totalItems * 4 / Math.max(perDay, 10)));
+    var timeline = { this_week: "this week", "2-4w": "in 2 to 4 weeks", "1-3m": "in 1 to 3 months", none: "when you are ready" }[a.timeline] || "soon";
+    var el = document.createElement("div");
+    el.className = "onboard-plan";
+    function row(k, v) { return '<div class="onboard-plan-row"><span>' + k + '</span><b>' + escapeHtml(v) + '</b></div>'; }
+    el.innerHTML = "<h4>" + escapeHtml(role ? role.title + " plan" : "Your plan") + "</h4>" +
+      row("Role questions", qCount ? qCount + " questions" : "Built from your resume") +
+      row("Situation cases", cases ? cases + " cases with the approach and framework" : "Added with your role") +
+      row("Everyone gets", "20 universal questions, 12 frameworks, 9 tips") +
+      row("Story bank", (a.resumeText || ONB.file) ? "Drafted from your resume" : "Empty, add your stories any time") +
+      row("Your pace", perDay + " minutes a day, about " + days + " days to cover it once") +
+      row("Interview", "Live voice, scored on structure, numbers and trade offs") +
+      ((a.struggles || []).length ? row("We start with", (a.struggles || []).slice(0, 3).join(", ")) : "") +
+      row("Target", timeline);
+    return el;
+  }
+  function onbNext() {
+    var steps = onbSteps(), st = steps[ONB.step], a = ONB.answers;
+    var box = $("#onboard-input");
+    if (st.kind === "text" || st.kind === "key") {
+      var v = (box.querySelector("input") || {}).value || "";
+      v = v.trim();
+      if (!v && !st.optional) { onbStatus(st.id === "key" ? "Paste your key to carry on. It is free and takes two minutes to make." : "Please fill this in."); return; }
+      if (st.kind === "key") saveSettings({ geminiKey: v }); else a[st.id] = v;
+    } else if (st.kind === "textarea") {
+      a[st.id] = ((box.querySelector("textarea") || {}).value || "").trim();
+      if (!a[st.id] && !st.optional) { onbStatus("Please fill this in."); return; }
+    } else if (st.kind === "cards") {
+      if (a[st.id] === undefined && !st.optional) { onbStatus("Pick one to carry on."); return; }
+    } else if (st.kind === "file") {
+      var typed = box.querySelector("textarea");
+      if (typed) a.resumeText = (typed.value || "").trim();
+    } else if (st.kind === "plan") {
+      onbBuild();
+      return;
+    }
+    if (ONB.step < steps.length - 1) { ONB.step++; onbRender(); }
+  }
+  function onbBack() { if (ONB.step > 0) { ONB.step--; onbRender(); } }
+
+  /* ---- Building their space from the answers ---- */
   function setupStatus(id, text) { var el = $(id); if (el) el.textContent = text || ""; }
   function setupProgress(text, pct) {
-    setupStatus("#setup-progress-text", text);
-    var bar = $("#setup-progress-bar");
-    if (bar) bar.style.width = Math.max(0, Math.min(100, pct || 0)) + "%";
+    $("#onboard-question").textContent = "Building your space";
+    $("#onboard-help").textContent = text || "";
+    $("#onboard-bar").style.width = Math.max(4, Math.min(100, pct || 0)) + "%";
   }
+  function openSetupWizard() { startOnboarding(); }
 
-  // The resume is saved in your Drive as a Google Doc, and Google's own
-  // converter turns your PDF or Word file into text we can read.
   function driveUploadConverted(file, name, parentId, props) {
     return new Promise(function (resolve, reject) {
       var reader = new FileReader();
@@ -6037,7 +6314,6 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     });
   }
   function readResumeFile(file, rootId) {
-    setupStatus("#setup-resume-status", "Reading " + file.name + "…");
     return driveUploadConverted(file, "My Resume", rootId, { rkind: "resume" })
       .then(function (res) {
         return driveFetch(DRIVE_API + "/files/" + res.id + "/export?mimeType=text%2Fplain").then(function (r) { return r.text(); });
@@ -6045,7 +6321,6 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       .then(function (text) {
         var clean = String(text || "").replace(/\r/g, "").replace(/\n{3,}/g, "\n\n").trim();
         if (clean.length < 120) throw driveErr("That file came out almost empty. Try a PDF or Word file with selectable text, or paste the text instead.");
-        setupStatus("#setup-resume-status", "Read " + Math.round(clean.length / 1000) + "k characters from " + file.name + ".");
         return clean.slice(0, 18000);
       });
   }
@@ -6061,9 +6336,10 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       });
   }
 
-  var QSET_SYS = "You are an experienced interview coach. You are given a candidate's resume, their years of experience, and the job they are going for. " +
+  var QSET_SYS = "You are an experienced interview coach. You are given a candidate's profile, their resume and the job they are going for. " +
     "Write the extra interview questions they should practise. Use simple everyday English, no markdown, no dashes. " +
-    "Pitch the difficulty at their experience level. Ground every question in their own history or in the job description, so it feels like a panel that read both. " +
+    "Pitch the difficulty at their experience level, and lean into the things they say they struggle with. " +
+    "Ground every question in their own history or in the job description, so it feels like a panel that read both. " +
     "Reply with ONLY compact JSON of this exact shape: " +
     "{\"role_title\": \"short name for this target role\", \"profile\": \"60 words about the candidate, written for an interviewer to read\", " +
     "\"questions\": [{\"question\": \"...\", \"category\": \"one of Opening, Experience, Role skills, Case, Motivation, Gap\", \"tip\": \"one line on what a strong answer must contain\"}]} " +
@@ -6073,70 +6349,81 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     "Keep each answer under 220 words, simple everyday English, no markdown headings, no dashes. Where a number is needed and the resume has none, write [add your number] so they can fill it in. " +
     "Reply with ONLY compact JSON: {\"answers\": [{\"id\": \"the id given\", \"answer\": \"...\"}]}";
 
-  // One button does the whole job: Drive, key, resume, questions, sections.
-  function setupBuild() {
-    var role = libraryRole(setupState.roleId);
-    var pasted = ($("#setup-resume-text").value || "").trim();
-    var file = ($("#setup-resume-input").files || [])[0];
-    var key = $("#setup-key-input").value.trim();
-    var jd = ($("#setup-jd-input").value || "").trim();
-    setupState.roleTitle = ($("#setup-role-input").value || "").trim() || (role ? role.title : "My target role");
-    setupState.jd = jd.slice(0, 12000);
-    setupState.experience = $("#setup-exp").value;
-    if (!role && !jd && !pasted && !file) {
-      setupStatus("#setup-form-status", "Pick a role, or give me your resume or a job description, so there is something to build from.");
-      return;
-    }
-    if (!key) { setupStatus("#setup-form-status", "Paste your free Gemini key. Nothing here can talk to the AI without it."); return; }
-    saveSettings({ geminiKey: key, experience: setupState.experience, roleId: setupState.roleId || "" });
-    setupStatus("#setup-form-status", "");
-    $("#setup-form").classList.add("hidden");
-    $("#setup-progress-pane").classList.remove("hidden");
-    $("#setup-retry").classList.add("hidden");
-    setupProgress("Checking your key…", 4);
+  function onbProfileText() {
+    var a = ONB.answers;
+    var goal = { new_job: "a new job at another company", promotion: "a promotion at their current company", first_job: "their first job", switch: "a career switch", comeback: "a return to work after a break", sharp: "staying interview ready" }[a.goal] || "an interview";
+    return "PROFILE\nName: " + (a.name || "") +
+      "\nAge group: " + (a.age || "not given") +
+      "\nToday: " + (a.currentRole || "not given") +
+      "\nExperience: " + (a.experience || "not given") +
+      "\nPreparing for: " + goal +
+      "\nTarget role: " + (a.targetTitle || (libraryRole(a.targetRole) || {}).title || "not given") +
+      "\nInterview timing: " + (a.timeline || "not given") +
+      "\nPractice time per day: " + (a.minutes || "20") + " minutes" +
+      "\nStruggles with: " + ((a.struggles || []).join(", ") || "not given") +
+      "\nWhat a win looks like: " + (a.win || "not given");
+  }
+
+  // One button at the end of onboarding does the whole job.
+  function onbBuild() {
+    var a = ONB.answers;
+    var role = libraryRole(a.targetRole);
+    setupState = { rootId: (setupState && setupState.rootId) || null, resumeText: a.resumeText || "", roleId: a.targetRole || "",
+      roleTitle: a.targetTitle || (role ? role.title : "My target role"), jd: (a.jd || "").slice(0, 12000), experience: a.experience || "" };
+    saveSettings({
+      authName: a.name || getSettings().authName, experience: a.experience || "", roleId: a.targetRole || "",
+      onboarding: a, practiceMinutes: a.minutes || "20", targetRole: setupState.roleTitle
+    });
+    $("#onboard-input").innerHTML = "";
+    $("#onboard-status").textContent = "";
+    $("#btn-onboard-next").classList.add("hidden");
+    $("#btn-onboard-back").classList.add("hidden");
+    $("#onboard-step").textContent = "Almost there";
+    setupProgress("Checking your key…", 5);
 
     return callGeminiResilient(getSettings(), "Reply with the single word OK.", "Say OK.", null)
       .catch(function (err) {
         throw new Error(isAuthError(err) ? "Google turned that key down. Make a new one at aistudio.google.com/apikey." : "Could not reach Gemini with that key. " + String(err.message || err).slice(0, 120));
       })
       .then(function () {
-        setupProgress("Connecting your Google Drive…", 8);
+        setupProgress("Connecting your Google Drive…", 10);
         return driveToken ? driveToken : getDriveToken(true);
       })
       .then(function () { return ensureRootFolder(); })
       .then(function (rootId) {
-        if (pasted) { setupState.resumeText = pasted.slice(0, 18000); return null; }
-        if (!file) return null;
-        setupProgress("Reading your resume…", 14);
-        return readResumeFile(file, rootId).then(function (text) { setupState.resumeText = text; });
+        if (!ONB.file) return null;
+        setupProgress("Reading your resume…", 16);
+        return readResumeFile(ONB.file, rootId).then(function (text) { setupState.resumeText = text; });
       })
       .then(function () {
         saveSettings({ resumeText: setupState.resumeText || "" });
         if (!setupState.resumeText && !setupState.jd) return {};
-        setupProgress("Writing the questions that are personal to you…", 20);
-        var userMsg = "RESUME:\n" + (setupState.resumeText || "Not given.") +
-          "\n\nYEARS OF EXPERIENCE: " + setupState.experience +
+        setupProgress("Writing the questions that are personal to you…", 24);
+        var userMsg = onbProfileText() +
+          "\n\nRESUME:\n" + (setupState.resumeText || "Not given.") +
           "\n\nJOB DESCRIPTION:\n" + (setupState.jd || "Not given.") +
-          "\n\nThe candidate calls this role: " + setupState.roleTitle +
           (role ? "\n\nThey already have these standard questions, so do NOT repeat them:\n" + role.questions.map(function (q) { return "- " + q.q; }).join("\n") : "");
-        var sys = QSET_SYS.replace("COUNT", String(role ? 10 : 26));
         return retryWhenBusy(function () {
-          return callGeminiResilient(getSettings(), sys, userMsg, null);
-        }, 2, function (n, wait) { setupProgress("Gemini is busy, trying again in " + Math.round(wait / 1000) + " seconds…", 22); })
+          return callGeminiResilient(getSettings(), QSET_SYS.replace("COUNT", String(role ? 10 : 26)), userMsg, null);
+        }, 2, function (n, wait) { setupProgress("Gemini is busy, trying again in " + Math.round(wait / 1000) + " seconds…", 26); })
           .then(function (content) { return parseFeedbackContent(content) || {}; })
-          .catch(function () { return {}; });   // the library alone is still a full set
+          .catch(function () { return {}; });
       })
       .then(function (parsed) { return writeStarterSet(parsed || {}, role); })
       .then(function (res) {
-        closeSetupWizard();
+        exitOnboarding();
         renderSidebar(); renderHome(); goHome(); updateAccountUi();
-        showToast("Your practice space is ready.");
+        showToast("Welcome in, " + onbFirstName() + ". Your space is ready.");
         draftAnswersInBackground(res.answerSections);
         if (setupState.resumeText) draftStoryBank();
       })
       .catch(function (err) {
-        setupProgress(String((err && err.message) || err), 0);
-        $("#setup-retry").classList.remove("hidden");
+        $("#btn-onboard-next").classList.remove("hidden");
+        $("#btn-onboard-next").textContent = "Try again";
+        $("#btn-onboard-back").classList.remove("hidden");
+        setupProgress("", 0);
+        $("#onboard-question").textContent = "That did not finish";
+        onbStatus(String((err && err.message) || err));
       });
   }
 
@@ -7245,6 +7532,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   // missing model is skipped straight away rather than waited on, so a
   // busy Gemini almost never reaches you as an error.
   function callGeminiResilient(settings, sys, userMsg, onProgress) {
+    if (demoMode()) return demoDelay(demoGemini(sys, userMsg), 450);
     var attempted = [];
     function runChain(list) {
       var lastErr = new Error("No Gemini model was available.");
@@ -7281,6 +7569,14 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   }
   // Same idea as callGeminiResilient, for the back and forth chat calls.
   function callGeminiChatResilient(settings, sys, turns, onProgress) {
+    if (demoMode()) {
+      var said = (turns || []).filter(function (t) { return t.role === "user"; }).length;
+      return demoDelay(said >= 2
+        ? JSON.stringify({ action: "finish", say: "Thanks, that is enough for the demo.", score: 7, verdict: "Good start",
+            what_worked: "Clear structure and a calm pace.", what_to_improve: "Put one number against every claim.",
+            missing_point: "You did not say what you would do differently.", clarifying: 6, structure: 7, numbers: 5, tradeoffs: 6, communication: 8 })
+        : JSON.stringify({ action: "continue", type: "followup", say: "Good start. What number moved because of that, and how did you measure it?" }), 500);
+    }
     var attempted = [];
     function runChain(list) {
       var lastErr = new Error("No Gemini model was available.");
@@ -7400,6 +7696,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   var live = null; // holds the whole live session while one is running
 
   function liveSupported() {
+    if (demoMode()) return false;
     var hasCtx = !!(window.AudioContext || window.webkitAudioContext);
     var hasMic = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
     return !!window.WebSocket && hasCtx && hasMic;
@@ -9671,11 +9968,12 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
         message: "Your Rehearsly folder and everything in it stays safe in your Google Drive. Sign in again any time to get it back."
       }).then(function (ok) { if (ok) signOut(); });
     };
-    $("#btn-open-setup").onclick = function () { openSetupWizard(); };
-    $("#btn-setup-close").onclick = closeSetupWizard;
-    $("#btn-setup-later").onclick = function () {
-      closeSetupWizard();
-      showToast("No problem. Look around, and set up whenever you are ready.");
+    $("#btn-open-setup").onclick = function () { startOnboarding(); };
+    $("#btn-onboard-next").onclick = onbNext;
+    $("#btn-onboard-back").onclick = onbBack;
+    $("#btn-onboard-exit").onclick = function () {
+      exitOnboarding();
+      showToast("Saved where you left off. Look around, and finish setting up whenever you like.");
     };
     $("#btn-start-fresh").onclick = function () {
       confirmDialog({
@@ -9687,12 +9985,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
         startFresh();
       });
     };
-    $("#btn-setup-build").onclick = setupBuild;
-    $("#setup-retry").onclick = function () {
-      $("#setup-retry").classList.add("hidden");
-      $("#setup-progress-pane").classList.add("hidden");
-      $("#setup-form").classList.remove("hidden");
-    };
+
     $("#sync-dot").onclick = function () {
       if (!driveOn()) { openSettings(); return; }
       showToast("Syncing with your Google Drive…");
