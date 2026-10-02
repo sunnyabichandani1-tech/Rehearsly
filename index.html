@@ -5147,6 +5147,64 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     });
     return gisPromise;
   }
+  // The Client ID is public by design, it only names the app to Google.
+  function googleClientId() { return (getSettings().googleClientId || BUILT_IN_CLIENT_ID || "").trim(); }
+  function gisErr(message, code) { var e = new Error(message || "Google sign in did not finish."); e.code = code || "gis/failed"; return e; }
+  // Google's own sign in library, running on this page. It does not need
+  // the firebaseapp.com helper, so browsers that block cross site storage
+  // cannot drop the answer on the way back.
+  var gisClient = null, gisClientFor = "", gisPending = null;
+  function gisAccessToken(prompt) {
+    var cid = googleClientId();
+    if (!cid) return Promise.reject(gisErr("Google sign in is not set up on this copy yet.", "gis/no-client-id"));
+    function ask() {
+      return new Promise(function (resolve, reject) {
+        if (!gisClient || gisClientFor !== cid) {
+          gisClientFor = cid;
+          gisClient = google.accounts.oauth2.initTokenClient({
+            client_id: cid,
+            scope: DRIVE_SCOPE,
+            callback: function (resp) {
+              var job = gisPending; gisPending = null;
+              if (!job) return;
+              if (!resp || resp.error) {
+                job.reject(gisErr(resp && (resp.error_description || resp.error), resp && resp.error === "access_denied" ? "gis/access_denied" : "gis/failed"));
+                return;
+              }
+              rememberToken(resp.access_token, resp.expires_in);
+              job.resolve(resp.access_token);
+            },
+            error_callback: function (err) {
+              var job = gisPending; gisPending = null;
+              if (job) job.reject(gisErr(null, "gis/" + ((err && err.type) || "failed")));
+            }
+          });
+        }
+        gisPending = { resolve: resolve, reject: reject };
+        gisClient.requestAccessToken({ prompt: prompt || "" });
+      });
+    }
+    // Called straight from the click when the library is ready, so the
+    // browser treats the Google window as something the person asked for.
+    if (window.google && google.accounts && google.accounts.oauth2) return ask();
+    return loadGis().then(ask);
+  }
+  // Sign in with Google's library, then hand the result to Firebase.
+  function gisGoogleSignIn() {
+    return gisAccessToken("select_account").then(function (token) {
+      return loadFirebase().then(function (auth) {
+        return auth.signInWithCredential(window.firebase.auth.GoogleAuthProvider.credential(null, token));
+      }).catch(function (err) {
+        if (err && (err.code === "auth/invalid-credential" || err.code === "auth/invalid-idp-response")) {
+          throw gisErr("Google approved you, but Firebase did not accept it. The Client ID must belong to the Rehearsly Firebase project.", "gis/firebase-rejected");
+        }
+        throw err;
+      });
+    }).then(function (res) {
+      if (res && res.user) { fbUser = res.user; rememberUser(res.user); }
+      return res;
+    });
+  }
   function rememberToken(tok, secs) {
     driveToken = tok;
     driveTokenExp = Date.now() + (secs || 3600) * 1000;
@@ -5913,6 +5971,10 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     if (code === "auth/invalid-credential" || code === "auth/wrong-password" || code === "auth/user-not-found") return "That email and password do not match. Try again, or use Forgot your password.";
     if (code === "auth/too-many-requests") return "Too many tries. Wait a minute, then try again.";
     if (code === "auth/popup-closed-by-user") return "The Google window was closed before it finished.";
+    if (code === "gis/popup_closed") return "The Google window was closed before it finished.";
+    if (code === "gis/popup_failed_to_open") return "Your browser blocked the Google window. Allow pop ups for this site, then try again.";
+    if (code === "gis/access_denied") return "Google access was not allowed. Rehearsly needs it to keep your answers in your Drive.";
+    if (code && code.indexOf("gis/") === 0) return String(err.message || "Google sign in did not finish. Try once more.");
     if (code === "auth/popup-blocked") return "Chrome blocked the Google window. Allow pop ups for this site, then try again.";
     if (code === "auth/unauthorized-domain") return "This web address is not allowed in the Firebase project yet. Add it under Authentication, Settings, Authorised domains.";
     if (code === "auth/operation-not-allowed") return "Turn on this sign in method in Firebase, under Authentication, Sign in method.";
@@ -5927,6 +5989,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   }
   // Signing in with Google also gives the ticket that opens your Drive.
   function firebaseGoogleFlow(link) {
+    if (googleClientId()) return gisGoogleSignIn();
     return loadFirebase().then(function (auth) {
       var provider = googleProviderWithDrive();
       var cur = auth.currentUser;
@@ -10418,6 +10481,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     finishRedirectLogin().catch(function () {});
     var cfg = firebaseConfig();
     if (cfg) loadFirebase().catch(function () {}); else loadGis().catch(function () {});
+    if (cfg && googleClientId()) loadGis().catch(function () {});
     if (!cfg && !(getSettings().googleClientId || BUILT_IN_CLIENT_ID)) {
       loginStatus("This copy is not set up for sign in yet. If this is your copy, open App owner set up below.");
     }
