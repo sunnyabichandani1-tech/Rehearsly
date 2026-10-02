@@ -6130,19 +6130,32 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   // Google sign in takes over the whole page, the way most sites do it.
   // You come back to Rehearsly already signed in. If the browser blocks
   // that route, the small window is used instead.
+  // Google sign in opens in Google's own window. Most browsers now drop
+  // the answer of the full page route when the app and the sign in page
+  // live on different web addresses (github.io and firebaseapp.com), so
+  // the full page route is only a backup for when pop ups are blocked.
   function loginWithGoogle() {
     saveSettings({ keepSignedIn: !!($("#auth-remember") && $("#auth-remember").checked) });
-    loginStatus("Taking you to Google…", "busy"); loginBusy(true);
-    loadFirebase().then(function (auth) {
-      try { sessionStorage.setItem("sip_redirect_pending", String(Date.now())); } catch (e) {}
-      return auth.signInWithRedirect(googleProviderWithDrive());
+    loginStatus("Opening Google…", "busy"); loginBusy(true);
+    firebaseGoogleFlow(false).then(function () {
+      loginBusy(false); loginStatus("");
+      afterSignedIn(false);
     }).catch(function (err) {
-      try { sessionStorage.removeItem("sip_redirect_pending"); } catch (e) {}
-      // Some browsers refuse the full page route, so fall back quietly.
-      firebaseGoogleFlow(false).then(function () {
-        loginBusy(false); loginStatus("");
-        afterSignedIn(false);
-      }).catch(function (e2) { loginBusy(false); loginStatus(friendlyAuthError(e2 || err)); });
+      var code = (err && err.code) || "";
+      if (code === "auth/cancelled-popup-request") { loginBusy(false); loginStatus(""); return; }
+      if (code === "auth/popup-blocked" || code === "auth/operation-not-supported-in-this-environment") {
+        loginStatus("Taking you to Google…", "busy");
+        loadFirebase().then(function (auth) {
+          try { sessionStorage.setItem("sip_redirect_pending", String(Date.now())); } catch (e) {}
+          return auth.signInWithRedirect(googleProviderWithDrive());
+        }).catch(function (e2) {
+          try { sessionStorage.removeItem("sip_redirect_pending"); } catch (e) {}
+          loginBusy(false); loginStatus(friendlyAuthError(e2 || err));
+        });
+        return;
+      }
+      loginBusy(false);
+      loginStatus(friendlyAuthError(err));
     });
   }
   // Called on every load: if we are coming back from Google, finish the
@@ -6159,7 +6172,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       try { sessionStorage.removeItem("sip_redirect_pending"); } catch (e) {}
       loginBusy(false);
       if (!res || !res.user) {
-        loginStatus("That did not finish. Tap Continue with Google once more.");
+        loginStatus("Google did not send the sign in back. Tap Continue with Google again, it opens in a small window this time.");
         return false;
       }
       var token = res.credential && res.credential.accessToken;
