@@ -4881,7 +4881,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
    * sign in token, and the Worker keeps a fair daily limit per person.
    * When RELAY_URL is empty the app falls back to a key in Settings.
    * ------------------------------------------------------------------- */
-  var RELAY_URL = "";
+  var RELAY_URL = "https://rehearsly-relay.sunnyabichandani1.workers.dev";
   var LIVE_WS_BASE = "wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.";
   function relayUrl() { return String(RELAY_URL || getSettings().relayUrl || "").trim().replace(/\/+$/, ""); }
   function relayOn() { return !!relayUrl() && !demoMode(); }
