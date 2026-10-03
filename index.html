@@ -1364,11 +1364,11 @@ body.locked { overflow: hidden; }
 .ob2 *, .ob2 *::before, .ob2 *::after { box-sizing: border-box; }
 .ob2 button, .ob2 input, .ob2 select, .ob2 textarea { font-family: inherit; }
 .ob2-page { min-height: 100%; display: flex; align-items: center; justify-content: center; padding: 32px 16px; }
-.ob2-card { width: 100%; max-width: 620px; background: #FFFFFF; border: 1px solid #ECE6FA; border-radius: 24px;
+.ob2-card { width: 100%; max-width: 760px; background: #FFFFFF; border: 1px solid #ECE6FA; border-radius: 24px;
   box-shadow: 0 30px 70px -36px rgba(109,40,217,0.35); }
 
 /* header */
-.ob2-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 20px 28px; border-bottom: 1px solid #F0EDF8; }
+.ob2-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 22px clamp(28px,5vw,52px); border-bottom: 1px solid #F0EDF8; }
 .ob2-logo { display: inline-flex; align-items: center; gap: 7px; flex: 1 1 0; }
 .ob2-logo .rl-word { font-size: 21px; color: #1A1033; }
 .ob2-dots { display: flex; gap: 6px; align-items: center; margin: 0; padding: 0; list-style: none; }
@@ -1383,19 +1383,20 @@ body.locked { overflow: hidden; }
 .ob2-li:hover { color: #5B21B6; }
 
 /* body and shared pieces */
-.ob2-body { padding: clamp(24px,5vw,40px); display: flex; flex-direction: column; gap: 28px; }
+.ob2-body { padding: clamp(28px,5vw,52px); display: flex; flex-direction: column; gap: 36px; }
 .ob2-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 4px; min-height: 44px; }
 .ob2-eyebrow { margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #6D28D9; }
-.ob2-h1 { margin: 0; font-family: "Newsreader", Georgia, serif; font-weight: 400; font-size: clamp(26px,3.4vw,32px); line-height: 1.15; letter-spacing: -0.02em; color: #1A1033; outline: none; }
-.ob2-grad { font-style: italic; background: linear-gradient(135deg,#6D28D9 0%,#A21CAF 55%,#F43F5E 100%); -webkit-background-clip: text; background-clip: text; color: transparent; padding-right: .06em; }
-.ob2-sub { margin: 10px 0 0; font-size: 14px; line-height: 1.5; color: #566079; }
+.ob2-h1 { margin: 0; font-family: "Newsreader", Georgia, serif; font-weight: 500; font-size: clamp(32px,4vw,42px); line-height: 1.1; letter-spacing: -0.025em; text-wrap: balance; color: #1A1033; outline: none; }
+.ob2-grad { font-style: italic; background: linear-gradient(135deg,#6D28D9 0%,#A21CAF 55%,#F43F5E 100%); -webkit-background-clip: text; background-clip: text; color: transparent; padding-right: .08em; }
+.ob2-sub { margin: 14px 0 0; max-width: 560px; font-size: 16px; line-height: 1.55; color: #465069; }
 .ob2-note { margin: 10px 0 0; font-size: 13px; line-height: 1.5; color: #566079; }
 .ob2-note.err { color: #E11D48; }
-.ob2-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%,220px), 1fr)); gap: 16px; }
-.ob2-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-.ob2-label { font-size: 13px; font-weight: 500; color: #1A1033; }
-.ob2-label small { font-size: 13px; font-weight: 400; color: #6B7390; }
-.ob2-input, .ob2-select, .ob2-textarea { width: 100%; height: 46px; border-radius: 10px; border: 1px solid #D5DAE6; background: #F7F8FC;
+.ob2-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%,260px), 1fr)); gap: 22px 24px; }
+.ob2-field { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.ob2-field .ob2-select + .ob2-sr + .ob2-input { margin-top: -2px; }
+.ob2-label { font-size: 14px; font-weight: 500; color: #1A1033; }
+.ob2-label small { font-size: 14px; font-weight: 400; color: #6B7390; }
+.ob2-input, .ob2-select, .ob2-textarea { width: 100%; height: 52px; border-radius: 10px; border: 1px solid #D5DAE6; background: #F7F8FC;
   font-size: 15px; color: #1A1033; padding: 0 14px; outline: none; transition: border-color .15s, box-shadow .15s, background-color .15s; }
 .ob2-select { appearance: none; -webkit-appearance: none; padding: 0 36px 0 14px; cursor: pointer;
   background: #F7F8FC url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%228%22%20viewBox%3D%220%200%2012%208%22%3E%3Cpath%20d%3D%22M1%201.5l5%205%205-5%22%20fill%3D%22none%22%20stroke%3D%22%23566079%22%20stroke-width%3D%221.6%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E") no-repeat right 14px center; }
@@ -1405,8 +1406,9 @@ body.locked { overflow: hidden; }
 .ob2-input::placeholder, .ob2-textarea::placeholder { color: #7D86A0; }
 .ob2-input:focus, .ob2-select:focus, .ob2-textarea:focus { border-color: #6D28D9; box-shadow: 0 0 0 3px rgba(109,40,217,0.15); background-color: #FFFFFF; }
 
-.ob2-btn { height: 46px; padding: 0 22px; border-radius: 10px; cursor: pointer; font-size: 15px; font-weight: 500; white-space: nowrap; }
+.ob2-btn { height: 52px; padding: 0 22px; border-radius: 10px; cursor: pointer; font-size: 15px; font-weight: 500; white-space: nowrap; }
 .ob2-primary { border: 0; color: #FFFFFF; background: linear-gradient(135deg,#6D28D9 0%,#A21CAF 55%,#F43F5E 100%); box-shadow: 0 10px 24px -10px rgba(162,28,175,0.6); }
+.ob2-primary:hover:not([aria-disabled="true"]):not(:disabled) { background: linear-gradient(135deg,#5B21B6 0%,#86198F 55%,#E11D48 100%); }
 .ob2-primary[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; }
 .ob2-secondary { background: #FFFFFF; border: 1px solid #D5DAE6; color: #1A1033; }
 .ob2-secondary:hover { border-color: #6D28D9; }
@@ -1457,8 +1459,8 @@ body.locked { overflow: hidden; }
 .ob2-info { display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 13px; color: #566079; }
 .ob2-info b { font-weight: 600; color: #1A1033; }
 .ob2-actions { display: flex; flex-wrap: wrap; gap: 12px; }
-.ob2-actions .ob2-primary { flex: 1 1 200px; height: 50px; }
-.ob2-actions .ob2-secondary { flex: 1 1 160px; height: 50px; }
+.ob2-actions .ob2-primary { flex: 1 1 200px; }
+.ob2-actions .ob2-secondary { flex: 1 1 160px; }
 .ob2-status { margin: -12px 0 0; min-height: 18px; font-size: 13px; color: #566079; }
 .ob2-status.err { color: #E11D48; }
 
@@ -1474,8 +1476,6 @@ body.locked { overflow: hidden; }
 .ob2-dlg-card .ob2-actions .ob2-btn { height: 46px; }
 
 @media (max-width: 520px) {
-  .ob2-head { padding: 16px 18px; }
-  .ob2-logo .rl-word { font-size: 19px; }
   .ob2-foot .ob2-btn { padding: 0 16px; }
   .ob2-foot-r { gap: 10px; min-width: 0; }
   .ob2-hint { line-height: 1.3; }
@@ -1549,7 +1549,7 @@ body.locked { overflow: hidden; }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet" />
 </head>
 <body>
 
@@ -6155,6 +6155,9 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       driveOn: false, driveRootId: "", onboarding: null, resumeText: "", jdText: "", targetRole: "",
       profileSummary: "", roleId: "", geminiKey: "demo-key", onb2Done: false, profile2: null
     });
+    var dd = Object.assign({}, getSettings().onbDoneBy || {});
+    delete dd[DEMO_EMAIL];
+    saveSettings({ onbDoneBy: dd });
     showLogin(false);
     loadData(true).then(function () {
       renderSidebar(); renderHome(); goHome(); updateAccountUi();
@@ -6259,10 +6262,28 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       if (!driveToken) showToast("Tap the dot at the top to reconnect your Google Drive.");
       driveSyncAndRender(false).catch(function () {});
     }
-    if (needProfileOnboarding()) startProfileOnboarding();
+    if (driveOn() && getSettings().driveRootId) markOnbDone();
+    else if (needProfileOnboarding()) startProfileOnboarding();
+  }
+  // A different person signing in on this browser must not see the last
+  // person's resume, answers, scores or progress.
+  function forgetOtherAccount(email) {
+    var s = getSettings(), e = String(email || "").trim().toLowerCase();
+    var owner = String(s.ownerEmail || "").toLowerCase();
+    if (owner && e && owner !== e) {
+      saveSettings({ driveOn: false, driveRootId: "", resumeText: "", jdText: "", targetRole: "", profileSummary: "", roleId: "",
+        onboarding: null, onb2Done: false, profile2: null, geminiKey: "", experience: "", practiceMinutes: "" });
+      try {
+        ["sip_drive_cache", "sip_drive_queue", "sip_cache", "sip_local_deleted", "sip_local_edits", "sip_local_questions",
+         "sip_local_sections", "sip_interview_history", "sip_scores", "sip_progress", "sip_practice_block", "sip_last_id"]
+          .forEach(function (k) { localStorage.removeItem(k); });
+      } catch (err) {}
+    }
+    if (e) saveSettings({ ownerEmail: e });
   }
   function rememberUser(u) {
     if (!u) return;
+    forgetOtherAccount(u.email);
     saveSettings({
       authEmail: u.email || "",
       authName: u.displayName || getSettings().authName || (u.email || "").split("@")[0],
@@ -6573,6 +6594,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       var root = files.filter(function (f) { return f.appProperties && f.appProperties.rkind === "root"; })[0];
       if (root && root.appProperties.seeded === "1") {
         saveSettings({ driveOn: true, driveRootId: root.id });
+        markOnbDone();
         loginStatus("Getting your questions…", "busy");
         return driveSync(true).then(function () {
           showLogin(false);
@@ -6977,12 +6999,20 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   }
   // Only once, after sign up. People who already set up their space, or
   // finished an earlier set up, are left alone.
+  // Done is kept per account, so a second person on the same browser
+  // still gets their own onboarding.
+  function onbAccount() { return String(getSettings().authEmail || "").trim().toLowerCase(); }
+  function onbDoneFor(email) { return !!(getSettings().onbDoneBy || {})[email]; }
+  function markOnbDone() {
+    var e = onbAccount();
+    if (!e) return;
+    var d = Object.assign({}, getSettings().onbDoneBy || {});
+    d[e] = true;
+    saveSettings({ onbDoneBy: d });
+  }
   function needProfileOnboarding() {
-    var s = getSettings();
-    if (s.onb2Done) return false;
-    if (s.onboarding && !s.demoMode) return false;
-    if (s.driveOn && s.driveRootId) return false;
-    return true;
+    var e = onbAccount();
+    return !!e && !onbDoneFor(e);
   }
   function startProfileOnboarding(fresh) {
     if (fresh) { try { localStorage.removeItem(ob2Key()); } catch (e) {} }
@@ -7089,8 +7119,8 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     });
     $("#ob2-dots").setAttribute("aria-label", "Step " + step + " of 3");
     if (step === 1) {
-      html = ob2Head("About you · 1 of 2", "Tell us about your ", "next move.",
-          "Four quick fields. We use them to set your interviewer's level.",
+      html = ob2Head("About you · 1 of 2", "Help us know what you're ", "preparing for.",
+          "Your role and timeline set the interviewer's level, the questions you get and the pace of your plan. Four fields, under a minute.",
           '<button type="button" class="ob2-text-btn ob2-li" id="ob2-li">' + (OB2.imported ? "Filled from LinkedIn" : "Fill from LinkedIn") + "</button>") +
         (OB2.liMsg ? '<p class="ob2-note' + (OB2.liErr ? " err" : "") + '" role="status" style="margin-top:-16px">' + OB2.liMsg + "</p>" : "") +
         '<div><div class="ob2-grid">' +
@@ -7102,8 +7132,8 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
         '<input class="ob2-input" id="ob2-company" data-f="company" type="text" autocomplete="organization" placeholder="e.g. Atlassian" value="' + escapeHtml(d.company) + '" /></div></div>' +
         ob2Foot("Continue");
     } else if (step === 2) {
-      html = ob2Head("Your first interview · 2 of 2", "How would you like to ", "start?",
-          "Combine a resume and job description for the most tailored interview.") +
+      html = ob2Head("Your first interview · 2 of 2", "Choose how we ", "tailor your interview.",
+          "Your resume and the job description let us ask about your real experience and the role's exact needs. Use both for the closest match.") +
         '<div class="ob2-opts">' +
         ob2Opt("resume", "Upload your resume", "Questions probe your real roles and wins.", "", ob2ResumeRow()) +
         ob2Opt("jd", "Paste a job description", "Tests the exact competencies the role needs.", "Most tailored",
@@ -7113,11 +7143,12 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
         ob2Opt("quick", "Core senior questions", "No prep. Six questions panels ask most.", "Fastest", "") +
         "</div>" + ob2Foot("Build my interview");
     } else {
-      html = ob2Head("You're set", "Your first interview is ", "ready.", "") +
+      html = ob2Head("You're set", "Your first interview is ", "ready.",
+          "Built from your profile. You'll get scores and coach notes the moment you finish.") +
         '<div class="ob2-session"><p class="ob2-meta">Session 1 of ' + ob2Sessions() + " · about 20 minutes · voice</p>" +
         "<h2>Leadership round for " + escapeHtml(d.targetRole) + "</h2>" +
-        '<div class="ob2-info"><span>Interviewer: <b>' + escapeHtml(ob2Interviewer()) + "</b></span>" +
-        "<span>Based on: <b>" + escapeHtml(ob2BasedOn() || "Core questions") + "</b></span></div></div>" +
+        '<div class="ob2-info"><span>Interviewer <b>' + escapeHtml(ob2Interviewer()) + "</b></span>" +
+        "<span>Based on <b>" + escapeHtml(ob2BasedOn() || "Core questions") + "</b></span></div></div>" +
         '<div class="ob2-actions"><button type="button" class="ob2-btn ob2-primary" id="ob2-start">Start interview</button>' +
         '<button type="button" class="ob2-btn ob2-secondary" id="ob2-mic-test">Test my mic first</button></div>' +
         '<p class="ob2-status" id="ob2-status" aria-live="polite"></p>';
@@ -7157,16 +7188,11 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     ob2Go(3);
   }
 
-  /* ---- Finish later: save, and email a link back when the relay can ---- */
+  /* ---- Finish later: save, and pick up on the same step next login ---- */
   function ob2FinishLater() {
     if (OB2) ob2Persist();
     var b = $("#ob2-save");
     b.textContent = "Saved";
-    if (relayOn() && OB2 && OB2.step < 3) {
-      relayFetch("/resume-email", { step: OB2.step }).then(function (r) { return r.ok ? r.json() : null; })
-        .then(function (j) { if (j && j.sent) showToast("We emailed you a link to pick up where you left off."); })
-        .catch(function () {});
-    }
     setTimeout(function () { if (b.textContent === "Saved") exitProfileOnboarding(); }, 1200);
   }
 
@@ -7181,6 +7207,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   function ob2Complete() {
     var d = OB2.data, s = getSettings();
     d.resumeFile = ob2UseResume() ? d.resumeFile : null;
+    markOnbDone();
     saveSettings({
       onb2Done: true,
       profile2: JSON.parse(JSON.stringify(d)),
