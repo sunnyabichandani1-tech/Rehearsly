@@ -1350,174 +1350,137 @@ body.locked { overflow: hidden; }
 }
 
 /* =====================================================================
-   New onboarding (Rehearsly Onboarding Spec). Full screen, two columns,
-   always in the light VG-1 look whatever the app theme is.
+   Onboarding v2 (compact form). One centred card on a lilac mesh page,
+   2 input steps and a ready screen. Always in the light VG-1 look,
+   whatever the app theme is.
    ===================================================================== */
-.ob2 { position: fixed; inset: 0; z-index: 131; background: #fff; color: #1A1033; overflow: auto;
-  font-family: "Inter Tight", system-ui, -apple-system, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
+.ob2 { position: fixed; inset: 0; z-index: 131; overflow: auto; color: #1A1033;
+  font-family: "Inter Tight", system-ui, -apple-system, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased;
+  background:
+    radial-gradient(50% 45% at 85% 12%, rgba(196,181,253,0.55) 0%, rgba(196,181,253,0) 70%),
+    radial-gradient(45% 40% at 12% 88%, rgba(253,164,175,0.45) 0%, rgba(253,164,175,0) 70%),
+    radial-gradient(40% 35% at 70% 75%, rgba(240,171,252,0.30) 0%, rgba(240,171,252,0) 70%),
+    #FBFAFF; }
 .ob2 *, .ob2 *::before, .ob2 *::after { box-sizing: border-box; }
-.ob2 button { font-family: inherit; }
-.ob2-top { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
-  background: rgba(255,255,255,.9); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
-  border-bottom: 1px solid #E4E8F1; padding: 14px clamp(20px,4vw,40px); }
-.ob2-logo { display: inline-flex; align-items: center; gap: 9px; flex: 0 0 auto; }
-.ob2-logo .rl-word { font-size: 26px; color: #1A1033; }
-.ob2-progress { flex: 1 1 320px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 0; padding: 0; list-style: none; max-width: 560px; }
-.ob2-progress li { display: grid; gap: 7px; font-size: 12px; font-weight: 500; color: #6B7390; }
-.ob2-progress li::before { content: ""; height: 4px; border-radius: 99px; background: #E4E8F1; }
-.ob2-progress li.done::before, .ob2-progress li.cur::before { background: linear-gradient(135deg,#6D28D9 0%,#A21CAF 55%,#F43F5E 100%); }
-.ob2-progress li.cur { color: #1A1033; }
-.ob2-top-r { display: flex; align-items: center; gap: 14px; margin-left: auto; }
-.ob2-help { background: none; border: 0; color: #465069; font-size: 14px; font-weight: 500; cursor: pointer; min-height: 44px; padding: 0 4px; text-decoration: none; }
-.ob2-help:hover { color: #6D28D9; }
-.ob2-save { height: 40px; padding: 0 16px; background: #fff; border: 1px solid #D5DAE6; border-radius: 9px; color: #1A1033; font-size: 14px; font-weight: 500; cursor: pointer; }
-.ob2-save:hover { border-color: #6D28D9; }
-.ob2-save.saved { color: #5B21B6; border-color: #C4B5FD; background: #F7F5FF; }
-.ob2-body { display: flex; flex-wrap: wrap; min-height: calc(100% - 69px); }
-.ob2-main { flex: 1 1 560px; padding: 28px clamp(20px,5vw,64px); background: #fff; }
-.ob2-content { max-width: 640px; display: flex; flex-direction: column; gap: 32px; padding: 48px 0 32px; }
-.ob2-aside { flex: 1 1 380px; padding: clamp(32px,5vw,64px); border-left: 1px solid #ECE6FA;
-  background: radial-gradient(60% 45% at 100% 0%, rgba(162,28,175,.10), transparent 70%),
-              radial-gradient(55% 45% at 0% 100%, rgba(109,40,217,.10), transparent 70%),
-              radial-gradient(40% 35% at 70% 60%, rgba(244,63,94,.06), transparent 70%), #FBFAFF; }
+.ob2 button, .ob2 input, .ob2 select, .ob2 textarea { font-family: inherit; }
+.ob2-page { min-height: 100%; display: flex; align-items: center; justify-content: center; padding: 32px 16px; }
+.ob2-card { width: 100%; max-width: 620px; background: #FFFFFF; border: 1px solid #ECE6FA; border-radius: 24px;
+  box-shadow: 0 30px 70px -36px rgba(109,40,217,0.35); }
 
-.ob2-eyebrow { margin: 0 0 12px; font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: #6D28D9; }
-.ob2-h1 { margin: 0; font-family: "Newsreader", Georgia, serif; font-weight: 400; font-size: clamp(34px,4vw,46px); line-height: 1.08; letter-spacing: -0.02em; color: #1A1033; }
+/* header */
+.ob2-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 20px 28px; border-bottom: 1px solid #F0EDF8; }
+.ob2-logo { display: inline-flex; align-items: center; gap: 7px; flex: 1 1 0; }
+.ob2-logo .rl-word { font-size: 21px; color: #1A1033; }
+.ob2-dots { display: flex; gap: 6px; align-items: center; margin: 0; padding: 0; list-style: none; }
+.ob2-dots li { width: 6px; height: 6px; border-radius: 3px; background: #E4E8F1; transition: width .25s ease, background .25s ease; }
+.ob2-dots li.done, .ob2-dots li.cur { background: linear-gradient(90deg,#6D28D9,#A21CAF); }
+.ob2-dots li.cur { width: 22px; }
+.ob2-later-wrap { flex: 1 1 0; display: flex; justify-content: flex-end; }
+.ob2-text-btn { background: none; border: 0; padding: 0 2px; min-height: 44px; cursor: pointer; font-size: 13px; font-weight: 500; }
+.ob2-later { color: #566079; }
+.ob2-later:hover { color: #1A1033; }
+.ob2-li { color: #6D28D9; }
+.ob2-li:hover { color: #5B21B6; }
+
+/* body and shared pieces */
+.ob2-body { padding: clamp(24px,5vw,40px); display: flex; flex-direction: column; gap: 28px; }
+.ob2-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 4px; min-height: 44px; }
+.ob2-eyebrow { margin: 0; font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #6D28D9; }
+.ob2-h1 { margin: 0; font-family: "Newsreader", Georgia, serif; font-weight: 400; font-size: clamp(26px,3.4vw,32px); line-height: 1.15; letter-spacing: -0.02em; color: #1A1033; outline: none; }
 .ob2-grad { font-style: italic; background: linear-gradient(135deg,#6D28D9 0%,#A21CAF 55%,#F43F5E 100%); -webkit-background-clip: text; background-clip: text; color: transparent; padding-right: .06em; }
-.ob2-sub { margin: 14px 0 0; font-size: 16px; line-height: 1.55; color: #465069; }
+.ob2-sub { margin: 10px 0 0; font-size: 14px; line-height: 1.5; color: #566079; }
+.ob2-note { margin: 10px 0 0; font-size: 13px; line-height: 1.5; color: #566079; }
+.ob2-note.err { color: #E11D48; }
+.ob2-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%,220px), 1fr)); gap: 16px; }
+.ob2-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.ob2-label { font-size: 13px; font-weight: 500; color: #1A1033; }
+.ob2-label small { font-size: 13px; font-weight: 400; color: #6B7390; }
+.ob2-input, .ob2-select, .ob2-textarea { width: 100%; height: 46px; border-radius: 10px; border: 1px solid #D5DAE6; background: #F7F8FC;
+  font-size: 15px; color: #1A1033; padding: 0 14px; outline: none; transition: border-color .15s, box-shadow .15s, background-color .15s; }
+.ob2-select { appearance: none; -webkit-appearance: none; padding: 0 36px 0 14px; cursor: pointer;
+  background: #F7F8FC url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%228%22%20viewBox%3D%220%200%2012%208%22%3E%3Cpath%20d%3D%22M1%201.5l5%205%205-5%22%20fill%3D%22none%22%20stroke%3D%22%23566079%22%20stroke-width%3D%221.6%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E") no-repeat right 14px center; }
+.ob2-select.empty { color: #7D86A0; }
+.ob2-select option, .ob2-select optgroup { color: #1A1033; }
+.ob2-textarea { height: auto; padding: 12px 14px; line-height: 1.5; resize: vertical; }
+.ob2-input::placeholder, .ob2-textarea::placeholder { color: #7D86A0; }
+.ob2-input:focus, .ob2-select:focus, .ob2-textarea:focus { border-color: #6D28D9; box-shadow: 0 0 0 3px rgba(109,40,217,0.15); background-color: #FFFFFF; }
 
-.ob2-field { display: grid; gap: 10px; }
-.ob2-label { font-size: 14px; font-weight: 600; color: #1A1033; }
-.ob2-label small { font-weight: 400; color: #6B7390; font-size: 13px; margin-left: 6px; }
-.ob2-input, .ob2-textarea { width: 100%; height: 50px; padding: 0 16px; border-radius: 10px; border: 1px solid #D5DAE6; background: #F7F8FC;
-  color: #1A1033; font: inherit; font-size: 16px; outline: none; transition: border-color .15s, box-shadow .15s, background .15s; }
-.ob2-textarea { height: auto; padding: 14px 16px; line-height: 1.5; resize: vertical; }
-.ob2-input::placeholder, .ob2-textarea::placeholder { color: #8A93AD; }
-.ob2-input:focus, .ob2-textarea:focus { border-color: #6D28D9; box-shadow: 0 0 0 3px rgba(109,40,217,.16); background: #fff; }
-.ob2-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.ob2-chips { display: flex; flex-wrap: wrap; gap: 8px; }
-.ob2-chip { min-height: 44px; padding: 10px 14px; border-radius: 99px; border: 1px solid #D5DAE6; background: #fff; color: #2E3550;
-  font-size: 14px; font-weight: 500; cursor: pointer; transition: border-color .15s, background .15s, color .15s; }
-.ob2-chip:hover { border-color: #A78BFA; }
-.ob2-chip[aria-pressed="true"] { background: rgba(109,40,217,.08); border-color: #6D28D9; color: #5B21B6; }
-.ob2-chip:focus-visible, .ob2-btn:focus-visible, .ob2-card-head:focus-visible, .ob2-li:focus-visible, .ob2-drop:focus-visible, .ob2-save:focus-visible, .ob2-help:focus-visible, .ob2-link:focus-visible
-  { outline: 2px solid #6D28D9; outline-offset: 2px; }
+.ob2-btn { height: 46px; padding: 0 22px; border-radius: 10px; cursor: pointer; font-size: 15px; font-weight: 500; white-space: nowrap; }
+.ob2-primary { border: 0; color: #FFFFFF; background: linear-gradient(135deg,#6D28D9 0%,#A21CAF 55%,#F43F5E 100%); box-shadow: 0 10px 24px -10px rgba(162,28,175,0.6); }
+.ob2-primary[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; }
+.ob2-secondary { background: #FFFFFF; border: 1px solid #D5DAE6; color: #1A1033; }
+.ob2-secondary:hover { border-color: #6D28D9; }
+.ob2 button:focus-visible, .ob2-drop:focus-visible { outline: 2px solid #6D28D9; outline-offset: 2px; }
 
-.ob2-li { display: inline-flex; align-items: center; gap: 12px; height: 52px; padding: 0 20px 0 16px; border-radius: 10px; border: 1px solid #D5DAE6;
-  background: #fff; color: #1A1033; font-size: 15px; font-weight: 600; cursor: pointer; align-self: flex-start; }
-.ob2-li:hover { border-color: #6D28D9; }
-.ob2-li .in { width: 20px; height: 20px; border-radius: 4px; background: #1A1033; color: #fff; font-size: 12px; font-weight: 700;
-  display: inline-flex; align-items: center; justify-content: center; letter-spacing: -.02em; }
-.ob2-li.done { border-color: #C4B5FD; background: #F7F5FF; color: #5B21B6; }
-.ob2-li-help { margin: -18px 0 0; padding: 14px 16px; border-radius: 10px; background: #F7F8FC; border: 1px solid #E4E8F1; font-size: 14px; line-height: 1.55; color: #465069; }
-.ob2-li-help ol { margin: 6px 0 10px 18px; padding: 0; }
-.ob2-li-msg { font-size: 13px; color: #465069; margin: -20px 0 0; }
-.ob2-li-msg.err { color: #E11D48; }
+/* footer */
+.ob2-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.ob2-foot .invisible { visibility: hidden; }
+.ob2-foot-r { display: flex; align-items: center; gap: 14px; margin-left: auto; }
+.ob2-hint { font-size: 13px; color: #6B7390; text-align: right; }
 
-.ob2-foot { display: flex; align-items: center; gap: 16px; padding-top: 8px; }
-.ob2-foot .ob2-back { visibility: visible; }
-.ob2-foot .ob2-back.invisible { visibility: hidden; }
-.ob2-hint { flex: 1; text-align: right; font-size: 13px; color: #6B7390; }
-.ob2-btn { height: 50px; padding: 0 24px; border-radius: 10px; border: 0; cursor: pointer; font-size: 15px; font-weight: 600; white-space: nowrap; }
-.ob2-primary { color: #fff; background: linear-gradient(135deg,#6D28D9 0%,#A21CAF 55%,#F43F5E 100%); box-shadow: 0 8px 22px -10px rgba(162,28,175,.55); }
-.ob2-primary:hover { filter: brightness(1.06); }
-.ob2-primary[aria-disabled="true"] { opacity: .45; cursor: not-allowed; box-shadow: none; filter: none; }
-.ob2-ghost { background: #fff; color: #1A1033; border: 1px solid #D5DAE6; }
-.ob2-ghost:hover { border-color: #6D28D9; }
-
-.ob2-cards { display: grid; gap: 14px; }
-.ob2-card { border: 1px solid #D5DAE6; border-radius: 16px; background: #fff; transition: border-color .15s, background .15s; }
-.ob2-card.on { border: 2px solid #6D28D9; background: #F7F5FF; }
-.ob2-card:not(.on) { margin: 1px; }
-.ob2-card-head { width: 100%; display: grid; grid-template-columns: 44px 1fr 24px; gap: 16px; align-items: start; text-align: left;
-  padding: 18px 20px; background: none; border: 0; cursor: pointer; color: inherit; border-radius: 16px; }
-.ob2-num { width: 44px; height: 44px; border-radius: 12px; background: #F3EEFF; color: #5B21B6; font-family: "Newsreader", Georgia, serif; font-size: 22px;
-  display: flex; align-items: center; justify-content: center; }
-.ob2-card.on .ob2-num { background: linear-gradient(135deg,#6D28D9 0%,#A21CAF 55%,#F43F5E 100%); color: #fff; }
-.ob2-card-title { font-size: 17px; font-weight: 600; color: #1A1033; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.ob2-tag { font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 99px; background: #F3EEFF; color: #5B21B6; }
-.ob2-card-text { margin: 5px 0 0; font-size: 14px; line-height: 1.5; color: #465069; }
-.ob2-check { width: 24px; height: 24px; border-radius: 7px; border: 1.5px solid #C4CBDB; background: #fff; display: flex; align-items: center; justify-content: center; }
-.ob2-card.on .ob2-check { border-color: #6D28D9; background: #6D28D9; }
+/* step 2 options */
+.ob2-opts { border: 1px solid #E4E8F1; border-radius: 16px; overflow: hidden; }
+.ob2-opt { background: #FFFFFF; transition: background-color .15s; }
+.ob2-opt + .ob2-opt { border-top: 1px solid #E4E8F1; }
+.ob2-opt.on { background: #FBFAFF; }
+.ob2-opt-head { width: 100%; display: flex; align-items: center; gap: 14px; padding: 16px 18px; min-height: 44px; background: none; border: 0; cursor: pointer; text-align: left; color: inherit; }
+.ob2-check { flex: 0 0 22px; width: 22px; height: 22px; border-radius: 6px; border: 1.5px solid #D5DAE6; background: #FFFFFF; display: flex; align-items: center; justify-content: center; }
+.ob2-opt.on .ob2-check { background: #6D28D9; border-color: #6D28D9; }
 .ob2-check svg { display: none; }
-.ob2-card.on .ob2-check svg { display: block; }
-.ob2-card-body { padding: 0 20px 20px 80px; display: grid; gap: 8px; }
-.ob2-drop { width: 100%; padding: 22px 16px; border-radius: 12px; border: 1.5px dashed #C4B5FD; background: #fff; cursor: pointer; text-align: center; color: #1A1033; }
-.ob2-drop.over { background: #F3EEFF; border-color: #6D28D9; }
-.ob2-drop b { display: block; font-size: 15px; font-weight: 600; }
-.ob2-drop span { display: block; margin-top: 4px; font-size: 13px; color: #6B7390; }
-.ob2-file { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 8px 14px; border-radius: 10px; background: #fff; border: 1px solid #E4E8F1; font-size: 14px; color: #1A1033; }
-.ob2-file b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.ob2-link { background: none; border: 0; padding: 0 2px; min-height: 44px; color: #6D28D9; font-size: 14px; font-weight: 600; cursor: pointer; }
-.ob2-small { font-size: 13px; color: #6B7390; margin: 0; }
+.ob2-opt.on .ob2-check svg { display: block; }
+.ob2-opt-text { flex: 1 1 auto; min-width: 0; }
+.ob2-opt-title { display: block; font-size: 15px; font-weight: 600; color: #1A1033; }
+.ob2-opt-body { display: block; margin-top: 2px; font-size: 13px; line-height: 1.45; color: #566079; }
+.ob2-tag { flex: 0 0 auto; margin-left: auto; font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 99px; background: #F3EEFF; color: #5B21B6; }
+.ob2-opt-x { padding: 0 18px 16px 54px; }
+.ob2-drop { width: 100%; min-height: 46px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 14px;
+  border: 1.5px dashed #C4B5FD; border-radius: 10px; background: #FFFFFF; cursor: pointer; text-align: left; }
+.ob2-drop.over { background: #F3EEFF; }
+.ob2-drop b { font-size: 14px; font-weight: 500; color: #5B21B6; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ob2-drop span { font-size: 12px; color: #6B7390; flex: 0 0 auto; }
+.ob2-file { display: flex; align-items: center; gap: 6px; min-height: 46px; padding: 0 14px; border: 1.5px dashed #C4B5FD; border-radius: 10px; background: #FFFFFF; font-size: 14px; }
+.ob2-file b { font-weight: 500; color: #1A1033; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ob2-file .ob2-text-btn { font-size: 14px; color: #5B21B6; }
+.ob2-opt-x .ob2-textarea { border-radius: 10px; }
+.ob2-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.ob2-small { margin: 6px 0 0; font-size: 12px; color: #6B7390; }
 .ob2-small.err { color: #E11D48; }
-.ob2-mini-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-.ob2-mini-chips span { font-size: 12.5px; padding: 5px 10px; border-radius: 99px; background: #fff; border: 1px solid #E4E8F1; color: #2E3550; }
 
-.ob2-session { border-radius: 20px; padding: 28px; color: #fff; position: relative; overflow: hidden;
-  background: radial-gradient(90% 120% at 100% 0%, rgba(244,63,94,.38), transparent 55%),
-              radial-gradient(90% 120% at 0% 100%, rgba(109,40,217,.65), transparent 60%),
-              linear-gradient(135deg,#241046 0%,#1A1033 100%);
-  box-shadow: 0 30px 60px -30px rgba(26,16,51,.6); }
-.ob2-session-top { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 13px; color: rgba(255,255,255,.75); }
-.ob2-session-top b { color: #fff; font-weight: 600; }
-.ob2-session h2 { margin: 18px 0 22px; font-family: "Newsreader", Georgia, serif; font-weight: 400; font-size: clamp(26px,3vw,32px); line-height: 1.15; letter-spacing: -0.01em; }
-.ob2-session-meta { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 16px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,.16); }
-.ob2-session-meta div { font-size: 14px; line-height: 1.4; }
-.ob2-session-meta span { display: block; font-size: 11.5px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.6); margin-bottom: 5px; }
-.ob2-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
-.ob2-actions .ob2-btn { height: 52px; }
-.ob2-status { font-size: 14px; color: #465069; min-height: 20px; margin: -16px 0 0; }
+/* ready */
+.ob2-session { border-radius: 18px; padding: 22px; border: 1px solid #ECE6FA;
+  background:
+    radial-gradient(60% 80% at 95% 5%, rgba(196,181,253,0.55) 0%, rgba(196,181,253,0) 70%),
+    radial-gradient(50% 70% at 5% 100%, rgba(253,164,175,0.45) 0%, rgba(253,164,175,0) 70%),
+    #FBFAFF; }
+.ob2-meta { margin: 0; font-size: 13px; color: #6B7390; }
+.ob2-session h2 { margin: 8px 0 14px; font-family: "Newsreader", Georgia, serif; font-weight: 400; font-size: 24px; line-height: 1.2; color: #1A1033; }
+.ob2-info { display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 13px; color: #566079; }
+.ob2-info b { font-weight: 600; color: #1A1033; }
+.ob2-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.ob2-actions .ob2-primary { flex: 1 1 200px; height: 50px; }
+.ob2-actions .ob2-secondary { flex: 1 1 160px; height: 50px; }
+.ob2-status { margin: -12px 0 0; min-height: 18px; font-size: 13px; color: #566079; }
 .ob2-status.err { color: #E11D48; }
 
-.ob2-aside-in { max-width: 420px; position: sticky; top: 110px; }
-.ob2-aside h2 { margin: 0 0 24px; font-family: "Newsreader", Georgia, serif; font-weight: 400; font-size: 30px; line-height: 1.15; color: #1A1033; letter-spacing: -0.01em; }
-.ob2-aside h2.empty { color: #8A93AD; font-style: italic; }
-.ob2-profile { background: #fff; border: 1px solid #ECE6FA; border-radius: 16px; padding: 6px 20px; box-shadow: 0 20px 40px -30px rgba(76,29,149,.35); }
-.ob2-row { display: flex; justify-content: space-between; gap: 16px; padding: 14px 0; border-top: 1px solid #F0ECF9; font-size: 14px; }
-.ob2-row:first-child { border-top: 0; }
-.ob2-row span { color: #6B7390; }
-.ob2-row b { font-weight: 600; text-align: right; color: #1A1033; }
-.ob2-row b.empty { color: #A9B3CC; font-weight: 500; }
-.ob2-row b.red { color: #E11D48; }
-.ob2-row b.violet { color: #6D28D9; }
-.ob2-why { margin-top: 28px; }
-.ob2-why h3 { margin: 0 0 8px; font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: #6D28D9; }
-.ob2-why p { margin: 0; font-size: 14.5px; line-height: 1.6; color: #465069; }
+/* mic check and help dialog */
+.ob2-dlg { position: fixed; inset: 0; z-index: 140; background: rgba(26,16,51,.45); display: flex; align-items: center; justify-content: center; padding: 16px; }
+.ob2-dlg-card { width: 100%; max-width: 440px; background: #FFFFFF; border: 1px solid #ECE6FA; border-radius: 24px; padding: 28px; color: #1A1033;
+  font-family: "Inter Tight", system-ui, sans-serif; box-shadow: 0 30px 70px -36px rgba(109,40,217,0.35); }
+.ob2-dlg-card h3 { margin: 0 0 8px; font-family: "Newsreader", Georgia, serif; font-weight: 400; font-size: 26px; letter-spacing: -0.02em; }
+.ob2-dlg-card p { margin: 0 0 16px; font-size: 14px; line-height: 1.5; color: #566079; }
+.ob2-meter { height: 10px; border-radius: 99px; background: #E4E8F1; overflow: hidden; }
+.ob2-meter i { display: block; height: 100%; width: 0; border-radius: 99px; background: linear-gradient(90deg,#6D28D9,#A21CAF); transition: width .08s linear; }
+.ob2-dlg-card .ob2-mic-note { margin: 12px 0 20px; min-height: 21px; }
+.ob2-dlg-card .ob2-actions .ob2-btn { height: 46px; }
 
-.ob2-mic { position: fixed; inset: 0; z-index: 140; background: rgba(26,16,51,.55); display: flex; align-items: center; justify-content: center; padding: 20px; }
-.ob2-mic-card { width: 100%; max-width: 440px; background: #fff; border-radius: 18px; padding: 28px; color: #1A1033; font-family: "Inter Tight", system-ui, sans-serif; }
-.ob2-mic-card h3 { margin: 0 0 8px; font-family: "Newsreader", Georgia, serif; font-weight: 400; font-size: 28px; }
-.ob2-mic-card p { margin: 0 0 18px; font-size: 15px; line-height: 1.5; color: #465069; }
-.ob2-meter { height: 12px; border-radius: 99px; background: #EEF0F6; overflow: hidden; }
-.ob2-meter i { display: block; height: 100%; width: 0; border-radius: 99px; background: linear-gradient(90deg,#6D28D9,#A21CAF,#F43F5E); transition: width .08s linear; }
-.ob2-mic-note { margin: 12px 0 20px !important; font-size: 14px !important; min-height: 21px; }
-
-@media (max-width: 1000px) {
-  .ob2-aside { border-left: 0; border-top: 1px solid #ECE6FA; }
-  .ob2-aside-in { position: static; max-width: 640px; }
-}
-@media (max-width: 720px) {
-  .ob2-top { gap: 12px 16px; }
-  .ob2-progress { order: 3; flex-basis: 100%; max-width: none; }
-  .ob2-progress li { font-size: 11px; }
-  .ob2-logo .rl-word { font-size: 22px; }
-  .ob2-save { padding: 0 12px; font-size: 13px; }
-  .ob2-content { padding: 24px 0 24px; }
-  .ob2-grid2 { grid-template-columns: 1fr; }
-  .ob2-card-body { padding: 0 16px 18px 16px; }
-  .ob2-card-head { padding: 16px; gap: 12px; }
-  .ob2-session-meta { grid-template-columns: 1fr; }
-  .ob2-foot { flex-wrap: wrap; }
-  .ob2-hint { order: -1; flex-basis: 100%; text-align: left; }
-  .ob2-foot .ob2-primary { margin-left: auto; }
-}
-@media (max-width: 420px) {
-  .ob2-progress li { font-size: 0; gap: 0; }
-  .ob2-progress li.cur { font-size: 11px; gap: 7px; }
+@media (max-width: 520px) {
+  .ob2-head { padding: 16px 18px; }
+  .ob2-logo .rl-word { font-size: 19px; }
+  .ob2-foot .ob2-btn { padding: 0 16px; }
+  .ob2-foot-r { gap: 10px; min-width: 0; }
+  .ob2-hint { line-height: 1.3; }
 }
 @media (prefers-reduced-motion: reduce) { .ob2 * { transition: none !important; } }
-
 
 /* =====================================================================
    Landing page. Shown to every visitor before login, in its own frame so
@@ -1672,20 +1635,16 @@ body.locked { overflow: hidden; }
   </div>
 </div>
 
-<div class="ob2 hidden" id="ob2-view" role="dialog" aria-modal="true" aria-label="Set up your practice">
-  <header class="ob2-top">
-    <span class="ob2-logo" aria-label="Rehearsly"><svg width="28" height="28" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="rg-ob2" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#6D28D9"/><stop offset="0.55" stop-color="#A21CAF"/><stop offset="1" stop-color="#F43F5E"/></linearGradient></defs><rect x="6" y="26" width="9" height="12" rx="4.5" fill="url(#rg-ob2)"/><rect x="20" y="16" width="9" height="32" rx="4.5" fill="url(#rg-ob2)"/><rect x="34" y="6" width="9" height="52" rx="4.5" fill="url(#rg-ob2)"/><rect x="48" y="20" width="9" height="24" rx="4.5" fill="url(#rg-ob2)"/></svg><span class="rl-word">rehears<span class="ly">ly</span></span></span>
-    <ol class="ob2-progress" id="ob2-progress" aria-label="Progress">
-      <li>About you</li><li>Your next move</li><li>Start</li><li>Ready</li>
-    </ol>
-    <div class="ob2-top-r">
-      <button type="button" class="ob2-help" id="ob2-help">Help</button>
-      <button type="button" class="ob2-save" id="ob2-save">Save and finish later</button>
+<div class="ob2 hidden" id="ob2-view" role="dialog" aria-modal="true" aria-label="Set up your first interview">
+  <div class="ob2-page">
+    <div class="ob2-card">
+      <header class="ob2-head">
+        <span class="ob2-logo" aria-label="Rehearsly"><svg width="22" height="22" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="rg-ob2" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#6D28D9"/><stop offset="0.55" stop-color="#A21CAF"/><stop offset="1" stop-color="#F43F5E"/></linearGradient></defs><rect x="6" y="26" width="9" height="12" rx="4.5" fill="url(#rg-ob2)"/><rect x="20" y="16" width="9" height="32" rx="4.5" fill="url(#rg-ob2)"/><rect x="34" y="6" width="9" height="52" rx="4.5" fill="url(#rg-ob2)"/><rect x="48" y="20" width="9" height="24" rx="4.5" fill="url(#rg-ob2)"/></svg><span class="rl-word">rehears<span class="ly">ly</span></span></span>
+        <ol class="ob2-dots" id="ob2-dots" aria-label="Progress"><li></li><li></li><li></li></ol>
+        <div class="ob2-later-wrap"><button type="button" class="ob2-text-btn ob2-later" id="ob2-save">Finish later</button></div>
+      </header>
+      <div class="ob2-body" id="ob2-content"></div>
     </div>
-  </header>
-  <div class="ob2-body">
-    <main class="ob2-main"><div class="ob2-content" id="ob2-content"></div></main>
-    <aside class="ob2-aside" aria-label="Your practice profile"><div class="ob2-aside-in" id="ob2-aside"></div></aside>
   </div>
   <input type="file" id="ob2-resume-input" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden />
   <input type="file" id="ob2-li-input" accept=".pdf,application/pdf" hidden />
@@ -6962,23 +6921,21 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   function onbBack() { if (ONB.step > 0) { ONB.step--; onbRender(); } }
 
 
+
   /* ---------------------------------------------------------------------
-   * New onboarding, built to the Rehearsly Onboarding Spec. Three short
-   * steps and a ready screen, with a live profile on the right. It saves
-   * as you go, so Save and finish later lands you back on the same step
+   * Onboarding v2 (compact form). Runs right after sign up and takes
+   * about 30 seconds: About you, then Your first interview, then Ready.
+   * It saves as you go, so Finish later lands you back on the same step
    * next time you log in. Files are read here in the browser.
    * ------------------------------------------------------------------- */
-  var OB2_FUNCTIONS = ["Product", "Engineering", "Design", "Data", "Marketing", "Sales", "Finance", "Operations", "People / HR", "Consulting"];
-  var OB2_SENIORITY = ["Senior IC", "Manager", "Senior Manager", "Director", "VP", "C-suite"];
-  var OB2_YEARS = ["5–8", "8–12", "12–20", "20+"];
-  var OB2_TIMELINE = ["This week", "2–4 weeks", "1–3 months", "Just exploring"];
-  var OB2_ROUNDS = ["Leadership & behavioral", "Strategy", "Case", "Technical / system design", "Stakeholder", "Panel / board"];
-  var OB2_WHY = [
-    "Your title and seniority decide who sits across the table and how deep the follow ups go. A Director is asked different things from a Senior IC.",
-    "Your target role and timeline shape your plan. A close interview gets fewer, sharper sessions. The rounds you pick decide where we start.",
-    "A resume lets the interviewer ask about your real work. A job description shows what this panel will test. Together they make the most tailored interview. Files are read in your browser and only you can see them.",
-    "Your first session is spoken, like a real round. After each answer you get a score on structure, numbers and trade offs, and a clear next step."
+  var OB2_ROLE_GROUPS = [
+    ["Product", ["Product Manager", "Senior Product Manager", "Group Product Manager", "Director of Product", "VP of Product", "Chief Product Officer"]],
+    ["Engineering", ["Engineering Manager", "Senior Engineering Manager", "Director of Engineering", "VP of Engineering", "CTO"]],
+    ["Design & Data", ["Design Lead", "Director of Design", "Head of Data", "Director of Analytics"]],
+    ["Business", ["Marketing Director", "VP of Sales", "Finance Director", "CFO", "Operations Director", "COO", "General Manager", "Management Consultant"]]
   ];
+  var OB2_YEARS = [["5–8", "5–8 years"], ["8–12", "8–12 years"], ["12–20", "12–20 years"], ["20+", "20+ years"]];
+  var OB2_DATES = [["this week", "This week"], ["in 2–4 weeks", "In 2–4 weeks"], ["in 1–3 months", "In 1–3 months"], ["some time soon", "Not scheduled yet"]];
   var CORE_SENIOR_QUESTIONS = [
     { question: "Walk me through your career, and the move that mattered most.", look_for: "A clear arc in under two minutes, the reason behind each move, and one move explained with the impact it had." },
     { question: "Tell me about a decision you got wrong. What did you learn and what did you change?", look_for: "Real ownership with no blaming, the signal they missed, what it cost, and a concrete change in how they work now." },
@@ -6989,18 +6946,21 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   ];
   var OB2 = null, obRun = null;
 
-  function ob2Key() { return "sip_onb2_" + String(getSettings().authEmail || "guest").toLowerCase(); }
+  function ob2AllRoles() { return [].concat.apply([], OB2_ROLE_GROUPS.map(function (g) { return g[1]; })); }
+  function ob2Key() { return "sip_onb3_" + String(getSettings().authEmail || "guest").toLowerCase(); }
   function ob2Blank() {
-    return { step: 1, data: { title: "", "function": "", seniority: "", years: "", targetRole: "", company: "", timeline: "",
-      rounds: [], start: ["resume", "jd"], resumeFile: "", jobDescription: "" }, resumeText: "", imported: false };
+    return { step: 1, data: { currentRole: "", targetRole: "", years: null, interviewDate: null, company: "",
+      start: ["resume", "jd"], resumeFile: null, jobDescription: "" },
+      pick: { currentRole: "", targetRole: "" }, resumeText: "", imported: false };
   }
   function ob2Load() {
     try {
       var v = JSON.parse(localStorage.getItem(ob2Key()) || "null");
       if (v && v.data) {
         var b = ob2Blank();
-        b.step = Math.max(1, Math.min(3, v.step || 1));
+        b.step = Math.max(1, Math.min(2, v.step || 1));
         Object.keys(b.data).forEach(function (k) { if (v.data[k] !== undefined) b.data[k] = v.data[k]; });
+        if (v.pick) b.pick = { currentRole: v.pick.currentRole || "", targetRole: v.pick.targetRole || "" };
         b.resumeText = v.resumeText || "";
         b.imported = !!v.imported;
         return b;
@@ -7011,11 +6971,12 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   function ob2Persist() {
     if (!OB2) return;
     try {
-      localStorage.setItem(ob2Key(), JSON.stringify({ step: OB2.step, data: OB2.data, resumeText: OB2.resumeText, imported: OB2.imported, saved: Date.now() }));
+      localStorage.setItem(ob2Key(), JSON.stringify({ step: Math.min(OB2.step, 2), data: OB2.data, pick: OB2.pick,
+        resumeText: OB2.resumeText, imported: OB2.imported, saved: Date.now() }));
     } catch (e) {}
   }
   // Only once, after sign up. People who already set up their space, or
-  // finished the older set up, are left alone.
+  // finished an earlier set up, are left alone.
   function needProfileOnboarding() {
     var s = getSettings();
     if (s.onb2Done) return false;
@@ -7027,14 +6988,11 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     if (fresh) { try { localStorage.removeItem(ob2Key()); } catch (e) {} }
     OB2 = ob2Load() || ob2Blank();
     OB2.gen = null;
-    var view = $("#ob2-view");
-    view.classList.remove("hidden");
+    $("#ob2-view").classList.remove("hidden");
     document.body.classList.add("locked");
-    var save = $("#ob2-save");
-    save.textContent = "Save and finish later";
-    save.classList.remove("saved");
+    $("#ob2-save").textContent = "Finish later";
     ob2Render();
-    view.scrollTop = 0;
+    $("#ob2-view").scrollTop = 0;
   }
   function exitProfileOnboarding() {
     ob2StopMic();
@@ -7042,170 +7000,137 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     document.body.classList.remove("locked");
   }
 
-  /* ---- Small pieces of text worked out from the answers ---- */
+  /* ---- Values worked out from the answers ---- */
   function ob2Has(list, v) { return (list || []).indexOf(v) !== -1; }
   function ob2Quick() { return ob2Has(OB2.data.start, "quick"); }
   function ob2UseResume() { return !ob2Quick() && ob2Has(OB2.data.start, "resume") && !!OB2.resumeText; }
   function ob2UseJd() { return !ob2Quick() && ob2Has(OB2.data.start, "jd") && OB2.data.jobDescription.trim().length > 0; }
   function ob2BasedOn() {
-    if (ob2Quick()) return "Core senior questions";
+    if (ob2Quick()) return "Core questions";
     var r = ob2UseResume(), j = ob2UseJd();
     if (r && j) return "Resume + Job description";
     if (r) return "Resume";
     if (j) return "Job description";
     return "";
   }
-  function ob2Round() {
-    var picked = OB2_ROUNDS.filter(function (r) { return ob2Has(OB2.data.rounds, r); });
-    return picked[0] || "Leadership & behavioral";
-  }
+  function ob2Lead() { return /VP|Chief|CTO|CFO|COO|Director|General/.test(OB2.data.targetRole) ? "CEO" : "VP"; }
   function ob2Interviewer() {
-    var lead = (OB2.data.seniority === "VP" || OB2.data.seniority === "C-suite") ? "CEO" : "VP";
-    return OB2.data.company.trim() ? lead + ", " + OB2.data.company.trim() : lead + "-level panel";
+    var c = OB2.data.company.trim();
+    return c ? ob2Lead() + ", " + c : ob2Lead() + "-level panel";
   }
-  function ob2Sessions() { return OB2.data.timeline === "This week" ? 3 : 6; }
-  function ob2Target() { return OB2.data.targetRole.trim(); }
-  function ob2WordCount(t) { var m = String(t || "").trim().match(/\S+/g); return m ? m.length : 0; }
+  function ob2Sessions() { return OB2.data.interviewDate === "this week" ? 3 : 6; }
+  // The role a select stands for: the picked option, or the typed text
+  // when "Other" is picked.
+  function ob2SyncRole(k) {
+    var pick = OB2.pick[k];
+    if (pick === "__other") { var box = $("#ob2-" + k + "-other"); OB2.data[k] = box ? box.value.trim() : OB2.data[k]; }
+    else OB2.data[k] = pick || "";
+  }
 
   /* ---- Rendering ---- */
-  function ob2Chips(key, options, multi) {
-    var val = OB2.data[key];
-    return '<div class="ob2-chips" role="group" aria-labelledby="ob2-l-' + key + '">' + options.map(function (o) {
-      var on = multi ? ob2Has(val, o) : val === o;
-      return '<button type="button" class="ob2-chip" data-k="' + key + '" data-v="' + escapeHtml(o) + '"' + (multi ? ' data-multi="1"' : "") +
-        ' aria-pressed="' + (on ? "true" : "false") + '">' + escapeHtml(o) + "</button>";
-    }).join("") + "</div>";
+  var OB2_TICK = '<svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6.3l2.3 2.3L9.6 3.8" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  function ob2RoleSelect(k, label, otherPh) {
+    var pick = OB2.pick[k];
+    var groups = OB2_ROLE_GROUPS.map(function (g) {
+      return '<optgroup label="' + escapeHtml(g[0]) + '">' + g[1].map(function (r) {
+        return '<option value="' + escapeHtml(r) + '"' + (pick === r ? " selected" : "") + ">" + escapeHtml(r) + "</option>";
+      }).join("") + "</optgroup>";
+    }).join("");
+    return '<div class="ob2-field"><label class="ob2-label" for="ob2-' + k + '">' + label + "</label>" +
+      '<select class="ob2-select' + (pick ? "" : " empty") + '" id="ob2-' + k + '" data-role="' + k + '">' +
+      '<option value=""' + (pick ? "" : " selected") + ' disabled hidden>Select</option>' + groups +
+      '<option value="__other"' + (pick === "__other" ? " selected" : "") + ">Other</option></select>" +
+      (pick === "__other" ? '<label class="ob2-sr" for="ob2-' + k + '-other">' + otherPh + "</label>" +
+        '<input class="ob2-input" id="ob2-' + k + '-other" data-other="' + k + '" type="text" placeholder="' + otherPh + '" value="' + escapeHtml(OB2.data[k]) + '" />' : "") +
+      "</div>";
   }
-  function ob2Head(eyebrow, before, word, after, sub) {
-    return '<div><p class="ob2-eyebrow">' + eyebrow + '</p><h1 class="ob2-h1" id="ob2-h1" tabindex="-1">' + before +
-      '<em class="ob2-grad">' + word + "</em>" + (after || "") + '</h1><p class="ob2-sub">' + sub + "</p></div>";
+  function ob2PlainSelect(k, label, opts) {
+    var v = OB2.data[k];
+    return '<div class="ob2-field"><label class="ob2-label" for="ob2-' + k + '">' + label + " <small>(optional)</small></label>" +
+      '<select class="ob2-select' + (v ? "" : " empty") + '" id="ob2-' + k + '" data-plain="' + k + '">' +
+      '<option value=""' + (v ? "" : " selected") + ">Select</option>" +
+      opts.map(function (o) { return '<option value="' + escapeHtml(o[0]) + '"' + (v === o[0] ? " selected" : "") + ">" + escapeHtml(o[1]) + "</option>"; }).join("") +
+      "</select></div>";
   }
-  function ob2Foot(nextLabel) {
-    return '<div class="ob2-foot"><button type="button" class="ob2-btn ob2-ghost ob2-back' + (OB2.step === 1 ? " invisible" : "") +
-      '" id="ob2-back"' + (OB2.step === 1 ? ' tabindex="-1" aria-hidden="true"' : "") + '>Back</button>' +
-      '<span class="ob2-hint" id="ob2-hint" aria-live="polite"></span>' +
-      '<button type="button" class="ob2-btn ob2-primary" id="ob2-next">' + nextLabel + "</button></div>";
+  function ob2Foot(label) {
+    return '<div class="ob2-foot"><button type="button" class="ob2-btn ob2-secondary' + (OB2.step === 1 ? " invisible" : "") + '" id="ob2-back"' +
+      (OB2.step === 1 ? ' tabindex="-1" aria-hidden="true"' : "") + ">Back</button>" +
+      '<div class="ob2-foot-r"><span class="ob2-hint" id="ob2-hint" aria-live="polite"></span>' +
+      '<button type="button" class="ob2-btn ob2-primary" id="ob2-next">' + label + "</button></div></div>";
   }
-  var OB2_TICK = '<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 7.4l2.6 2.6L11 4.6" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-  function ob2Card(id, num, title, tag, text, body) {
+  function ob2Opt(id, title, body, tag, extra) {
     var on = ob2Has(OB2.data.start, id);
-    return '<div class="ob2-card' + (on ? " on" : "") + '" data-card="' + id + '">' +
-      '<button type="button" class="ob2-card-head" data-pick="' + id + '" aria-pressed="' + (on ? "true" : "false") + '">' +
-      '<span class="ob2-num" aria-hidden="true">' + num + "</span>" +
-      '<span><span class="ob2-card-title">' + title + (tag ? '<span class="ob2-tag">' + tag + "</span>" : "") + "</span>" +
-      '<span class="ob2-card-text" style="display:block">' + text + "</span></span>" +
-      '<span class="ob2-check" aria-hidden="true">' + OB2_TICK + "</span></button>" +
-      (on && body ? '<div class="ob2-card-body">' + body + "</div>" : "") + "</div>";
+    return '<div class="ob2-opt' + (on ? " on" : "") + '" data-opt="' + id + '">' +
+      '<button type="button" class="ob2-opt-head" data-pick="' + id + '" aria-pressed="' + (on ? "true" : "false") + '">' +
+      '<span class="ob2-check" aria-hidden="true">' + OB2_TICK + "</span>" +
+      '<span class="ob2-opt-text"><span class="ob2-opt-title">' + title + '</span><span class="ob2-opt-body">' + body + "</span></span>" +
+      (tag ? '<span class="ob2-tag">' + tag + "</span>" : "") + "</button>" +
+      (on && extra ? '<div class="ob2-opt-x">' + extra + "</div>" : "") + "</div>";
   }
-  function ob2ResumeBody() {
-    if (OB2.resumeBusy) return '<p class="ob2-small" aria-live="polite">Reading your resume…</p>';
+  function ob2ResumeRow() {
     var err = OB2.resumeErr ? '<p class="ob2-small err" role="alert">' + escapeHtml(OB2.resumeErr) + "</p>" : "";
+    if (OB2.resumeBusy) return '<div class="ob2-file" aria-live="polite"><b>Reading your file…</b></div>';
     if (OB2.data.resumeFile && OB2.resumeText) {
       return '<div class="ob2-file"><b>' + escapeHtml(OB2.data.resumeFile) + '</b><span aria-hidden="true">·</span>' +
-        '<button type="button" class="ob2-link" id="ob2-replace">Replace</button></div>' + err;
+        '<button type="button" class="ob2-text-btn" id="ob2-replace">Replace</button></div>' + err;
     }
-    return '<button type="button" class="ob2-drop" id="ob2-drop"><b>Choose a file or drop it here</b>' +
-      "<span>PDF or Word, up to 10 MB. Only you can see it.</span></button>" + err;
+    return '<button type="button" class="ob2-drop" id="ob2-drop"><b>Choose a file</b><span>PDF or Word</span></button>' + err;
   }
-  function ob2JdHint() {
-    var t = OB2.data.jobDescription.trim();
-    if (!t) return "Tip: include responsibilities and requirements.";
-    if (/^https?:\/\/\S+$/i.test(t)) return "We cannot open links yet. Paste the text of the posting for the best questions.";
-    var n = ob2WordCount(t);
-    return n + (n === 1 ? " word" : " words");
+  function ob2Head(eyebrow, before, word, sub, right) {
+    return '<div><div class="ob2-top"><p class="ob2-eyebrow">' + eyebrow + "</p>" + (right || "") + "</div>" +
+      '<h1 class="ob2-h1" id="ob2-h1" tabindex="-1">' + before + '<em class="ob2-grad">' + word + "</em></h1>" +
+      (sub ? '<p class="ob2-sub">' + sub + "</p>" : "") + "</div>";
   }
   function ob2Render() {
-    var step = OB2.step, d = OB2.data, html = "";
-    $all("#ob2-progress li").forEach(function (li, i) {
+    var step = OB2.step, d = OB2.data, html;
+    $all("#ob2-dots li").forEach(function (li, i) {
       li.className = i + 1 < step ? "done" : (i + 1 === step ? "cur" : "");
       if (i + 1 === step) li.setAttribute("aria-current", "step"); else li.removeAttribute("aria-current");
     });
-    $("#ob2-save").classList.toggle("hidden", step === 4);
-
+    $("#ob2-dots").setAttribute("aria-label", "Step " + step + " of 3");
     if (step === 1) {
-      html = ob2Head("Step 1 of 3 · About you", "Tell us where you are in your ", "career.", "",
-          "We use this to set the interviewer's level and the depth of each question.") +
-        '<button type="button" class="ob2-li' + (OB2.imported ? " done" : "") + '" id="ob2-li" aria-expanded="' + (OB2.liOpen ? "true" : "false") + '">' +
-        '<span class="in" aria-hidden="true">in</span><span>' + (OB2.imported ? "Imported from LinkedIn" : "Fill from LinkedIn") + "</span></button>" +
-        (OB2.liOpen ? '<div class="ob2-li-help" id="ob2-li-help">Get your profile as a PDF from LinkedIn, then pick it here.' +
-          "<ol><li>Open your LinkedIn profile.</li><li>Tap Resources (or More), then Save to PDF.</li><li>Choose that file below.</li></ol>" +
-          '<button type="button" class="ob2-btn ob2-ghost" id="ob2-li-pick" style="height:44px">Choose LinkedIn PDF</button></div>' : "") +
-        (OB2.liMsg ? '<p class="ob2-li-msg' + (OB2.liErr ? " err" : "") + '" role="status">' + escapeHtml(OB2.liMsg) + "</p>" : "") +
-        '<div class="ob2-field"><label class="ob2-label" for="ob2-title">Current title</label>' +
-        '<input class="ob2-input" id="ob2-title" data-f="title" type="text" autocomplete="organization-title" placeholder="e.g. Senior Product Manager" value="' + escapeHtml(d.title) + '" /></div>' +
-        '<div class="ob2-field"><span class="ob2-label" id="ob2-l-function">Function</span>' + ob2Chips("function", OB2_FUNCTIONS) + "</div>" +
-        '<div class="ob2-field"><span class="ob2-label" id="ob2-l-seniority">Seniority</span>' + ob2Chips("seniority", OB2_SENIORITY) + "</div>" +
-        '<div class="ob2-field"><span class="ob2-label" id="ob2-l-years">Years of experience</span>' + ob2Chips("years", OB2_YEARS) + "</div>" +
+      html = ob2Head("About you · 1 of 2", "Tell us about your ", "next move.",
+          "Four quick fields. We use them to set your interviewer's level.",
+          '<button type="button" class="ob2-text-btn ob2-li" id="ob2-li">' + (OB2.imported ? "Filled from LinkedIn" : "Fill from LinkedIn") + "</button>") +
+        (OB2.liMsg ? '<p class="ob2-note' + (OB2.liErr ? " err" : "") + '" role="status" style="margin-top:-16px">' + OB2.liMsg + "</p>" : "") +
+        '<div><div class="ob2-grid">' +
+        ob2RoleSelect("currentRole", "Current role", "Type your current role") +
+        ob2RoleSelect("targetRole", "Target role", "Type your target role") +
+        ob2PlainSelect("years", "Years of experience", OB2_YEARS) +
+        ob2PlainSelect("interviewDate", "Interview date", OB2_DATES) +
+        '</div><div class="ob2-field" style="margin-top:16px"><label class="ob2-label" for="ob2-company">Target company <small>(optional)</small></label>' +
+        '<input class="ob2-input" id="ob2-company" data-f="company" type="text" autocomplete="organization" placeholder="e.g. Atlassian" value="' + escapeHtml(d.company) + '" /></div></div>' +
         ob2Foot("Continue");
     } else if (step === 2) {
-      html = ob2Head("Step 2 of 3 · Your next move", "What are you ", "preparing", " for?",
-          "Your timeline sets the pace of your plan. Skip anything you don't know yet.") +
-        '<div class="ob2-grid2"><div class="ob2-field"><label class="ob2-label" for="ob2-target">Target role</label>' +
-        '<input class="ob2-input" id="ob2-target" data-f="targetRole" type="text" placeholder="e.g. Director of Product" value="' + escapeHtml(d.targetRole) + '" /></div>' +
-        '<div class="ob2-field"><label class="ob2-label" for="ob2-company">Company<small>optional</small></label>' +
-        '<input class="ob2-input" id="ob2-company" data-f="company" type="text" autocomplete="organization" placeholder="e.g. Atlassian" value="' + escapeHtml(d.company) + '" /></div></div>' +
-        '<div class="ob2-field"><span class="ob2-label" id="ob2-l-timeline">When is your interview?</span>' + ob2Chips("timeline", OB2_TIMELINE) + "</div>" +
-        '<div class="ob2-field"><span class="ob2-label" id="ob2-l-rounds">Which rounds are you facing?<small>pick any</small></span>' + ob2Chips("rounds", OB2_ROUNDS, true) + "</div>" +
-        ob2Foot("Continue");
-    } else if (step === 3) {
-      html = ob2Head("Step 3 of 3 · Your first interview", "How would you like to ", "start?", "",
-          "Pick one or combine them. A resume and a job description together give the most tailored interview.") +
-        '<div class="ob2-cards">' +
-        ob2Card("resume", "1", "Upload your resume", "", "We ask about your real roles, numbers and decisions.", ob2ResumeBody()) +
-        ob2Card("jd", "2", "Paste a job description", "Most tailored", "We test what this exact role asks for.",
-          '<label class="ob2-label" for="ob2-jd" style="position:absolute;left:-9999px">Job description</label>' +
-          '<textarea class="ob2-textarea" id="ob2-jd" data-f="jobDescription" rows="5" placeholder="Paste the job description or a link to the posting">' + escapeHtml(d.jobDescription) + "</textarea>" +
-          '<p class="ob2-small" id="ob2-jd-hint" aria-live="polite">' + escapeHtml(ob2JdHint()) + "</p>") +
-        ob2Card("quick", "3", "Start with core senior questions", "Fastest",
-          "The questions every senior panel asks. No files needed." +
-          '<span class="ob2-mini-chips"><span>Walk me through your career</span><span>A decision you got wrong</span><span>Leading through change</span><span>+3 more</span></span>', "") +
+      html = ob2Head("Your first interview · 2 of 2", "How would you like to ", "start?",
+          "Combine a resume and job description for the most tailored interview.") +
+        '<div class="ob2-opts">' +
+        ob2Opt("resume", "Upload your resume", "Questions probe your real roles and wins.", "", ob2ResumeRow()) +
+        ob2Opt("jd", "Paste a job description", "Tests the exact competencies the role needs.", "Most tailored",
+          '<label class="ob2-sr" for="ob2-jd">Job description</label>' +
+          '<textarea class="ob2-textarea" id="ob2-jd" data-f="jobDescription" rows="3" placeholder="Paste the job description or a link">' + escapeHtml(d.jobDescription) + "</textarea>" +
+          (/^https?:\/\/\S+$/i.test(d.jobDescription.trim()) ? '<p class="ob2-small">We cannot open links yet. Paste the text for the best questions.</p>' : "")) +
+        ob2Opt("quick", "Core senior questions", "No prep. Six questions panels ask most.", "Fastest", "") +
         "</div>" + ob2Foot("Build my interview");
     } else {
-      var target = ob2Target();
-      html = ob2Head("You're set", "Your first interview is ", "ready.", "",
-          d.timeline === "This week"
-            ? "Your interview is close, so we start with the round that matters most and keep the plan to 3 sessions."
-            : "We start with the round senior panels weigh most, then build out the rest of your plan.") +
-        '<div class="ob2-session"><div class="ob2-session-top"><b>Session 1 of ' + ob2Sessions() + "</b><span>About 20 minutes · voice</span></div>" +
-        "<h2>" + escapeHtml(ob2Round()) + " round" + (target ? " for " + escapeHtml(target) : "") + "</h2>" +
-        '<div class="ob2-session-meta"><div><span>Interviewer</span>' + escapeHtml(ob2Interviewer()) + "</div>" +
-        "<div><span>Questions</span>6, with follow-ups</div>" +
-        "<div><span>Based on</span>" + escapeHtml(ob2BasedOn() || "Core senior questions") + "</div></div></div>" +
+      html = ob2Head("You're set", "Your first interview is ", "ready.", "") +
+        '<div class="ob2-session"><p class="ob2-meta">Session 1 of ' + ob2Sessions() + " · about 20 minutes · voice</p>" +
+        "<h2>Leadership round for " + escapeHtml(d.targetRole) + "</h2>" +
+        '<div class="ob2-info"><span>Interviewer: <b>' + escapeHtml(ob2Interviewer()) + "</b></span>" +
+        "<span>Based on: <b>" + escapeHtml(ob2BasedOn() || "Core questions") + "</b></span></div></div>" +
         '<div class="ob2-actions"><button type="button" class="ob2-btn ob2-primary" id="ob2-start">Start interview</button>' +
-        '<button type="button" class="ob2-btn ob2-ghost" id="ob2-mic-test">Test my microphone first</button></div>' +
-        '<p class="ob2-status" id="ob2-status" aria-live="polite"></p>' +
-        '<p style="margin:0"><button type="button" class="ob2-link" id="ob2-dash">Go to dashboard instead</button></p>';
+        '<button type="button" class="ob2-btn ob2-secondary" id="ob2-mic-test">Test my mic first</button></div>' +
+        '<p class="ob2-status" id="ob2-status" aria-live="polite"></p>';
     }
     $("#ob2-content").innerHTML = html;
-    ob2RenderAside();
     ob2UpdateFoot();
   }
-  function ob2RenderAside() {
-    var d = OB2.data, step = OB2.step;
-    var t = d.title.trim(), target = ob2Target();
-    function row(label, value, cls) {
-      return '<div class="ob2-row"><span>' + label + "</span><b" + (value ? (cls ? ' class="' + cls + '"' : "") : ' class="empty"') + ">" +
-        (value ? escapeHtml(value) : "—") + "</b></div>";
-    }
-    $("#ob2-aside").innerHTML = '<p class="ob2-eyebrow">Your practice profile</p>' +
-      (t ? "<h2>" + escapeHtml(t) + (target ? " → " + escapeHtml(target) : "") + "</h2>" : '<h2 class="empty">Builds as you answer.</h2>') +
-      '<div class="ob2-profile">' +
-      row("Function", d["function"]) +
-      row("Seniority", d.seniority) +
-      row("Experience", d.years ? d.years + " years" : "") +
-      row("Interview", d.timeline, "red") +
-      row("First session", step >= 3 ? ob2BasedOn() : "", "violet") +
-      "</div>" +
-      '<div class="ob2-why"><h3>Why we ask</h3><p>' + OB2_WHY[step - 1] + "</p></div>";
-  }
-  // What still stops Continue, in plain words. Empty means good to go.
   function ob2Blocker() {
-    var d = OB2.data;
-    if (OB2.step === 1 && (!d.title.trim() || !d.seniority)) return "Add your title and seniority";
-    if (OB2.step === 3) {
-      if (!(d.start || []).length) return "Pick at least one way to start";
-      if (OB2.resumeBusy) return "Reading your resume…";
-      if (!ob2BasedOn()) return "Add your resume or a job description, or pick core questions";
+    if (OB2.step === 1 && (!OB2.data.currentRole.trim() || !OB2.data.targetRole.trim())) return "Select both roles";
+    if (OB2.step === 2) {
+      if (!(OB2.data.start || []).length) return "Pick at least one";
+      if (OB2.resumeBusy) return "Reading your file…";
+      if (!ob2BasedOn()) return "Add a file or a job description";
     }
     return "";
   }
@@ -7214,11 +7139,11 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     if (!next) return;
     var block = ob2Blocker();
     next.setAttribute("aria-disabled", block ? "true" : "false");
-    hint.textContent = block || (OB2.step === 2 ? "Everything here is optional" : "");
+    hint.textContent = block;
   }
   function ob2Go(step) {
     OB2.step = step;
-    OB2.liMsg = ""; OB2.liOpen = false;
+    OB2.liMsg = "";
     ob2Persist();
     ob2Render();
     $("#ob2-view").scrollTop = 0;
@@ -7227,28 +7152,39 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   }
   function ob2Next() {
     if (ob2Blocker()) { ob2UpdateFoot(); return; }
-    if (OB2.step < 3) { ob2Go(OB2.step + 1); return; }
+    if (OB2.step === 1) { ob2Go(2); return; }
     ob2Complete();
-    ob2Go(4);
+    ob2Go(3);
+  }
+
+  /* ---- Finish later: save, and email a link back when the relay can ---- */
+  function ob2FinishLater() {
+    if (OB2) ob2Persist();
+    var b = $("#ob2-save");
+    b.textContent = "Saved";
+    if (relayOn() && OB2 && OB2.step < 3) {
+      relayFetch("/resume-email", { step: OB2.step }).then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (j) { if (j && j.sent) showToast("We emailed you a link to pick up where you left off."); })
+        .catch(function () {});
+    }
+    setTimeout(function () { if (b.textContent === "Saved") exitProfileOnboarding(); }, 1200);
   }
 
   /* ---- Finishing: keep the profile, and start writing the questions ---- */
   function ob2Summary() {
-    var d = OB2.data;
-    var bits = [];
-    bits.push("A " + (d.seniority || "senior") + (d["function"] ? " in " + d["function"] : "") + ", currently " + (d.title || "in a senior role") +
-      (d.years ? ", with " + d.years + " years of experience" : "") + ".");
-    if (ob2Target()) bits.push("Preparing for " + ob2Target() + (d.company ? " at " + d.company : "") + ".");
-    if (d.timeline) bits.push("Interview timing: " + d.timeline + ".");
-    if ((d.rounds || []).length) bits.push("Rounds to prepare: " + d.rounds.join(", ") + ".");
+    var d = OB2.data, bits = [];
+    bits.push("Currently " + d.currentRole + (d.years ? ", with " + d.years + " years of experience" : "") + ".");
+    bits.push("Preparing for " + d.targetRole + (d.company ? " at " + d.company : "") + ".");
+    if (d.interviewDate) bits.push("Interview " + (d.interviewDate === "some time soon" ? "not scheduled yet" : d.interviewDate) + ".");
     return bits.join(" ");
   }
   function ob2Complete() {
     var d = OB2.data, s = getSettings();
+    d.resumeFile = ob2UseResume() ? d.resumeFile : null;
     saveSettings({
       onb2Done: true,
       profile2: JSON.parse(JSON.stringify(d)),
-      targetRole: ob2Target() || d.title || s.targetRole,
+      targetRole: d.targetRole || s.targetRole,
       profileSummary: ob2Summary(),
       resumeText: ob2UseResume() ? OB2.resumeText : (s.resumeText || ""),
       jdText: ob2UseJd() ? d.jobDescription.trim().slice(0, 12000) : (s.jdText || "")
@@ -7256,16 +7192,15 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     ob2Persist();
     OB2.gen = ob2Generate();
   }
-  var OB2_QSYS = "You design senior interview rounds. Write exactly 6 spoken interview questions for ONE round, in the order a real panel would ask them. " +
-    "Pitch every question at the candidate's seniority. Ground each one in their resume and the job description where you can, so it feels like the panel read both. " +
+  var OB2_QSYS = "You design senior interview rounds. Write exactly 6 spoken interview questions for ONE leadership round, in the order a real panel would ask them. " +
+    "Pitch every question at the level of the target role. Ground each one in the resume and the job description where you can, so it feels like the panel read both. " +
     "Use simple everyday English, no markdown, no dashes, and keep each question to one or two sentences. " +
     "Reply with ONLY compact JSON of this exact shape: {\"questions\": [{\"question\": \"...\", \"look_for\": \"one or two sentences on what a strong answer must contain\"}]}";
   function ob2Generate() {
     var core = CORE_SENIOR_QUESTIONS.slice();
     if (ob2Quick() || !ob2BasedOn() || !hasGeminiKey()) return Promise.resolve(core);
     var d = OB2.data;
-    var msg = "CANDIDATE\n" + ob2Summary() +
-      "\nRound: " + ob2Round() + "\nInterviewer: " + ob2Interviewer() +
+    var msg = "CANDIDATE\n" + ob2Summary() + "\nRound: Leadership\nInterviewer: " + ob2Interviewer() +
       "\n\nRESUME:\n" + (ob2UseResume() ? OB2.resumeText.slice(0, 14000) : "Not given.") +
       "\n\nJOB DESCRIPTION:\n" + (ob2UseJd() ? d.jobDescription.trim().slice(0, 10000) : "Not given.");
     return callGeminiResilient(getSettings(), OB2_QSYS, msg, null).then(function (content) {
@@ -7277,8 +7212,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     }).catch(function () { return core; });
   }
   function ob2SessionItems(qs) {
-    var d = OB2.data, round = ob2Round(), sid = "s" + Date.now().toString(36);
-    var lead = (d.seniority === "VP" || d.seniority === "C-suite") ? "CEO" : "VP";
+    var d = OB2.data, sid = "s" + Date.now().toString(36);
     return qs.slice(0, 6).map(function (q, i) {
       return {
         id: "ob-" + sid + "-" + (i + 1),
@@ -7286,12 +7220,12 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
         answer: q.look_for || "A specific, structured answer with the candidate's own example, a number, and what they learned.",
         tips: "Lead with the headline, give one real example, put a number on the result, and say what you would do differently.",
         approach_to_learn: "",
-        role: ob2Target() || d.title,
-        part_title: round + " round",
-        category: round === "Case" ? "Case" : "Session",
+        role: d.targetRole,
+        part_title: "Leadership round",
+        category: "Session",
         sessionId: sid,
-        obSession: { n: i + 1, total: Math.min(6, qs.length), round: round, interviewer: lead, company: d.company.trim(),
-          seniority: d.seniority, title: d.title.trim(), years: d.years, target: ob2Target() }
+        obSession: { n: i + 1, total: Math.min(6, qs.length), round: "Leadership", interviewer: ob2Lead(), company: d.company.trim(),
+          seniority: "", title: d.currentRole, years: d.years, target: d.targetRole }
       };
     });
   }
@@ -7346,11 +7280,11 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     var o = item && item.obSession;
     if (!o) return "";
     return " You are a " + o.interviewer + (o.company ? " at " + o.company : "") + ", running the " + o.round + " round of a senior interview. " +
-      "The candidate is a " + (o.seniority || "senior") + " " + (o.title || "professional") + (o.years ? " with " + o.years + " years of experience" : "") +
+      "The candidate is currently a " + (o.title || "senior professional") + (o.years ? " with " + o.years + " years of experience" : "") +
       (o.target ? ", interviewing for " + o.target : "") + ". This is question " + o.n + " of " + o.total + " in one session. " +
       (o.n > 1 ? "You already met them on question one, so do not introduce yourself again. Just say it is the next question and ask it. "
         : "Introduce yourself in one short line as their interviewer, then ask the question. ") +
-      "Pitch every follow up at their level. ";
+      "Pitch every follow up at the level of the role they want. ";
   }
 
   /* ---- Reading files in the browser ---- */
@@ -7437,24 +7371,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       return clean.slice(0, 18000);
     });
   }
-  function ob2SetResume(file) {
-    if (!file) return;
-    OB2.resumeBusy = true; OB2.resumeErr = "";
-    if (!ob2Has(OB2.data.start, "resume")) OB2.data.start = OB2.data.start.filter(function (x) { return x !== "quick"; }).concat(["resume"]);
-    ob2Render();
-    readResumeText(file).then(function (text) {
-      OB2.resumeText = text;
-      OB2.data.resumeFile = file.name;
-    }).catch(function (err) {
-      OB2.resumeErr = String((err && err.message) || err);
-    }).then(function () {
-      OB2.resumeBusy = false;
-      ob2Persist();
-      if (OB2.step === 3) ob2Render();
-    });
-  }
-
-  /* ---- LinkedIn PDF: fill step 1 from the profile ---- */
+  /* ---- Reading a LinkedIn profile PDF ---- */
   var OB2_MONTH = "(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)";
   function guessFunction(t) {
     t = " " + String(t || "").toLowerCase() + " ";
@@ -7521,26 +7438,67 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       years: yearsBucket(earliest ? thisYear - earliest : 0)
     };
   }
+  function ob2SetResume(file) {
+    if (!file) return;
+    OB2.resumeBusy = true; OB2.resumeErr = "";
+    if (!ob2Has(OB2.data.start, "resume")) OB2.data.start = OB2.data.start.filter(function (x) { return x !== "quick"; }).concat(["resume"]);
+    ob2Render();
+    readResumeText(file).then(function (text) {
+      OB2.resumeText = text;
+      OB2.data.resumeFile = file.name;
+    }).catch(function (err) {
+      OB2.resumeErr = String((err && err.message) || err);
+    }).then(function () {
+      OB2.resumeBusy = false;
+      ob2Persist();
+      if (OB2.step === 2) ob2Render();
+    });
+  }
+
+  /* ---- LinkedIn PDF: fills Current role and Years ---- */
+  function ob2MatchRole(title) {
+    var t = String(title || "").trim().toLowerCase();
+    if (!t) return "";
+    var all = ob2AllRoles();
+    for (var i = 0; i < all.length; i++) if (all[i].toLowerCase() === t) return all[i];
+    return "";
+  }
   function ob2ImportLinkedIn(file) {
     if (!file) return;
-    OB2.liMsg = "Reading your LinkedIn PDF…"; OB2.liErr = false;
+    OB2.liErr = false;
+    OB2.liMsg = "Reading your LinkedIn PDF…";
     ob2Render();
     pdfLines(file, true).then(function (lines) {
       var got = parseLinkedInLines(lines);
-      if (!got.title && !got.seniority) throw new Error("We could not find your roles in that file. Use the PDF from LinkedIn's Save to PDF, or fill this in below.");
-      ["title", "function", "seniority", "years"].forEach(function (k) { if (got[k]) OB2.data[k] = got[k]; });
-      OB2.imported = true; OB2.liOpen = false;
-      OB2.liMsg = "We filled what we could find. Check it below and fix anything that is off.";
+      if (!got.title) throw new Error("We could not find your current role in that file. Use the PDF from LinkedIn's Save to PDF, or pick your role below.");
+      var match = ob2MatchRole(got.title);
+      OB2.pick.currentRole = match || "__other";
+      OB2.data.currentRole = match || got.title;
+      if (got.years) OB2.data.years = got.years;
+      OB2.imported = true;
+      OB2.liMsg = "";
     }).catch(function (err) {
       OB2.liErr = true;
-      OB2.liMsg = String((err && err.message) || err);
+      OB2.liMsg = escapeHtml(String((err && err.message) || err));
     }).then(function () {
       ob2Persist();
       if (OB2.step === 1) ob2Render();
     });
   }
+  // LinkedIn does not share the job title or years through its sign in,
+  // so the profile PDF is the way in. First tap says how to get it.
+  function ob2LinkedIn() {
+    if (OB2.liAsked) { $("#ob2-li-input").value = ""; $("#ob2-li-input").click(); return; }
+    OB2.liAsked = true;
+    OB2.liErr = false;
+    OB2.liMsg = "On LinkedIn, open your profile, tap Resources, then Save to PDF. " +
+      '<button type="button" class="ob2-text-btn ob2-li" id="ob2-li-pick" style="min-height:0;padding:0">Choose that PDF</button>';
+    ob2Render();
+    var pk = $("#ob2-li-pick");
+    if (pk) pk.focus();
+  }
 
-  /* ---- Microphone test and help ---- */
+  /* ---- Mic check ---- */
   var ob2Mic = null;
   function ob2StopMic() {
     if (!ob2Mic) return;
@@ -7551,33 +7509,33 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     if (ob2Mic.el) ob2Mic.el.remove();
     ob2Mic = null;
   }
-  function ob2Dialog(title, text, button) {
+  // thenStart: the check before the interview room. It offers Start
+  // interview, and the mic is released before the interviewer opens it.
+  function ob2MicCheck(thenStart) {
+    ob2StopMic();
     var el = document.createElement("div");
-    el.className = "ob2-mic";
+    el.className = "ob2-dlg";
     el.setAttribute("role", "dialog");
     el.setAttribute("aria-modal", "true");
-    el.setAttribute("aria-labelledby", "ob2-dlg-h");
-    el.innerHTML = '<div class="ob2-mic-card"><h3 id="ob2-dlg-h">' + title + "</h3>" + text +
-      '<div class="ob2-actions"><button type="button" class="ob2-btn ob2-primary" data-close="1">' + button + "</button></div></div>";
-    document.body.appendChild(el);
-    el.addEventListener("click", function (e) {
-      if (e.target === el || (e.target.closest && e.target.closest("[data-close]"))) {
-        if (ob2Mic && ob2Mic.el === el) ob2StopMic(); else el.remove();
-      }
-    });
-    setTimeout(function () { var b = el.querySelector("[data-close]"); if (b) b.focus(); }, 30);
-    return el;
-  }
-  function ob2MicTest() {
-    ob2StopMic();
-    var el = ob2Dialog("Test your microphone",
+    el.setAttribute("aria-labelledby", "ob2-mic-h");
+    el.innerHTML = '<div class="ob2-dlg-card"><h3 id="ob2-mic-h">' + (thenStart ? "Quick mic check" : "Test your mic") + "</h3>" +
       "<p>Say a few words, like your name and your current role. The bar should move as you speak.</p>" +
-      '<div class="ob2-meter" aria-hidden="true"><i id="ob2-meter-bar"></i></div><p class="ob2-mic-note" id="ob2-mic-note" aria-live="polite">Asking for your microphone…</p>',
-      "Sounds good");
-    ob2Mic = { el: el, peak: 0, start: Date.now() };
+      '<div class="ob2-meter" aria-hidden="true"><i id="ob2-meter-bar"></i></div>' +
+      '<p class="ob2-mic-note" id="ob2-mic-note" aria-live="polite">Asking for your microphone…</p>' +
+      '<div class="ob2-actions">' + (thenStart
+        ? '<button type="button" class="ob2-btn ob2-secondary" data-act="close">Not now</button><button type="button" class="ob2-btn ob2-primary" data-act="go">Start interview</button>'
+        : '<button type="button" class="ob2-btn ob2-primary" data-act="close">Sounds good</button>') + "</div></div>";
+    $("#ob2-view").appendChild(el);
+    var me = ob2Mic = { el: el, peak: 0, start: Date.now() };
+    el.addEventListener("click", function (e) {
+      var b = e.target.closest ? e.target.closest("[data-act]") : null;
+      if (e.target === el || (b && b.getAttribute("data-act") === "close")) { ob2StopMic(); return; }
+      if (b && b.getAttribute("data-act") === "go") { ob2StopMic(); ob2StartSession(); }
+    });
+    el.addEventListener("keydown", function (e) { if (e.key === "Escape") ob2StopMic(); });
+    setTimeout(function () { var f = el.querySelector('[data-act="go"]') || el.querySelector("[data-act]"); if (f) f.focus(); }, 30);
     var note = el.querySelector("#ob2-mic-note"), bar = el.querySelector("#ob2-meter-bar");
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { note.textContent = "This browser cannot use a microphone. Try Chrome or Edge."; return; }
-    var me = ob2Mic;
     navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } }).then(function (stream) {
       if (me.stopped) { stream.getTracks().forEach(function (t) { t.stop(); }); return; }
       me.stream = stream;
@@ -7607,46 +7565,15 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
         : "The microphone could not start. " + String((err && err.message) || err);
     });
   }
-  function ob2Help() {
-    ob2Dialog("Need a hand?",
-      "<p>Answer what you know. Only your title and seniority are needed, and you can change anything later.</p>" +
-      "<p>Your answers save as you go. Tap Save and finish later at any time, and you will come back to this same step next time you log in.</p>" +
-      "<p>Your resume and LinkedIn PDF are read here in your browser. Only you can see them.</p>", "Got it");
-  }
 
   /* ---- Wiring, done once at start up ---- */
   function wireProfileOnboarding() {
-    var view = $("#ob2-view");
-    if (!view) return;
-    $("#ob2-help").onclick = ob2Help;
-    $("#ob2-save").onclick = function () {
-      ob2Persist();
-      var b = $("#ob2-save");
-      b.textContent = "Saved · pick up here next time you log in";
-      b.classList.add("saved");
-      setTimeout(function () { if (b.classList.contains("saved")) exitProfileOnboarding(); }, 1400);
-    };
+    if (!$("#ob2-view")) return;
+    $("#ob2-save").onclick = ob2FinishLater;
     var content = $("#ob2-content");
     content.addEventListener("click", function (e) {
       var t = e.target.closest ? e.target.closest("button") : null;
       if (!t || !OB2) return;
-      if (t.classList.contains("ob2-chip")) {
-        var k = t.getAttribute("data-k"), v = t.getAttribute("data-v");
-        if (t.getAttribute("data-multi")) {
-          var list = (OB2.data[k] || []).slice(), i = list.indexOf(v);
-          if (i === -1) list.push(v); else list.splice(i, 1);
-          OB2.data[k] = list;
-          t.setAttribute("aria-pressed", i === -1 ? "true" : "false");
-        } else {
-          var off = OB2.data[k] === v;
-          OB2.data[k] = off ? "" : v;
-          $all('.ob2-chip[data-k="' + k + '"]', content).forEach(function (c) {
-            c.setAttribute("aria-pressed", !off && c === t ? "true" : "false");
-          });
-        }
-        ob2Persist(); ob2RenderAside(); ob2UpdateFoot();
-        return;
-      }
       var pick = t.getAttribute("data-pick");
       if (pick) {
         var s = OB2.data.start.slice();
@@ -7664,31 +7591,40 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       switch (t.id) {
         case "ob2-next": ob2Next(); break;
         case "ob2-back": if (OB2.step > 1) ob2Go(OB2.step - 1); break;
-        case "ob2-li":
-          OB2.liOpen = !OB2.liOpen; OB2.liMsg = "";
-          ob2Render();
-          var pk = $("#ob2-li-pick");
-          if (pk) pk.focus();
-          break;
+        case "ob2-li": ob2LinkedIn(); break;
         case "ob2-li-pick": $("#ob2-li-input").value = ""; $("#ob2-li-input").click(); break;
         case "ob2-drop": case "ob2-replace": $("#ob2-resume-input").value = ""; $("#ob2-resume-input").click(); break;
-        case "ob2-start": ob2StartSession(); break;
-        case "ob2-mic-test": ob2MicTest(); break;
-        case "ob2-dash": exitProfileOnboarding(); showToast("Your first interview is waiting. Find it any time from Start a session."); break;
+        case "ob2-start": ob2MicCheck(true); break;
+        case "ob2-mic-test": ob2MicCheck(false); break;
+      }
+    });
+    content.addEventListener("change", function (e) {
+      var el = e.target, role = el.getAttribute && el.getAttribute("data-role"), plain = el.getAttribute && el.getAttribute("data-plain");
+      if (role) {
+        var was = OB2.pick[role];
+        OB2.pick[role] = el.value;
+        if (el.value === "__other" && was !== "__other") OB2.data[role] = "";
+        ob2SyncRole(role);
+        ob2Persist(); ob2Render();
+        if (el.value === "__other") { var box = $("#ob2-" + role + "-other"); if (box) box.focus(); }
+        else { var again = $("#ob2-" + role); if (again) again.focus(); }
+        return;
+      }
+      if (plain) {
+        OB2.data[plain] = el.value || null;
+        el.classList.toggle("empty", !el.value);
+        ob2Persist();
       }
     });
     content.addEventListener("input", function (e) {
-      var f = e.target.getAttribute && e.target.getAttribute("data-f");
-      if (!f || !OB2) return;
-      OB2.data[f] = e.target.value;
-      if (f === "jobDescription") {
-        if (e.target.value.trim() && !ob2Has(OB2.data.start, "jd")) {
-          OB2.data.start = OB2.data.start.filter(function (x) { return x !== "quick"; }).concat(["jd"]);
-        }
-        var h = $("#ob2-jd-hint");
-        if (h) h.textContent = ob2JdHint();
+      var el = e.target, other = el.getAttribute && el.getAttribute("data-other"), f = el.getAttribute && el.getAttribute("data-f");
+      if (other) { OB2.data[other] = el.value.trim(); ob2Persist(); ob2UpdateFoot(); return; }
+      if (!f) return;
+      OB2.data[f] = el.value;
+      if (f === "jobDescription" && el.value.trim() && !ob2Has(OB2.data.start, "jd")) {
+        OB2.data.start = OB2.data.start.filter(function (x) { return x !== "quick"; }).concat(["jd"]);
       }
-      ob2Persist(); ob2RenderAside(); ob2UpdateFoot();
+      ob2Persist(); ob2UpdateFoot();
     });
     content.addEventListener("keydown", function (e) {
       if (e.key === "Enter" && e.target.tagName === "INPUT") { e.preventDefault(); ob2Next(); }
@@ -7723,8 +7659,8 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     if (p) {
       var a = ONB.answers || {};
       var exp = { "5–8": "4-7", "8–12": "8-12", "12–20": "12+", "20+": "12+" }[p.years];
-      var when = { "This week": "this_week", "2–4 weeks": "2-4w", "1–3 months": "1-3m", "Just exploring": "none" }[p.timeline];
-      if (!a.currentRole && p.title) a.currentRole = p.title;
+      var when = { "this week": "this_week", "in 2–4 weeks": "2-4w", "in 1–3 months": "1-3m", "some time soon": "none" }[p.interviewDate];
+      if (!a.currentRole && p.currentRole) a.currentRole = p.currentRole;
       if (!a.experience && exp) a.experience = exp;
       if (!a.targetTitle && p.targetRole) a.targetTitle = p.targetRole + (p.company ? ", " + p.company : "");
       if (!a.jd && p.jobDescription) a.jd = p.jobDescription;
