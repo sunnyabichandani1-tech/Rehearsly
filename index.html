@@ -6837,12 +6837,12 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   // Google, so nobody here, not even the owner, can read them. The same
   // sign in also hands us the ticket for your Google Drive.
   /* ---------------------------------------------------------------------
-   * Demo account. Sign in with test@test.com and the password 123 to walk
+   * Demo account. Sign in with demo@test.com and the password 123 to walk
    * the whole product with nothing connected: no Firebase, no Google
    * Drive, no Gemini key. Everything is made up on the spot and cleared
    * when you sign out, so every run starts fresh.
    * ------------------------------------------------------------------- */
-  var DEMO_EMAIL = "test@test.com", DEMO_PASS = "123";
+  var DEMO_EMAIL = "demo@test.com", DEMO_PASS = "123";
   function demoMode() { return !!getSettings().demoMode; }
   function demoId() { return "demo" + Date.now().toString(36) + Math.floor(Math.random() * 10000).toString(36); }
   function demoAnswer(q) {
@@ -13532,6 +13532,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       if (R.done) return;
       if (!L.ready) {
         if (!plain && !/credential|api key|quota|exhaust|limit|permission/i.test(reason)) { v2RoomConnect(true); return; }
+        if (demoMode() && /api key/i.test(reason)) { v2RoomFail("Live voice is off in the offline demo account. Sign in with a real account, such as test@test.com, to talk to Kira."); return; }
         v2RoomFail("The voice line closed straight away." + (reason ? " " + String(reason).slice(0, 160) : ""));
         return;
       }
