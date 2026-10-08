@@ -1523,9 +1523,20 @@ body.locked { overflow: hidden; }
 .login-view.as-modal .login-close { display: grid; }
 @keyframes lvFade { from { background: rgba(26,16,51,0); } }
 @keyframes lvRise { from { opacity: 0; transform: translateY(20px) scale(.98); } }
+/* The card floats in the centre with space around it; if the screen is
+   short, the card scrolls inside itself instead of touching the edges. */
+.login-view.as-modal { padding: 32px 20px; overflow: hidden; }
+.login-view.as-modal .login-right { max-height: 100%; display: flex; }
+.login-view.as-modal .login-form-card { max-height: calc(100vh - 64px); max-height: calc(100dvh - 64px); overflow-y: auto; overscroll-behavior: contain;
+  scrollbar-width: thin; scrollbar-color: #D5DAE6 transparent; padding: 48px 36px 28px; }
+.login-view.as-modal .login-form-card.cont-only > :not(.login-continue):not(.login-close):not(.login-status) { display: none; }
+.login-view.as-modal .login-form-card.cont-only { padding-bottom: 32px; }
+.login-view.as-modal .login-form-card.cont-only .login-status:empty { display: none; }
+.login-continue .login-form-title { margin: 0 0 6px; }
+.login-view.as-modal .login-form-card.cont-only .login-continue-label { margin-top: 0; }
 @media (max-width: 520px) {
-  .login-view.as-modal { padding: 12px; align-items: flex-start; }
-  .login-view.as-modal .login-form-card { padding: 54px 22px 26px; }
+  .login-view.as-modal { padding: 16px 12px; }
+  .login-view.as-modal .login-form-card { padding: 50px 22px 24px; max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px); }
 }
 @media (prefers-reduced-motion: reduce) { .login-view.as-modal, .login-view.as-modal .login-form-card { animation: none; } }
 
@@ -2344,6 +2355,32 @@ html.v2-live, html.v2-live body { overflow-x: clip !important; overflow-y: visib
 
 .rw-overlay { transition:opacity .2s ease; }
 .rw-overlay.rw-hold { opacity:0; }
+/* Scoring: two cards, evidence and the admin guide */
+.v2-fb-pm { font-style:normal; font-size:18px; font-weight:500; color:var(--muted,#6B7390); }
+.v2-fb-first { margin:2px 0 0; font-size:13.5px; line-height:1.5; color:#2E3550; }
+.v2-fb-first b { color:var(--rosed,#BE123C); font-weight:600; }
+.v2-fb-sep { color:var(--muted,#6B7390) !important; font-weight:500 !important; font-size:12.5px !important; }
+.v2-fb-ap { background:radial-gradient(60% 70% at 90% 10%,rgba(253,164,175,.4) 0%,rgba(253,164,175,0) 70%),radial-gradient(50% 60% at 10% 100%,rgba(196,181,253,.45) 0%,rgba(196,181,253,0) 70%),#FFFBFC; border-color:#F6E3EA; }
+.v2-fb-ev { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+.v2-fb-ev i { font-style:normal; font-size:12px; line-height:1; padding:5px 9px; border-radius:99px; }
+.v2-fb-ev i.ok { background:#E7F6EE; color:#0E8A4A; }
+.v2-fb-ev i.no { background:#FFE9EC; color:#BE123C; }
+.v2-fb-meas { font-size:12px; color:var(--muted,#6B7390); margin-top:4px; display:block; }
+.v2-apc { position:fixed; inset:0; z-index:200; background:rgba(26,16,51,.5); display:flex; align-items:center; justify-content:center; padding:20px; }
+.v2-apc-card { width:100%; max-width:440px; background:#fff; border-radius:20px; padding:28px; box-shadow:0 30px 80px -20px rgba(26,16,51,.45); }
+.v2-apc-card h3 { font-family:'Newsreader',serif; font-weight:400; font-size:26px; margin:0 0 10px; color:var(--ink,#1A1033); }
+.v2-apc-card p { font-size:14.5px; line-height:1.55; color:#465069; margin:0 0 10px; }
+.v2-apc-acts { display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; }
+.v2-sg { max-width:1100px; margin:0 auto; padding:28px clamp(16px,3vw,32px) 60px; display:flex; flex-direction:column; gap:16px; }
+.v2-sg .v2-gt { background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.v2-sg-g { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:16px; }
+.v2-sg-c { background:#fff; border:1px solid var(--bd,#E4E8F1); border-radius:18px; padding:18px 20px; }
+.v2-sg-c h3 { margin:0 0 10px; font-size:15px; }
+.v2-sg-c ol { margin:0; padding-left:20px; display:flex; flex-direction:column; gap:6px; font-size:14px; line-height:1.5; color:#2E3550; }
+.v2-sg-t { width:100%; border-collapse:collapse; font-size:13px; }
+.v2-sg-t th { text-align:left; color:var(--muted,#6B7390); font-weight:500; font-size:12px; padding:6px 8px; border-bottom:1px solid var(--bd,#E4E8F1); }
+.v2-sg-t td { padding:8px; border-bottom:1px solid #F0F2F7; vertical-align:top; }
+.v2-sg .v2-hint { display:block; margin-top:8px; }
 </style>
 </head>
 <body>
@@ -2370,10 +2407,10 @@ html.v2-live, html.v2-live body { overflow-x: clip !important; overflow-y: visib
     <div class="login-form-card">
       <button class="login-close" type="button" id="btn-login-close" aria-label="Close">✕</button>
       <div class="login-continue hidden" id="login-continue">
+        <h2 class="login-form-title">Welcome back</h2>
         <p class="login-continue-label">You are already set up on this browser</p>
         <button class="login-primary" type="button" id="btn-continue-as">Continue as <span id="continue-email">you</span></button>
-        <button class="login-link" type="button" id="btn-use-other">Use a different account</button>
-        <div class="login-or"><span>or log in below</span></div>
+        <button class="login-link" type="button" id="btn-use-other">Log in with a different account</button>
       </div>
 
       <div class="login-tabs">
@@ -7044,6 +7081,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     var row = $("#login-continue");
     if (!row) return;
     row.classList.toggle("hidden", !on);
+    var card = row.closest(".login-form-card"); if (card) card.classList.toggle("cont-only", !!on);
     if (on) {
       var s2 = getSettings();
       var who = s2.authName ? s2.authName.split(" ")[0] : (s2.authEmail || "you");
@@ -9639,7 +9677,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     var body = {
       contents: [{ role: "user", parts: [{ text: userMsg }] }],
       systemInstruction: { parts: [{ text: sys }] },
-      generationConfig: { temperature: 0.3 }
+      generationConfig: { temperature: settings.temperature != null ? settings.temperature : 0.3 }
     };
     if (wantJsonMode) body.generationConfig.responseMimeType = "application/json";
     return geminiGenerate(settings, model, body).then(function (r) {
@@ -12384,7 +12422,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   var V2_PREF_DEFAULTS = {
     difficulty: "Moderate", persona: "VP", media: "Voice only", voice: "Calm", speed: "Normal", timer: true, ansLen: "2 min", hints: "Subtle",
     mic: "", cam: "", noise: true, selfView: "Floating", captions: true,
-    tone: "Balanced", skStructure: true, skPresence: true, skDepth: true, skConcision: true, goal: "80",
+    tone: "Balanced", skStructure: true, skPresence: true, skDepth: true, skConcision: true, skVoice: true, appearanceAI: false, goal: "80",
     remind: true, remDays: "Weekdays", remTime: "7:00 pm", emailSum: true, countdown: true,
     keep: "30 days", memory: true, theme: "Bright white", textSz: "Default",
     syncAnswers: true, syncTranscripts: true, syncFeedback: false, micTested: false
@@ -12683,7 +12721,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       "</div></header>";
     var menu = noMenu ? "" : V2.menuOpen ? v2MenuHtml() : (v2Narrow() ? "" : v2RailHtml());
     var body = sc === "settings" ? v2SettingsHtml() : sc === "mic" ? v2MicHtml() : sc === "room" ? v2RoomHtml() : sc === "processing" ? v2ProcHtml()
-      : sc === "feedback" ? v2FeedbackHtml() : sc === "history" ? v2HistoryHtml() : sc === "quick" ? v2QuickHtml() : sc === "plan" ? v2PlanPageHtml() : sc === "newplan" ? v2NpHtml() : sc === "library" ? v2LibHtml() : sc === "practice" ? v2PrHtml() : sc === "detail" ? v2DtHtml() : v2HomeHtml();
+      : sc === "feedback" ? v2FeedbackHtml() : sc === "history" ? v2HistoryHtml() : sc === "quick" ? v2QuickHtml() : sc === "plan" ? v2PlanPageHtml() : sc === "newplan" ? v2NpHtml() : sc === "library" ? v2LibHtml() : sc === "practice" ? v2PrHtml() : sc === "detail" ? v2DtHtml() : sc === "scoreguide" ? v2ScoreGuideHtml() : v2HomeHtml();
     root.innerHTML = top + '<div class="v2-body">' + menu + (open && v2Narrow() ? '<div class="v2-scrim" data-act="menu"></div>' : "") +
       '<main class="v2-main v2-on-' + sc + '">' + body + "</main></div>" + (V2.modal ? v2ModalHtml() : "");
     if (sc === "room") v2RoomAttachCam();
@@ -12691,6 +12729,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     if (sc === "settings" && V2.setTab === "account" && !V2.usage) v2LoadUsage();
   }
   function v2MenuHtml() {
+    v2AdminCheck();
     var sc = V2.screen, f = v2FixedSecs(), plans = v2Plans();
     function item(label, count, act, arg) {
       var on = act === "sec" && arg && V2.lib && V2.lib.key === arg && (sc === "library" || sc === "detail" || (sc === "practice" && V2.pr && V2.pr.key === arg));
@@ -12715,7 +12754,8 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
         item("Frameworks", v2SecCount(f.frameworks), "sec", f.frameworks ? f.frameworks.key : "") + "</div>" +
       '<div class="v2-mgroup"><span class="v2-eyebrow-m">Your sections</span>' + mine +
         v2Btn("newsec", "+ New section", "v2-mi v2-newsec") + "</div>" +
-      '<div class="v2-mgroup v2-mfoot">' + item("My interview history", "", "history") + item("Interview tips", f.tips ? v2SecCount(f.tips) : "", "sec", f.tips ? f.tips.key : "") + "</div>" +
+      '<div class="v2-mgroup v2-mfoot">' + item("My interview history", "", "history") + item("Interview tips", f.tips ? v2SecCount(f.tips) : "", "sec", f.tips ? f.tips.key : "") +
+        (V2.isAdmin ? item("Scoring guide (admin)", "", "scoreguide") : "") + "</div>" +
       '<button type="button" class="v2-collapse" data-act="menu" title="Collapse menu">' + V2_PANEL_IN + "Collapse menu</button>" +
       "</aside>";
   }
@@ -13105,8 +13145,9 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     }
     if (tab === "feedback") return ["Feedback and scoring", "How Rehearsly scores you and talks to you about it.", [
       v2Sg("Feedback tone", "", "tone", ["Direct", "Balanced", "Encouraging"]),
-      v2Tg("Score structure", "", "skStructure"), v2Tg("Score executive presence", "Turn off for individual-contributor roles.", "skPresence"),
-      v2Tg("Score depth under follow-ups", "", "skDepth"), v2Tg("Score concision", "", "skConcision"),
+      v2Tg("Score answer framing", "Direct answer, situation, actions, result, close.", "skStructure"), v2Tg("Score words used", "Ownership, business impact, no fillers or hedging.", "skPresence"),
+      v2Tg("Score depth", "Real example, numbers, trade offs, follow ups.", "skDepth"), v2Tg("Score voice delivery", "Pace, tone, pauses and volume from your mic.", "skVoice"),
+      v2Tg("Appearance review in video interviews", "3 photos sent to Gemini to judge dress, grooming and background. Not stored.", "appearanceAI"),
       v2Sg("Readiness goal", "The score your plans aim for.", "goal", ["75", "80", "85"])
     ]];
     if (tab === "reminders") return ["Reminders", "Gentle nudges to keep you practising before the big day. Emails start once email sending is switched on.", [
@@ -13320,6 +13361,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
         break;
       case "stories": v2LibOpen("stories"); break;
       case "history": v2Show("history"); break;
+      case "scoreguide": v2Show("scoreguide"); break;
       case "hist-f": V2.histFilter = arg; v2Render(); break;
       case "hist-open":
         if (!arg) { v2Legacy(function () { openInterviewHistory(); }); break; }
@@ -13451,7 +13493,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   var V2_CLOSE = "that is the end of the interview";
   var V2_TURN_TOOL = { name: "set_turn", description: "Call this right before you speak, every time, to say what kind of turn you are about to take.",
     parameters: { type: "OBJECT", properties: {
-      kind: { type: "STRING", enum: ["question", "followup", "probe", "wrapup"], description: "question when asking a main question, followup for your first follow up on an answer, probe for every further follow up, wrapup when you close." },
+      kind: { type: "STRING", enum: ["intro", "question", "followup", "probe", "closing", "wrapup"], description: "intro for your opening before question 1, question when asking a main question, followup for your first follow up on an answer, probe for every further follow up, closing for your thank you and feedback after the last question, wrapup only for your very last turn that ends the interview." },
       question_number: { type: "INTEGER", description: "The number of the main question this turn belongs to." } }, required: ["kind", "question_number"] } };
   var V2_NUM_WORDS = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10 };
 
@@ -13494,7 +13536,9 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     R.selfW = sb.w || (v2Narrow() ? 110 : 220); R.selfX = null; R.selfY = null; R.selfFree = false;
     if (sb.free && sb.x != null) { R.selfFree = true; R.selfX = sb.x; R.selfY = sb.y; v2SelfClamp(R); }
     R.camStats = rec && rec.camStats ? rec.camStats : {};
+    R.vox = null; R.snaps = [];
     R.turns.forEach(function (t) { t.closed = true; });
+    R.inIntro = !R.turns.length && !R.startQ; R.inClosing = false;
     V2.room = R;
     v2RoomPersist("live");
     V2.menuOpen = false;
@@ -13505,7 +13549,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     v2SaveSession({ id: R.id, mode: R.mode, planId: R.planId || null, step: R.step == null ? null : R.step, title: R.title, round: R.round,
       difficulty: R.difficulty, persona: R.persona, media: R.media, company: R.company, target: R.target, questions: R.questions,
       turns: R.turns.map(function (t) { return { who: t.who, kind: t.kind || "", q: t.q, text: t.text }; }),
-      startedAt: R.startedAt, durationMs: R.elapsed, relaySession: R.relaySession, status: status, origin: R.origin, note: R.note || "", camStats: R.camStats || null,
+      startedAt: R.startedAt, durationMs: R.elapsed, relaySession: R.relaySession, status: status, origin: R.origin, note: R.note || "", camStats: R.camStats || null, vox: v2VoxSummary(R, (v2GetSession(R.id) || {}).vox),
       result: (v2GetSession(R.id) || {}).result || null });
   }
   function v2Asked(turns) { var m = 0; (turns || []).forEach(function (t) { if (t.who === "ai" && t.kind === "question") m = Math.max(m, t.q || 0); }); return m; }
@@ -13538,15 +13582,49 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       accentStyle() + " " + voice + speed +
       " The candidate speaks English, so always listen for English and always reply in English." +
       "\n\nYou will ask these " + R.questions.length + " main question" + (R.questions.length === 1 ? "" : "s") + ", in this order:\n" + list +
-      "\n\nHow to run it. Open with one short line: say you are Kira and you will be their " + who + " today, then ask question 1. " + follow +
+      "\n\n" + (asked ? "" : v2RoomOpening(who)) + "\n\nHow to run it. " + follow +
       " You decide when an answer is complete and when to move on. Move on by asking the next main question yourself. Never ask the candidate whether to move on." +
       " Be patient: the candidate thinks out loud and pauses mid answer. A pause is not your cue. Only speak once they have clearly finished. If you cut across them by mistake, say sorry in a few words and let them carry on." +
       " If they ask a clarifying question, answer it briefly and get back on track. Do not give scores or long feedback during the interview, one short neutral acknowledgement is enough." +
-      (rich ? " Each time, right before you speak, call the set_turn tool to say what you are about to do: kind question with its number when you ask a main question, followup for your first follow up on an answer, probe for every further follow up, and wrapup when you close."
+      (rich ? " Each time, right before you speak, call the set_turn tool to say what you are about to do: kind intro for your opening before question 1, question with its number when you ask a main question, followup for your first follow up on an answer, probe for every further follow up, closing for your thank you and feedback after the last question, and wrapup only for your very last turn."
         : " When you ask a main question, start with its number, like: Question two.") +
-      " After the follow ups on the last question, close in one or two warm sentences and end with exactly this sentence: That is the end of the interview." +
+      "\n\nHow to close. After the follow ups on the last question, thank them in one warm sentence and name one thing they did well. Then ask whether they would like quick feedback on what they could do better and what to watch out for in the real interview. Stop and wait for their reply. " +
+      "If they say yes, give it in under 45 seconds: the two most important things they did not do well in this interview, based only on what they actually said, and for each one a simple precaution for the real interview. Then ask if they have any question, and answer it briefly. " +
+      "If they say no, wish them luck in one line. Your very last turn must end with exactly this sentence: That is the end of the interview. Do not say that sentence before then." +
       (R.note ? "\n\nFocus for this practice: " + R.note : "") +
       candidateBrief() + resume;
+  }
+  // How Kira opens: a proper welcome the first time, a welcome back with tips after that.
+  function v2PastCoach() {
+    var R = V2.room, past = v2Sessions().filter(function (x) { return x.id !== R.id && x.result && x.result.overall != null; }).slice(0, 5);
+    if (!past.length) return null;
+    var count = {}, fixes = {};
+    past.forEach(function (x) { (x.result.mistakes || []).forEach(function (m) { if (!m || !m.title) return; var k = String(m.title).toLowerCase().trim(); count[k] = (count[k] || 0) + 1; if (m.fix) fixes[k] = m.fix; if (!fixes[k + "#t"]) fixes[k + "#t"] = m.title; }); });
+    var tips = Object.keys(count).sort(function (a, b) { return count[b] - count[a]; }).slice(0, 2).map(function (k) { return fixes[k + "#t"] + (fixes[k] ? ": " + fixes[k] : ""); });
+    var sk = {}, n = {};
+    past.forEach(function (x) { Object.keys(x.result.skills || {}).forEach(function (k) { var v = x.result.skills[k]; if (v != null && V2_SKILL_FIX[k]) { sk[k] = (sk[k] || 0) + v; n[k] = (n[k] || 0) + 1; } }); });
+    var low = Object.keys(sk).sort(function (a, b) { return sk[a] / n[a] - sk[b] / n[b]; })[0];
+    if (tips.length < 2 && low) tips.push(V2_SKILL_FIX[low]);
+    if (tips.length < 2 && past[0].result.fix) tips.push(past[0].result.fix);
+    return { last: past[0].result.overall, tips: tips.slice(0, 2), count: past.length };
+  }
+  function v2RoomOpening(who) {
+    var R = V2.room, name = v2First() || "", N = R.questions.length, at = R.company ? " at " + R.company : "", coach = v2PastCoach();
+    var how = R.difficulty === "Easy" ? "" : R.difficulty === "Difficult" ? ", and you will dig into each answer with follow up questions" : ", with a follow up question after each one";
+    var one = N === 1 ? "one main question" : N + " main questions";
+    if (!coach) {
+      return "How to open. This is the candidate's first interview with you, so open the way a good real interviewer does before an interview starts, in about 30 seconds. " +
+        "Greet " + (name || "them") + " warmly" + (name ? " by first name" : "") + ", say you are Kira, their interview coach at Rehearsly, and that today you will run a " + R.round + " round the way a " + who + at + " would. " +
+        "Put them at ease in one line, for example that this is a safe place to practise and every mistake made here is one they will not make in the real room. " +
+        "Then explain how it will go in two or three short sentences: you will ask " + one + how + ", they can take a moment to think before answering, and a strong answer is about two minutes with one real example and a number. " +
+        "Tell them that at the end you will offer quick feedback, and a full score report follows. Then ask if they are ready or have any question before you start. " +
+        "Stop and wait for their reply. If they ask something, answer it briefly. When they are ready, say a short line such as Great, let us begin, and then ask question 1. Never ask question 1 in the same turn as the opening.";
+    }
+    return "How to open. The candidate has practised with you before, so do not introduce yourself again and do not announce the role you are playing as an introduction. " +
+      "Open warmly: welcome " + (name || "them") + " back in one friendly line. " + (coach.last != null ? "Their last score was " + coach.last + "; you may mention it in a few words to encourage them. " : "") +
+      "Say today is a " + R.round + " round with " + one + how + ", run the way a " + who + at + " would. " +
+      "Then, before they speak, give two short tips from their past interviews, in your own words and in one sentence each: " + coach.tips.map(function (t, i) { return (i + 1) + ") " + t; }).join(" ") + " " +
+      "Ask if they are ready. Stop and wait for their reply. When they are ready, ask question 1. Never ask question 1 in the same turn as the opening.";
   }
   function v2RoomSetup(model, rich) {
     var R = V2.room, s = getSettings();
@@ -13684,12 +13762,14 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       return { kind: k, q: q || R.curQ || 1 };
     }
     if (t.indexOf(V2_CLOSE) !== -1) return { kind: "wrapup", q: R.curQ || 1 };
+    if (R.inIntro && !/question\s+(1|one)\b/.test(t)) return { kind: "intro", q: 0 };
     var m = /question\s+(\d+|one|two|three|four|five|six|seven|eight|nine|ten)\b/.exec(t);
     if (m) return { kind: "question", q: V2_NUM_WORDS[m[1]] || parseInt(m[1], 10) };
     var prevAi = null;
     for (var i = R.turns.length - 1; i >= 0; i--) if (R.turns[i].who === "ai") { prevAi = R.turns[i]; break; }
     if (!prevAi) return { kind: "question", q: (R.startQ || 0) + 1 };
     var hadAnswer = R.turns.length && R.turns[R.turns.length - 1].who === "you";
+    if (prevAi.kind === "intro") return { kind: "question", q: (R.startQ || 0) + 1 };
     if (!hadAnswer) return { kind: prevAi.kind, q: prevAi.q };
     if (R.difficulty === "Easy") return { kind: "question", q: (R.curQ || 0) + 1 };
     return { kind: prevAi.kind === "question" ? "followup" : "probe", q: R.curQ || 1 };
@@ -13699,16 +13779,19 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     if (!cur || cur.who !== "ai" || cur.closed) {
       if (cur) cur.closed = true;
       var k = v2RoomKind(text);
-      if (k.kind === "question") R.curQ = Math.max(1, Math.min(R.questions.length, k.q));
-      cur = { who: "ai", kind: k.kind, q: k.kind === "question" ? R.curQ : (k.q || R.curQ || 1), text: "" };
+      if (k.kind === "question") { R.curQ = Math.max(1, Math.min(R.questions.length, k.q)); R.inIntro = false; }
+      if (k.kind === "intro" && !R.inIntro) k = { kind: "followup", q: R.curQ || 1 };
+      if (k.kind === "closing" || k.kind === "wrapup") R.inClosing = true;
+      cur = { who: "ai", kind: k.kind, q: k.kind === "question" ? R.curQ : k.kind === "intro" ? 0 : (k.q || R.curQ || 1), text: "" };
       R.turns.push(cur);
       v2RoomRefresh(true);
     }
     cur.text += text;
     if (cur.kind !== "wrapup" && cur.text.toLowerCase().indexOf(V2_CLOSE) !== -1) cur.kind = "wrapup";
+    if (!R.inClosing && !R.inIntro && cur.kind !== "question" && R.curQ >= R.questions.length && /\b(quick feedback|like (some )?feedback|feedback on what)\b/i.test(cur.text)) { R.inClosing = true; cur.kind = "closing"; }
     if (cur.kind !== "question" && cur.kind !== "wrapup") {
       var m = /^\s*question\s+(\d+|one|two|three|four|five|six|seven|eight|nine|ten)\b/i.exec(cur.text);
-      if (m) { cur.kind = "question"; cur.q = R.curQ = Math.min(R.questions.length, V2_NUM_WORDS[m[1].toLowerCase()] || parseInt(m[1], 10)); }
+      if (m) { cur.kind = "question"; cur.q = R.curQ = Math.min(R.questions.length, V2_NUM_WORDS[m[1].toLowerCase()] || parseInt(m[1], 10)); R.inIntro = false; }
     }
     v2RoomPatch();
   }
@@ -13718,7 +13801,8 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     var cur = v2RoomLast();
     if (!cur || cur.who !== "you" || cur.closed) {
       if (cur) cur.closed = true;
-      cur = { who: "you", q: R.curQ || 1, text: "" };
+      // Replies to the welcome or the closing are not part of any answer.
+      cur = { who: "you", q: R.inIntro || R.inClosing ? 0 : (R.curQ || 1), text: "" };
       R.turns.push(cur);
       v2RoomRefresh(true);
     }
@@ -13767,6 +13851,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
         var lvl = Math.sqrt(sum / (f.length || 1));
         L.level = (R.muted || R.paused) ? 0 : lvl;
         if (R.paused || R.done) return;
+        if (!R.muted) { try { v2VoxFrame(f, lvl, LIVE_IN_RATE); } catch (e) {} }
         if (R.muted) f = new Float32Array(f.length);
         else {
           if (lvl > 0.02) L.heardAt = Date.now();
@@ -13948,7 +14033,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   var V2_AVATAR = '<svg width="50%" height="50%" viewBox="0 0 64 64" aria-hidden="true"><g fill="#FFFFFF"><rect x="6" y="26" width="9" height="12" rx="4.5"/><rect x="20" y="16" width="9" height="32" rx="4.5"/><rect x="34" y="6" width="9" height="52" rx="4.5"/><rect x="48" y="20" width="9" height="24" rx="4.5"/></g></svg>';
   var V2_MIC = '<svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><rect x="7" y="2.5" width="6" height="10" rx="3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 9.5a6 6 0 0 0 12 0M10 15.5V18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>';
   function v2KindLabel(t) {
-    return t.kind === "question" ? "Question " + t.q : t.kind === "followup" ? "Follow-up" : t.kind === "probe" ? "Probing deeper" : t.kind === "wrapup" ? "Wrap-up" : "Kira";
+    return t.kind === "intro" ? "Welcome" : t.kind === "closing" ? "Wrap-up" : t.kind === "question" ? "Question " + t.q : t.kind === "followup" ? "Follow-up" : t.kind === "probe" ? "Probing deeper" : t.kind === "wrapup" ? "Wrap-up" : "Kira";
   }
   function v2RoomStatusText() {
     var R = V2.room;
@@ -14000,6 +14085,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       var pos = R.selfX == null ? "right:16px;bottom:16px;" : "left:" + R.selfX + "px;top:" + R.selfY + "px;";
       var tipsOn = v2Prefs().camTips !== false;
       body = '<div class="v2r-video"><div class="v2r-tools">' + (lay !== "hide" ? '<button type="button" class="v2r-tipbtn' + (tipsOn ? " on" : "") + '" data-act="room-camtips" title="Live tips on light, framing and posture from your camera">Camera tips · ' + (tipsOn ? "On" : "Off") + "</button>" : "") +
+        (lay !== "hide" ? '<button type="button" class="v2r-tipbtn' + (v2Prefs().appearanceAI === true ? " on" : "") + '" data-act="ap-ask" title="3 photos sent to Gemini to judge dress, grooming and background. Not stored.">Appearance review · ' + (v2Prefs().appearanceAI === true ? "On" : "Off") + "</button>" : "") +
         '<div class="v2r-layout">' + [["float", "Floating"], ["split", "Side by side"], ["full", "Full screen"], ["hide", "Hide me"]].map(function (l) {
           return '<button type="button" class="' + (lay === l[0] ? "on" : "") + '" data-act="room-layout" data-arg="' + l[0] + '">' + l[1] + "</button>"; }).join("") + "</div></div>" +
         '<div class="v2r-stage' + (split ? " split" : "") + '" id="v2r-stage">' +
@@ -14117,6 +14203,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     var byQ = {};
     rec.questions.forEach(function (q, i) { byQ[i + 1] = { n: i + 1, question: q.question, look_for: q.look_for || "", lines: [], followups: 0, answered: false }; });
     (rec.turns || []).forEach(function (t) {
+      if (t.q === 0) return; // the welcome and the closing chat are not part of any answer
       var b = byQ[t.q] || byQ[1]; if (!b) return;
       if (t.who === "ai" && (t.kind === "followup" || t.kind === "probe")) b.followups++;
       if (t.who === "you") { var said = String(t.text || "").replace(/… \(muted\)/, "").trim(); if (said) b.words = (b.words || 0) + said.split(/\s+/).filter(Boolean).length; }
@@ -14124,73 +14211,6 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     });
     // An answer is only scored when it is a real attempt: a few full sentences at least.
     return Object.keys(byQ).map(function (k) { var b = byQ[k]; b.words = b.words || 0; b.answered = b.words >= V2_MIN_WORDS; return b; });
-  }
-  var V2_SKILLS = [["structure", "Structure", "skStructure"], ["presence", "Executive presence", "skPresence"], ["depth", "Depth under follow-ups", "skDepth"], ["concision", "Concision", "skConcision"]];
-  function v2OnSkills() { var p = v2Prefs(); var on = V2_SKILLS.filter(function (s) { return p[s[2]] !== false; }); return on.length ? on : V2_SKILLS; }
-  function v2Clamp(n) { n = Math.round(Number(n)); return isFinite(n) ? Math.max(0, Math.min(100, n)) : null; }
-  var V2_MIN_WORDS = 30;
-  function v2HeuristicQ(b) {
-    var text = b.lines.filter(function (l) { return /^Candidate: /.test(l); }).join(" ").replace(/^Candidate: /gm, "");
-    var words = text.split(/\s+/).filter(Boolean).length, nums = (text.match(/\b\d+([.,]\d+)?\b|\bpercent\b/gi) || []).length;
-    var sign = /\b(first|second|then|finally|because|so that|which meant)\b/i.test(text), mine = (text.match(/\bI\b/g) || []).length;
-    return { structure: 50 + (sign ? 18 : 0) + Math.min(14, words / 12), presence: 52 + Math.min(20, mine * 3), depth: 48 + Math.min(24, b.followups * 6 + nums * 4),
-      concision: words > 380 ? 55 : words > 60 ? 74 : 58, note: words ? "Scored on structure, numbers and length only. The AI coach was not available for this one." : "Not answered." };
-  }
-  function v2ScoreSession(id) {
-    var rec = v2GetSession(id);
-    if (!rec) return Promise.resolve(null);
-    var blocks = v2Transcript(rec), prefs = v2Prefs(), skills = v2OnSkills();
-    var answered = blocks.filter(function (b) { return b.answered; });
-    var sys = "You score a senior mock interview for a coaching app. For each main question, score the candidate's own answers from 0 to 100 on: " +
-      skills.map(function (s) { return s[1]; }).join(", ") + ". " +
-      "How to score, strictly. Score only the words the candidate said, never the interviewer. " +
-      "Structure: a direct opening answer, one clear example in a logical order, and a clear close. " +
-      "Executive presence: confident ownership language, senior framing of business impact and stakeholders, no hedging or filler. " +
-      "Depth under follow-ups: the candidate's own role, specific facts, numbers, trade offs and lessons, and answers to the follow ups that stay consistent. " +
-      "Concision: gets to the point and fits about two minutes, no rambling or repeating. " +
-      "Bands: 90 to 100 exceptional, 80 to 89 ready for a real panel, 65 to 79 close, 50 to 64 needs work, under 50 weak. " +
-      "Hard caps: if the answer does not address the question, every score is 30 or less. If there is no specific real example, structure and depth are 55 or less. " +
-      "If there is no number or measurable result, depth is 65 or less. Generic textbook answers are 50 or less. " +
-      "If the candidate did not make a real attempt (a few words, off topic, or silence), set answered to false and do not score that question. " +
-      "Be honest and specific; a kind score that is wrong hurts the candidate. " +
-      "Feedback tone: " + prefs.tone + ". Use plain, simple English, no markdown, no dashes. " +
-      "Reply with ONLY compact JSON of this exact shape: {\"headline_a\": \"short praise, 2 to 4 words, ends with a full stop\", \"headline_b\": \"short fix, 3 to 5 words, ends with a full stop\", " +
-      "\"keep\": \"one sentence on what to keep doing\", \"fix\": \"one sentence on the one thing to fix first\", " +
-      "\"questions\": [{\"n\": 1, \"title\": \"4 to 7 word title for the question\", \"answered\": true, \"structure\": 0, \"presence\": 0, \"depth\": 0, \"concision\": 0, \"note\": \"one or two sentences of coaching\"}], " +
-      "\"mistakes\": [{\"title\": \"short name of a repeated mistake pattern\", \"quote\": \"their exact words that show it, under 15 words\", \"fix\": \"one sentence\"}]}";
-    var msg = "Role: " + (rec.target || "") + "\nRound: " + rec.round + "\nInterviewer: " + rec.persona + "\nDifficulty: " + rec.difficulty + "\n\n" +
-      blocks.map(function (b) { return "MAIN QUESTION " + b.n + ": " + b.question + "\nWhat a strong answer contains: " + (b.look_for || "a clear, specific answer with a number") + "\n" + (b.lines.join("\n") || "Not asked.") ; }).join("\n\n");
-    var job = answered.length ? callGeminiResilient(getSettings(), sys, msg, null).then(function (c) { var j = parseFeedbackContent(c); return j && Array.isArray(j.questions) ? j : null; }).catch(function () { return null; }) : Promise.resolve(null);
-    return job.then(function (ai) {
-      var qs = blocks.map(function (b) {
-        var a = ai && ai.questions ? ai.questions.filter(function (x) { return x && +x.n === b.n; })[0] : null;
-        var h = v2HeuristicQ(b), sk = {};
-        var real = b.answered && !(a && a.answered === false);
-        V2_SKILLS.forEach(function (s) { sk[s[0]] = real ? v2Clamp(a && a[s[0]] != null ? a[s[0]] : h[s[0]]) : null; });
-        var on = skills.map(function (s) { return sk[s[0]]; }).filter(function (x) { return x != null; });
-        var why = !b.words ? "Not answered, so not scored." : !real ? "Not scored: you said " + b.words + " word" + (b.words === 1 ? "" : "s") + ". Give a full answer of a few sentences so it can be judged fairly." : "";
-        return { n: b.n, question: b.question, title: (a && a.title) || b.question, followups: b.followups, answered: real, words: b.words, skills: sk,
-          score: real && on.length ? Math.round(on.reduce(function (x, y) { return x + y; }, 0) / on.length) : null,
-          note: why || (a && a.note) || h.note };
-      });
-      var done = qs.filter(function (q) { return q.score != null; });
-      var overall = done.length ? Math.round(done.reduce(function (x, q) { return x + q.score; }, 0) / done.length) : null;
-      var skillAvg = {};
-      V2_SKILLS.forEach(function (s) { var v = done.map(function (q) { return q.skills[s[0]]; }).filter(function (x) { return x != null; }); skillAvg[s[0]] = v.length ? Math.round(v.reduce(function (x, y) { return x + y; }, 0) / v.length) : null; });
-      var low = skills.slice().sort(function (x, y) { return (skillAvg[x[0]] || 0) - (skillAvg[y[0]] || 0); })[0];
-      var result = { overall: overall, skills: skillAvg, questions: qs, ai: !!ai,
-        headA: (ai && ai.headline_a) || (overall == null ? "No answers yet." : overall >= 80 ? "Strong round." : "Good start."),
-        headB: (ai && ai.headline_b) || (overall == null ? "Give it one full run." : "Work on " + low[1].toLowerCase() + "."),
-        keep: (ai && ai.keep) || (overall == null ? "" : "You kept going and answered out loud, which is the hard part."),
-        fix: (ai && ai.fix) || (overall == null ? "Answer at least one question so there is something to score." : "Put one number against every claim, and say what you did yourself."),
-        mistakes: (ai && ai.mistakes) || [], scoredAt: Date.now() };
-      var r2 = v2GetSession(id);
-      r2.result = result; r2.status = "done";
-      v2SaveSession(r2);
-      if (r2.mode === "plan" && r2.planId) v2PlanAfterScore(r2);
-      if (prefs.memory && r2.planId && result.mistakes.length) v2Remember(r2);
-      return result;
-    });
   }
   function v2PlanAfterScore(rec) {
     var doc = v2PlanDoc(), plan = doc.plans.filter(function (p) { return p.id === rec.planId; })[0];
@@ -14235,22 +14255,50 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     var delta = prev && res.overall != null ? res.overall - prev.result.overall : null;
     var plan = rec.planId ? v2PlanById(rec.planId) : null, n = plan ? plan.steps.length : 0, d = plan ? plan.steps.filter(function (s) { return s.status === "done"; }).length : 0;
     var skills = v2OnSkills(), cols = ["#6D28D9", "#A21CAF", "#F43F5E", "#5B21B6"];
+    var lowSk = res.overall == null ? null : skills.filter(function (s) { return res.skills[s[0]] != null; }).sort(function (a, b) { return res.skills[a[0]] - res.skills[b[0]]; })[0];
     var earned = plan ? "Interview " + (rec.step + 1) + " of " + n + " in your plan is " + (res.overall != null ? "done" : "started") + (d < n ? " · " + (n - d) + " to go." : " · plan complete.") : mins + " minutes of practice out loud today.";
     var h = '<div class="v2-fb"><button type="button" class="v2-backlink" data-act="' + (rec.mode === "plan" && !V2.fbFromPlan ? "home" : "fb-back") + '">' + (V2.fbFromPlan || (rec.origin && rec.origin.screen === "plan") ? "← Back to plan" : rec.mode === "plan" || !rec.origin || rec.origin.screen === "home" ? "← Back to home" : ({ practice: "← Back to question", library: "← Back to section", feedback: "← Back to summary", detail: "← Back to card" }[rec.origin.screen] || "← Back")) + "</button>" +
       '<div class="v2-fb-head"><span class="v2-meta">' + v2Esc(rec.round + " · " + rec.persona + " interviewer · " + rec.difficulty.toLowerCase() + " · " + mins + " min") + "</span>" +
       '<h1 class="v2-h1">' + v2Esc(res.headA) + " " + v2Grad(res.headB) + "</h1></div>" +
-      '<div class="v2-fb-cards"><div class="v2-fb-overall"><span class="v2-fb-lab">Overall</span><div class="v2-fb-num"><span>' + (res.overall == null ? "—" : res.overall) + "</span>" +
+      '<div class="v2-fb-cards"><div class="v2-fb-overall"><span class="v2-fb-lab">Interview skills</span><div class="v2-fb-num"><span>' + (res.overall == null ? "—" : res.overall) + "</span>" +
+      (res.overall != null && res.pm ? '<i class="v2-fb-pm">\u00b1 ' + res.pm + "</i>" : "") +
       (delta != null || res.readyAfter != null ? '<b>' + (delta != null ? (delta >= 0 ? "+" : "") + delta : "") + (res.readyAfter != null ? (delta != null ? " · " : "") + "readiness now " + res.readyAfter : "") + "</b>" : "") + "</div>" +
-      skills.map(function (s, i) { var v = res.skills[s[0]]; return '<div class="v2-fb-sk"><div><span>' + s[1] + "</span><b>" + (v == null ? "—" : v) + '</b></div><div class="v2-fb-track"><div style="width:' + (v || 0) + "%;background:" + cols[i] + '"></div></div></div>'; }).join("") + "</div>" +
+      skills.map(function (s, i) { var v = res.skills[s[0]]; return '<div class="v2-fb-sk"><div><span>' + s[1] + "</span><b>" + (v == null ? "—" : v) + '</b></div><div class="v2-fb-track"><div style="width:' + (v || 0) + "%;background:" + cols[i] + '"></div></div></div>'; }).join("") +
+      (lowSk ? '<p class="v2-fb-first"><b>Fix first:</b> ' + v2Esc(V2_SKILL_FIX[lowSk[0]] || "") + "</p>" : "") + "</div>" +
+      v2FbAppearanceHtml(rec, res) +
       '<div class="v2-fb-coach"><span class="v2-fb-lab">Coach summary</span>' +
       (res.keep ? '<p><b class="g">Keep:</b> ' + v2Esc(res.keep) + "</p>" : "") + '<p><b class="r">Fix:</b> ' + v2Esc(res.fix) + '</p><p><b class="v">Earned:</b> ' + v2Esc(earned) + "</p>" +
       '<div class="v2-fb-acts">' + v2Btn("fb-again", "Interview again", "v2-btn v2-primary") + v2Btn("history", "All history", "v2-btn v2-sec") + "</div></div></div>" +
       '<div class="v2-fb-qs"><span class="v2-fb-qh">Question by question</span>' + res.questions.map(function (q, i) {
-        return '<div class="v2-fb-q"><div class="v2-fb-qt"><span>' + v2Esc(q.title) + ' <small>· ' + q.followups + (q.followups === 1 ? " follow-up" : " follow-ups") + "</small></span><span class=\"v2-fb-note\">" + v2Esc(q.note) + "</span></div>" +
+        return '<div class="v2-fb-q"><div class="v2-fb-qt"><span>' + v2Esc(q.title) + ' <small>· ' + q.followups + (q.followups === 1 ? " follow-up" : " follow-ups") + "</small></span><span class=\"v2-fb-note\">" + v2Esc(q.note) + "</span>" + v2FbEvidenceHtml(q) + "</div>" +
           '<div class="v2-fb-track w"><div style="width:' + (q.score || 0) + "%;background:" + v2Col(q.score) + '"></div></div><span class="v2-fb-qs-n" style="color:' + v2Col(q.score) + '">' + (q.score == null ? "—" : q.score) + "</span>" +
           v2Btn("fb-practise", "Practise", "v2-mini v2-mini-lg", ' data-arg="' + i + '"') + "</div>";
       }).join("") + "</div></div>";
     return h;
+  }
+
+  function v2FbEvidenceHtml(q) {
+    if (!q || (!(q.hits || []).length && !(q.misses || []).length)) return "";
+    var m = q.measures, line = m ? [m.words + " words", m.fillers + (m.fillers === 1 ? " filler" : " fillers"), m.nums + (m.nums === 1 ? " number" : " numbers"), m.wpm ? m.wpm + " words a minute" : ""].filter(Boolean).join(" · ") : "";
+    return '<span class="v2-fb-ev">' + (q.hits || []).slice(0, 6).map(function (h) { return '<i class="ok">\u2713 ' + v2Esc(h) + "</i>"; }).join("") +
+      (q.misses || []).slice(0, 6).map(function (h) { return '<i class="no">\u2717 ' + v2Esc(h) + "</i>"; }).join("") + "</span>" +
+      (line ? '<span class="v2-fb-meas">' + v2Esc(line) + (q.method === "rules" ? " · checked by rules, the AI coach was busy" : "") + "</span>" : "");
+  }
+  function v2FbAppearanceHtml(rec, res) {
+    var ap = res.appearance;
+    var head = '<div class="v2-fb-overall v2-fb-ap"><span class="v2-fb-lab">Appearance</span>';
+    if (!ap) {
+      var why = rec.media !== "Video" ? "Appearance is scored in video interviews. Choose Video in the interview set up." : "Your camera was off or too short, so appearance was not scored this time.";
+      return head + '<div class="v2-fb-num"><span>—</span></div><p class="v2-fb-first">' + why + "</p></div>";
+    }
+    var cols = { eye: "#6D28D9", angle: "#7C3AED", light: "#A21CAF", noise: "#C026D3", background: "#E11D48", dress: "#F43F5E" };
+    return head + '<div class="v2-fb-num"><span>' + ap.score + '</span><b class="v2-fb-sep">separate from your interview score</b></div>' +
+      V2_AP_PARTS.map(function (p) {
+        var v = ap.parts[p[0]];
+        return '<div class="v2-fb-sk"><div><span>' + p[1] + "</span><b>" + (v == null ? (p[0] === "dress" ? "Turn on appearance review" : "Not measured") : v) + '</b></div><div class="v2-fb-track"><div style="width:' + (v || 0) + "%;background:" + cols[p[0]] + '"></div></div></div>';
+      }).join("") +
+      '<p class="v2-fb-first"><b>Fix first:</b> ' + v2Esc(ap.fix) + "</p>" +
+      (ap.notes && (ap.notes.dress || ap.notes.background) ? '<p class="v2-fb-meas">' + v2Esc([ap.notes.dress, ap.notes.grooming, ap.notes.background, ap.notes.expression].filter(Boolean).join(" ")) + "</p>" : "") + "</div>";
   }
 
   /* ---- History ---- */
@@ -15969,7 +16017,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   }
   // Pure check on a grey frame (Y, W x H) and an optional face {x,y,w,h,kp} in 0..1.
   // hasDet says whether a face finder ran, so "no face" can be told apart.
-  function v2CamAnalyse(Y, W, H, face, hasDet) {
+  function v2CamFlags(Y, W, H, face, hasDet) {
     var x0 = Math.round(W * 0.3), x1 = Math.round(W * 0.7), y0 = Math.round(H * 0.15), y1 = Math.round(H * 0.8);
     if (face) { x0 = Math.max(0, Math.round(face.x * W)); x1 = Math.min(W, Math.round((face.x + face.w) * W)); y0 = Math.max(0, Math.round(face.y * H)); y1 = Math.min(H, Math.round((face.y + face.h) * H)); }
     var fs = 0, fn = 0, bs = 0, bn = 0, ed = 0, en = 0;
@@ -15978,27 +16026,25 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       if (inF) { fs += v; fn++; } else { bs += v; bn++; }
       if (!inF && x < W - 1 && y < H - 1) { en++; if (Math.abs(Y[i + 1] - v) + Math.abs(Y[i + W] - v) > 46) ed++; }
     }
-    var fl = fn ? fs / fn : 0, bl = bn ? bs / bn : fl, busy = en ? ed / en : 0;
-    if (hasDet && !face) return "noface";
-    if (fl < 70) return "dark";
-    if (fl > 215) return "bright";
-    if (bl - fl > 45) return "backlit";
+    var fl = fn ? fs / fn : 0, bl = bn ? bs / bn : fl, busy = en ? ed / en : 0, out = [];
+    if (hasDet && !face) out.push("noface");
+    if (fl < 70) out.push("dark"); else if (fl > 215) out.push("bright"); else if (bl - fl > 45) out.push("backlit");
     if (face) {
       var cx = face.x + face.w / 2, k = face.kp || [], re = k[0], le = k[1], nose = k[2];
-      if (face.w < 0.16) return "far";
-      if (face.w > 0.55) return "close";
-      if (Math.abs(cx - 0.5) > 0.17) return "centre";
+      if (face.w < 0.16) out.push("far"); else if (face.w > 0.55) out.push("close");
+      if (Math.abs(cx - 0.5) > 0.17) out.push("centre");
       if (re && le) {
         var ey = (re.y + le.y) / 2, dx = le.x - re.x, dy = le.y - re.y, dist = Math.sqrt(dx * dx + dy * dy) || 1;
-        if (ey > 0.55) return "low";
-        if (face.y < 0.01 && ey < 0.3) return "high";
-        if (Math.abs(Math.atan2(dy, Math.abs(dx)) * 180 / Math.PI) > 12) return "tilt";
-        if (nose && Math.abs((nose.x - (re.x + le.x) / 2) / dist) > 0.32) return "look";
-      } else if (face.y + face.h / 2 > 0.62) return "low";
+        if (ey > 0.55) out.push("low"); else if (face.y < 0.01 && ey < 0.3) out.push("high");
+        if (Math.abs(Math.atan2(dy, Math.abs(dx)) * 180 / Math.PI) > 12) out.push("tilt");
+        if (nose && Math.abs((nose.x - (re.x + le.x) / 2) / dist) > 0.32) out.push("look");
+      } else if (face.y + face.h / 2 > 0.62) out.push("low");
     }
-    if (busy > 0.16) return "busy";
-    return "";
+    if (busy > 0.16) out.push("busy");
+    return out;
   }
+  // The single most useful tip, in priority order.
+  function v2CamAnalyse(Y, W, H, face, hasDet) { return v2CamFlags(Y, W, H, face, hasDet)[0] || ""; }
   function v2CamCheck() {
     var R = V2.room, v = $("#v2r-self-video");
     if (!R || V2.screen !== "room" || R.media !== "Video" || R.layout === "hide") { v2CamCoachStop(); return; }
@@ -16013,10 +16059,18 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     if (hasDet) { try { var list = V2_CAM.det.detect(c) || []; face = list.sort(function (a, b) { return b.w * b.h - a.w * a.h; })[0] || null; } catch (e) { hasDet = false; } }
     if (hasDet && !face && ++V2_CAM.miss < 3) return; // a short look away is fine
     if (face) V2_CAM.miss = 0;
-    var key = v2CamAnalyse(Y, W, H, face, hasDet);
-    R.camStats = R.camStats || {};
-    R.camStats.checks = (R.camStats.checks || 0) + 1;
-    if (key) R.camStats[key] = (R.camStats[key] || 0) + 1;
+    var flags = v2CamFlags(Y, W, H, face, hasDet), key = flags[0] || "", cs = R.camStats = R.camStats || {};
+    cs.checks = (cs.checks || 0) + 1;
+    if (key) cs[key] = (cs[key] || 0) + 1;
+    function has(list) { return flags.some(function (f) { return list.indexOf(f) !== -1; }); }
+    if (has(["dark", "bright", "backlit"])) cs.lightBad = (cs.lightBad || 0) + 1;
+    if (has(["busy"])) cs.bgBad = (cs.bgBad || 0) + 1;
+    if (hasDet) {
+      cs.det = (cs.det || 0) + 1;
+      if (has(["noface", "look"])) cs.eyeBad = (cs.eyeBad || 0) + 1;
+      if (has(["noface", "far", "close", "centre", "low", "high", "tilt"])) cs.angleBad = (cs.angleBad || 0) + 1;
+    }
+    v2CamSnap(v);
     V2_CAM.run = key === V2_CAM.last ? V2_CAM.run + 1 : 1;
     V2_CAM.last = key;
     if (V2_CAM.run < 2) return; // the same result twice in a row before it changes
@@ -16024,13 +16078,379 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     else if (!key && V2_CAM.shown && V2_CAM.shown !== "good") { v2CamShow("good"); V2_CAM.goodAt = Date.now(); }
     else if (V2_CAM.shown === "good" && Date.now() - V2_CAM.goodAt > 3000) v2CamShow("");
   }
+  // Appearance review: a photo about once a minute, kept in memory only.
+  function v2CamSnap(v) {
+    var R = V2.room;
+    if (!R || v2Prefs().appearanceAI !== true) return;
+    var now = Date.now(), snaps = R.snaps || (R.snaps = []);
+    if (!R.snapAt) R.snapAt = now + 15000;
+    if (now < R.snapAt) return;
+    R.snapAt = now + 60000;
+    try {
+      var c = document.createElement("canvas"); c.width = 480; c.height = 360;
+      c.getContext("2d").drawImage(v, 0, 0, 480, 360);
+      var d = c.toDataURL("image/jpeg", 0.7);
+      if (snaps.length >= 12) snaps.splice(6, 1);
+      snaps.push(d);
+    } catch (e) {}
+  }
   function v2CamShow(key) {
     V2_CAM.shown = key;
     var el = $("#v2r-tip"); if (!el) return;
     el.className = "v2r-tip" + (key ? " show" : "") + (key === "good" ? " good" : "");
     el.textContent = key ? V2_CAM_TIPS[key] || "" : "";
   }
-  window.__v2Cam = { analyse: v2CamAnalyse, state: V2_CAM, room: function () { return V2.room; } };
+  window.__v2Cam = { analyse: v2CamAnalyse, flags: v2CamFlags, state: V2_CAM, room: function () { return V2.room; } };
+  /* =====================================================================
+   * Scoring: evidence first, points second.
+   * The AI only ticks a fixed checklist of facts about each answer. Code
+   * measures words, fillers, numbers, pace and voice. Fixed points and
+   * round weights turn that into a score, so the same answer always gets
+   * the same score and every point can be traced to a tick or a measure.
+   * Appearance is a second, separate score from the camera and the mic.
+   * =================================================================== */
+  var V2_SKILLS = [["structure", "Answer framing", "skStructure"], ["depth", "Depth", "skDepth"], ["presence", "Words used", "skPresence"], ["voice", "Voice delivery", "skVoice"]];
+  function v2OnSkills() { var p = v2Prefs(); var on = V2_SKILLS.filter(function (s) { return p[s[2]] !== false; }); return on.length ? on : V2_SKILLS; }
+  function v2Clamp(n) { n = Math.round(Number(n)); return isFinite(n) ? Math.max(0, Math.min(100, n)) : null; }
+  var V2_MIN_WORDS = 30;
+  var V2_AI_SHARE = 0.2; // the AI's own judgement of the example is at most 20% of a skill
+  // key: [label, skill, points]
+  var V2_CHECKS = {
+    direct: ["Direct answer up front", "structure", 20], situation: ["Set the situation", "structure", 10], task: ["Named the task or goal", "structure", 10],
+    action: ["Clear actions you took", "structure", 20], result: ["Stated the result", "structure", 20], close: ["Clear close", "structure", 10], logical: ["Logical order", "structure", 10],
+    example: ["Real, specific example", "depth", 25], number: ["Number or measurable result", "depth", 20], tradeoff: ["Trade off explained", "depth", 15],
+    lesson: ["Lesson learned", "depth", 10], ownership: ["Your own part is clear", "depth", 10], followups: ["Handled the follow ups", "depth", 15], consistent: ["Consistent under follow ups", "depth", 5],
+    impact: ["Business impact", "presence", 20], stakeholders: ["Stakeholders named", "presence", 10], senior: ["Senior framing", "presence", 15],
+    own_words: ["Owns the work (“I”)", "presence", 15], specific: ["Specific, not generic", "presence", 15], on_topic: ["Stayed on the question", "presence", 15], fresh: ["No repeating", "presence", 10]
+  };
+  var V2_AI_KEYS = ["on_topic", "direct", "situation", "task", "action", "result", "close", "logical", "example", "number", "tradeoff", "lesson", "ownership", "impact", "stakeholders", "senior", "generic", "followups_handled", "consistent"];
+  var V2_CAPS = [["Off topic", "every score 30 or less"], ["No real example", "framing and depth 55 or less"], ["No number or result", "depth 65 or less"], ["Generic answer", "framing, depth and words 50 or less"]];
+  var V2_BANDS = [[90, "Exceptional"], [80, "Ready for a real panel"], [65, "Close"], [50, "Needs work"], [0, "Weak"]];
+  function v2RoundWeights(round) {
+    var r = String(round || "");
+    if (/product|strategy|case|technical|analytic|execution|metric|design|system/i.test(r)) return { name: "Product, strategy or case", w: { structure: 25, depth: 40, presence: 15, voice: 20 } };
+    if (/\bhr\b|screen|culture|fit|recruit|intro/i.test(r)) return { name: "HR or screening", w: { structure: 30, depth: 20, presence: 25, voice: 25 } };
+    return { name: "Behavioural or leadership", w: { structure: 30, depth: 30, presence: 20, voice: 20 } };
+  }
+  var V2_FILLERS = /\b(um+|uh+|erm+|you know|basically|literally|i mean)\b/gi;
+  var V2_HEDGES = /\b(i think maybe|i guess|probably|sort of|kind of|maybe|perhaps|i feel like|hopefully|not sure)\b/gi;
+  var V2_NUMS = /(\b\d+([.,]\d+)?\b|\b(hundred|thousand|million|billion|crore|lakh|percent|twice|double|half)\b)/gi;
+  // Code measures on the candidate's own words. No AI.
+  function v2Measure(text) {
+    text = String(text || "");
+    var w = text.toLowerCase().replace(/[^a-z0-9%' ]+/g, " ").split(/\s+/).filter(Boolean), n = w.length;
+    var fillers = text.match(V2_FILLERS) || [], hedges = text.match(V2_HEDGES) || [];
+    var iCount = w.filter(function (x) { return x === "i" || x === "i'm" || x === "i've" || x === "my" || x === "me"; }).length;
+    var weCount = w.filter(function (x) { return x === "we" || x === "we're" || x === "we've" || x === "our" || x === "us"; }).length;
+    var seen = {}, rep = 0, tri = 0;
+    for (var i = 0; i + 2 < n; i++) { var k = w[i] + " " + w[i + 1] + " " + w[i + 2]; tri++; if (seen[k]) rep++; seen[k] = 1; }
+    var first = (text.split(/(?<=[.!?])\s+/)[0] || "").split(/\s+/).filter(Boolean).length;
+    return { words: n, fillers: fillers.length, fillerWords: fillers.map(function (x) { return x.toLowerCase(); }), hedges: hedges.length, nums: (text.match(V2_NUMS) || []).length,
+      iCount: iCount, weCount: weCount, iRatio: iCount + weCount ? iCount / (iCount + weCount) : 0, repeat: tri ? rep / tri : 0, firstLen: first };
+  }
+  // Ticks from plain rules, used only when the AI coach is not available.
+  function v2RuleTicks(text, b, m) {
+    var t = String(text || ""), sents = t.split(/(?<=[.!?])\s+/), last = sents[sents.length - 1] || "";
+    var situation = /\b(when i was|at (my|our)|in my (last|previous)|while working|the situation|back in|last year|in (19|20)\d\d)\b/i.test(t);
+    var task = /\b(my (goal|task|job|role) was|i was asked|we needed to|the goal|target was|responsible for)\b/i.test(t);
+    var action = (t.match(/\bI (built|led|drove|decided|created|launched|ran|designed|set up|spoke|analy[sz]ed|asked|changed|moved|hired|pushed|convinced|negotiated|wrote|started|owned|fixed)\b/gi) || []).length >= 2;
+    var result = /\b(as a result|which (led|meant|resulted)|we (achieved|grew|saved|cut|increased|reduced)|result(ed)? in|outcome|went (up|down) by)\b/i.test(t);
+    var impact = /\b(revenue|cost|customers?|users?|growth|margin|profit|retention|conversion|nps|market share|crore|lakh|percent)\b|%/i.test(t);
+    var stake = /\b(stakeholders?|leadership|ceo|cxo|engineering|sales|marketing|finance|legal|partners?|cross.?functional|board)\b/i.test(t);
+    var example = m.words >= 80 && (situation || action);
+    return { on_topic: true, direct: m.firstLen > 0 && m.firstLen <= 40, situation: situation, task: task, action: action, result: result,
+      close: /\b(so |that's why|overall|in short|that is how|which is why|lesson|learn)/i.test(last), logical: situation && action && result, example: example,
+      number: m.nums > 0, tradeoff: /\b(trade.?off|instead of|rather than|versus|the cost was|we gave up|balanc)/i.test(t), lesson: /\b(learn(ed|t)|lesson|next time|in hindsight|taught me)\b/i.test(t),
+      ownership: m.iCount >= 2, impact: impact, stakeholders: stake, senior: impact && stake, generic: !example,
+      followups_handled: b.followups ? m.words >= 60 : null, consistent: b.followups ? m.words >= 60 : null, quality: null };
+  }
+  function v2Yes(v) { return v === true || v === "true" || v === 1 || v === "yes"; }
+  // Voice delivery from the mic, measured on the device.
+  function v2VoiceScore(v, words) {
+    if (!v || !v.talkMs || v.talkMs < 4000 || !words) return null;
+    var mins = v.talkMs / 60000, wpm = words / mins;
+    var pace = wpm >= 125 && wpm <= 165 ? 100 : wpm < 125 ? Math.max(30, 100 - (125 - wpm) * 1.8) : Math.max(30, 100 - (wpm - 165) * 1.6);
+    var st = v.pitchSt, pitch = st == null || v.nPitch < 20 ? null : st < 1.2 ? 45 : st < 2 ? 70 : st <= 6 ? 100 : 85;
+    var ppm = (v.pauses || 0) / mins, pause = Math.max(40, 100 - Math.max(0, ppm - 1) * 12);
+    var lv = v.level || 0, vol = lv >= 0.035 ? 100 : lv <= 0.012 ? 50 : 50 + (lv - 0.012) / 0.023 * 50;
+    var parts = [[pace, 0.35], [pitch, 0.25], [pause, 0.2], [vol, 0.2]].filter(function (x) { return x[0] != null; });
+    var tw = parts.reduce(function (a, x) { return a + x[1]; }, 0);
+    return { score: Math.round(parts.reduce(function (a, x) { return a + x[0] * x[1]; }, 0) / tw), wpm: Math.round(wpm), pitch: pitch, pauses: v.pauses || 0, ppm: ppm, level: lv, pace: Math.round(pace), vol: Math.round(vol) };
+  }
+  // One answer: ticks plus measures, into four skills and one score.
+  function v2ScoreQuestion(b, ai, round, vox) {
+    var text = b.lines.filter(function (l) { return /^Candidate: /.test(l); }).map(function (l) { return l.replace(/^Candidate: /, ""); }).join(" ");
+    var m = v2Measure(text), viaAi = !!ai, t = ai || v2RuleTicks(text, b, m), tick = {};
+    V2_AI_KEYS.forEach(function (k) { tick[k] = v2Yes(t[k]); });
+    tick.on_topic = t.on_topic == null ? true : v2Yes(t.on_topic);
+    tick.number = viaAi ? tick.number : m.nums > 0;
+    var hits = [], misses = [], pts = { structure: 0, depth: 0, presence: 0 }, max = { structure: 100, depth: 100, presence: 100 };
+    var asked = b.followups > 0;
+    var got = { direct: tick.direct, situation: tick.situation, task: tick.task, action: tick.action, result: tick.result, close: tick.close, logical: tick.logical,
+      example: tick.example, number: tick.number, tradeoff: tick.tradeoff, lesson: tick.lesson, ownership: tick.ownership,
+      followups: asked ? tick.followups_handled : null, consistent: asked ? tick.consistent : null,
+      impact: tick.impact, stakeholders: tick.stakeholders, senior: tick.senior, own_words: m.words >= 40 ? (m.iCount >= 2 && m.iRatio >= 0.35) : tick.ownership,
+      specific: !tick.generic, on_topic: tick.on_topic, fresh: m.repeat < 0.08 };
+    Object.keys(V2_CHECKS).forEach(function (k) {
+      var c = V2_CHECKS[k];
+      if (got[k] == null) { max[c[1]] -= c[2]; return; }
+      if (got[k]) { pts[c[1]] += c[2]; hits.push(c[0]); } else misses.push(c[0]);
+    });
+    var sk = {};
+    ["structure", "depth", "presence"].forEach(function (s) { sk[s] = max[s] > 0 ? pts[s] / max[s] * 100 : 0; });
+    // Length: about two minutes of speech is 150 to 420 words.
+    if (m.words < 150) { var ls = Math.min(20, (150 - m.words) / 5); sk.structure -= ls; if (ls >= 5) misses.push("Short answer: " + m.words + " words"); }
+    if (m.words > 420) { var ll = Math.min(25, (m.words - 420) / 10); sk.structure -= ll; if (ll >= 3) misses.push("Too long: " + m.words + " words"); }
+    var fper = m.words ? m.fillers / m.words * 100 : 0, hper = m.words ? m.hedges / m.words * 100 : 0;
+    var fpen = Math.round(Math.min(24, Math.max(0, fper - 1) * 4)), hpen = Math.round(Math.min(20, Math.max(0, hper - 0.5) * 5));
+    sk.presence -= fpen + hpen;
+    if (fpen) misses.push(m.fillers + " filler words (" + m.fillerWords.slice(0, 3).join(", ") + ")");
+    if (hpen) misses.push(m.hedges + " hedging words");
+    if (m.words >= 60 && m.iRatio < 0.3) misses.push("Mostly “we”: say what you did");
+    // The AI's judgement of the example, capped at 20%.
+    var q = Number(t.quality);
+    var qual = viaAi && q >= 1 && q <= 5 ? (q - 1) * 25 : null;
+    ["structure", "depth", "presence"].forEach(function (s) { if (qual != null) sk[s] = sk[s] * (1 - V2_AI_SHARE) + qual * V2_AI_SHARE; });
+    // Hard caps.
+    var caps = [];
+    if (!tick.example) { sk.structure = Math.min(sk.structure, 55); sk.depth = Math.min(sk.depth, 55); caps.push("No real example"); }
+    if (!tick.number) { sk.depth = Math.min(sk.depth, 65); caps.push("No number or result"); }
+    if (tick.generic) { ["structure", "depth", "presence"].forEach(function (s) { sk[s] = Math.min(sk[s], 50); }); caps.push("Generic answer"); }
+    if (!tick.on_topic) { ["structure", "depth", "presence"].forEach(function (s) { sk[s] = Math.min(sk[s], 30); }); caps.push("Off topic"); }
+    var vs = v2VoiceScore(vox, m.words);
+    sk.voice = vs ? vs.score : null;
+    if (vs) {
+      if (vs.pace >= 90) hits.push("Good pace, " + vs.wpm + " words a minute"); else misses.push((vs.wpm > 165 ? "Fast pace, " : "Slow pace, ") + vs.wpm + " words a minute");
+      if (vs.pitch != null) { if (vs.pitch >= 90) hits.push("Lively tone"); else if (vs.pitch < 75) misses.push("Flat, monotone voice"); }
+      if (vs.ppm > 1.5) misses.push(vs.pauses + " long pauses");
+      if (vs.vol < 75) misses.push("Speak a little louder");
+    }
+    Object.keys(sk).forEach(function (s) { sk[s] = sk[s] == null ? null : v2Clamp(sk[s]); });
+    var w = v2RoundWeights(round).w, on = v2OnSkills(), tot = 0, wsum = 0;
+    on.forEach(function (s) { var v = sk[s[0]]; if (v != null) { tot += v * w[s[0]]; wsum += w[s[0]]; } });
+    var score = wsum ? Math.round(tot / wsum) : null;
+    if (score != null && !tick.on_topic) score = Math.min(score, 30);
+    if (score != null && tick.generic) score = Math.min(score, 50);
+    return { skills: sk, score: score, hits: hits, misses: misses, caps: caps, method: viaAi ? "ai" : "rules",
+      measures: { words: m.words, fillers: m.fillers, hedges: m.hedges, nums: m.nums, iRatio: Math.round(m.iRatio * 100), wpm: vs ? vs.wpm : null, pauses: vs ? vs.pauses : null } };
+  }
+  function v2ScorePm(n, rules) { return (n >= 3 ? 3 : n === 2 ? 5 : 7) + (rules ? 2 : 0); }
+
+  /* ---- Voice, measured on the device while the user speaks ---- */
+  function v2Pitch(f, rate) {
+    var n = Math.min(f.length, 1024); if (n < 400) return 0;
+    var minLag = Math.floor(rate / 400), maxLag = Math.min(Math.floor(rate / 75), n - 1), e0 = 0, best = 0, bestLag = 0, i;
+    for (i = 0; i < n; i++) e0 += f[i] * f[i];
+    if (e0 < 1e-4) return 0;
+    for (var lag = minLag; lag <= maxLag; lag++) { var s = 0; for (i = 0; i < n - lag; i++) s += f[i] * f[i + lag]; s /= e0; if (s > best) { best = s; bestLag = lag; } }
+    return best > 0.5 && bestLag ? rate / bestLag : 0;
+  }
+  function v2VoxFrame(f, lvl, rate) {
+    var R = V2.room; if (!R || R.paused || R.muted || R.done) return;
+    var now = Date.now(), V = R.vox || (R.vox = { q: {}, noise: [], nf: 0.004, kiraAt: 0 });
+    if (v2RoomSpeaking()) { V.kiraAt = now; return; }
+    if (R.inIntro || R.inClosing) return;
+    var thr = Math.max(0.018, V.nf * 3.5);
+    if (lvl < thr) {
+      if (V.noise.length < 600) V.noise.push(lvl); else V.noise[Math.floor(Math.random() * 600)] = lvl;
+      if (V.noise.length % 25 === 0) V.nf = v2Median(V.noise);
+      return;
+    }
+    var q = R.curQ || 1, s = V.q[q] || (V.q[q] = { talkMs: 0, last: 0, pauses: 0, levels: [], pitch: [] });
+    var gap = s.last ? now - s.last : 0;
+    s.talkMs += s.last && gap < 1500 ? gap : f.length / rate * 1000;
+    if (s.last && gap >= 2500 && gap < 8000 && V.kiraAt < s.last) s.pauses++;
+    s.last = now;
+    if (s.levels.length < 3000) s.levels.push(lvl);
+    var p = v2Pitch(f, rate); if (p && s.pitch.length < 3000) s.pitch.push(p);
+  }
+  function v2Median(a) { if (!a || !a.length) return 0; var s = a.slice().sort(function (x, y) { return x - y; }); return s[Math.floor(s.length / 2)]; }
+  function v2VoxSummary(R, old) {
+    var V = R.vox, out = { q: {}, noise: old && old.noise != null ? old.noise : null };
+    if (old && old.q) Object.keys(old.q).forEach(function (k) { out.q[k] = old.q[k]; });
+    if (!V) return out;
+    if (V.noise.length >= 20) out.noise = +v2Median(V.noise).toFixed(4);
+    Object.keys(V.q).forEach(function (k) {
+      var s = V.q[k], med = v2Median(s.pitch), st = null;
+      if (s.pitch.length >= 20 && med) {
+        var xs = s.pitch.map(function (p) { return 12 * Math.log(p / med) / Math.LN2; }), mu = xs.reduce(function (a, x) { return a + x; }, 0) / xs.length;
+        st = Math.sqrt(xs.reduce(function (a, x) { return a + (x - mu) * (x - mu); }, 0) / xs.length);
+      }
+      out.q[k] = { talkMs: Math.round(s.talkMs), pauses: s.pauses, level: +v2Median(s.levels).toFixed(4), pitchSt: st == null ? null : +st.toFixed(2), nPitch: s.pitch.length };
+    });
+    return out;
+  }
+
+  /* ---- Appearance: a separate score ---- */
+  var V2_AP_PARTS = [["eye", "Eye contact", 20], ["angle", "Camera angle and framing", 15], ["light", "Light on face and room", 15], ["noise", "Background noise", 15], ["background", "Background look", 15], ["dress", "Dress and grooming", 20]];
+  var V2_AP_FIX = { eye: "Look into the camera lens while you speak, not at the screen.", angle: "Raise the camera to eye level, sit centred, an arm's length away.",
+    light: "Face a window or lamp, so light falls on your face, not behind you.", noise: "Find a quieter room or use earphones with a mic.",
+    background: "Sit in front of a plain, tidy wall.", dress: "Wear a plain collared shirt or smart top, as you would for the real panel." };
+  function v2ApRatio(bad, total, ok) { if (!total) return null; var r = 1 - bad / total; return v2Clamp(r >= ok ? 100 : 100 - (ok - r) * 150); }
+  function v2AppearanceScore(rec, ai) {
+    var c = rec.camStats || {};
+    if (rec.media !== "Video" || !c.checks || c.checks < 8) return null;
+    var parts = {}, det = c.det || 0;
+    parts.eye = det >= 8 ? v2ApRatio(c.eyeBad || 0, det, 0.85) : null;
+    parts.angle = det >= 8 ? v2ApRatio(c.angleBad || 0, det, 0.9) : null;
+    parts.light = v2ApRatio(c.lightBad || 0, c.checks, 0.9);
+    var bg = v2ApRatio(c.bgBad || 0, c.checks, 0.9);
+    parts.background = ai && ai.background != null ? Math.round((bg + v2Clamp(ai.background)) / 2) : bg;
+    var nf = rec.vox && rec.vox.noise;
+    parts.noise = nf == null ? null : v2Clamp(nf <= 0.004 ? 100 : nf >= 0.03 ? 30 : 100 - (nf - 0.004) / 0.026 * 70);
+    parts.dress = ai && ai.dress != null ? Math.round((v2Clamp(ai.dress) + v2Clamp(ai.grooming != null ? ai.grooming : ai.dress)) / 2) : null;
+    var tot = 0, ws = 0, low = null;
+    V2_AP_PARTS.forEach(function (p) { var v = parts[p[0]]; if (v == null) return; tot += v * p[2]; ws += p[2]; if (!low || v < parts[low]) low = p[0]; });
+    if (!ws) return null;
+    var notes = {};
+    if (ai) ["dress", "grooming", "background", "light", "expression"].forEach(function (k) { if (ai[k + "_note"]) notes[k] = String(ai[k + "_note"]); });
+    return { score: Math.round(tot / ws), parts: parts, low: low, fix: low && parts[low] < 90 ? V2_AP_FIX[low] : "You look ready for the camera. Keep this set up.", notes: notes, ai: !!ai };
+  }
+  function v2AppearanceAI(rec, snaps) {
+    if (window.__v2ApStub) return Promise.resolve(window.__v2ApStub);
+    if (!snaps || !snaps.length || !relayOn() || v2Prefs().appearanceAI !== true) return Promise.resolve(null);
+    var pick = [snaps[0], snaps[Math.floor(snaps.length / 2)], snaps[snaps.length - 1]].filter(function (x, i, a) { return x && a.indexOf(x) === i; });
+    var prompt = "You review a candidate's on camera presentation for a " + (rec.target || "professional") + " job interview, from " + pick.length + " webcam photos taken during a practice interview. " +
+      "Score each from 0 to 100: dress (fit for a professional interview for this role: a plain collared shirt, blouse or smart top scores high; a t shirt, vest or hoodie scores low), " +
+      "grooming (neat and tidy), background (plain, tidy and quiet looking; clutter, a bed or people moving scores low), light (face clearly and evenly lit), expression (calm, engaged, friendly). " +
+      "Judge only presentation choices the candidate can change. Never judge looks, body, skin colour, age, gender or any personal trait. " +
+      "Give one short note in plain, simple English for each, no dashes. Reply with ONLY JSON: {\"dress\":0,\"dress_note\":\"\",\"grooming\":0,\"grooming_note\":\"\",\"background\":0,\"background_note\":\"\",\"light\":0,\"light_note\":\"\",\"expression\":0,\"expression_note\":\"\"}";
+    var body = { contents: [{ role: "user", parts: [{ text: prompt }].concat(pick.map(function (d) { return { inlineData: { mimeType: "image/jpeg", data: String(d).split(",")[1] } }; })) }],
+      generationConfig: { temperature: 0, responseMimeType: "application/json" } };
+    var s = getSettings();
+    return geminiGenerate(s, s.geminiModel || "gemini-3.6-flash", body).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+      var c = j && j.candidates && j.candidates[0], t = c && c.content && c.content.parts && c.content.parts.map(function (p) { return p.text || ""; }).join("");
+      var out = t ? parseFeedbackContent(t) : null;
+      return out && out.dress != null ? out : null;
+    }).catch(function () { return null; });
+  }
+
+  /* ---- The session ---- */
+  function v2ScoreSession(id) {
+    var rec = v2GetSession(id);
+    if (!rec) return Promise.resolve(null);
+    var blocks = v2Transcript(rec), prefs = v2Prefs(), skills = v2OnSkills();
+    var answered = blocks.filter(function (b) { return b.answered; });
+    var sys = "You check a senior mock interview for a coaching app, using an evidence checklist for a mock interview. You do not give scores. " +
+      "For each main question, read only the candidate's own words, never the interviewer, and tick each item true or false. Be strict: tick true only when it is clearly there. " +
+      "on_topic: the answer addresses the question asked. direct: the first one or two sentences answer the question directly. situation: sets the context. task: names the goal or problem. " +
+      "action: says what the candidate personally did, step by step. result: states the outcome. close: ends with a clear wrap up or lesson. logical: the order is easy to follow. " +
+      "example: one specific, real example, not a hypothetical. number: at least one number or measurable result. tradeoff: explains a trade off or a choice not taken. lesson: says what they learned. " +
+      "ownership: clear about their own part, not only the team. impact: links to business impact such as revenue, cost, customers or growth. stakeholders: names the people or teams involved. " +
+      "senior: frames the answer at the level of the role, with judgement and scope. generic: a textbook or vague answer that could be anyone's. " +
+      "followups_handled: answers the interviewer's follow up questions directly (null when there were none). consistent: the follow up answers fit the main answer (null when none). " +
+      "quality: 1 to 5 for how convincing the example is (1 weak, 3 fair, 5 outstanding). missing: up to 3 short phrases of what is missing. " +
+      "If the candidate did not make a real attempt (a few words, off topic, or silence), set answered to false. " +
+      "Feedback tone: " + prefs.tone + ". Use plain, simple English, no markdown, no dashes. " +
+      "Reply with ONLY compact JSON of this exact shape: {\"headline_a\": \"short praise, 2 to 4 words, ends with a full stop\", \"headline_b\": \"short fix, 3 to 5 words, ends with a full stop\", " +
+      "\"keep\": \"one sentence on what to keep doing\", \"fix\": \"one sentence on the one thing to fix first\", " +
+      "\"questions\": [{\"n\": 1, \"title\": \"4 to 7 word title for the question\", \"answered\": true, " + V2_AI_KEYS.map(function (k) { return "\"" + k + "\": true"; }).join(", ") +
+      ", \"quality\": 3, \"missing\": [\"\"], \"note\": \"one or two sentences of coaching\"}], " +
+      "\"mistakes\": [{\"title\": \"short name of a repeated mistake pattern\", \"quote\": \"their exact words that show it, under 15 words\", \"fix\": \"one sentence\"}]}";
+    var msg = "Role: " + (rec.target || "") + "\nRound: " + rec.round + "\nInterviewer: " + rec.persona + "\nDifficulty: " + rec.difficulty + "\n\n" +
+      blocks.map(function (b) { return "MAIN QUESTION " + b.n + ": " + b.question + "\nWhat a strong answer contains: " + (b.look_for || "a clear, specific answer with a number") + "\n" + (b.lines.join("\n") || "Not asked."); }).join("\n\n");
+    var settings = Object.assign({}, getSettings(), { temperature: 0 });
+    var job = answered.length ? callGeminiResilient(settings, sys, msg, null).then(function (c) { var j = parseFeedbackContent(c); return j && Array.isArray(j.questions) ? j : null; }).catch(function () { return null; }) : Promise.resolve(null);
+    var snaps = V2.room && V2.room.id === id ? V2.room.snaps : null;
+    return Promise.all([job, v2AppearanceAI(rec, snaps)]).then(function (both) {
+      var ai = both[0], apAi = both[1], wts = v2RoundWeights(rec.round);
+      var qs = blocks.map(function (b) {
+        var a = ai && ai.questions ? ai.questions.filter(function (x) { return x && +x.n === b.n; })[0] : null;
+        var real = b.answered && !(a && a.answered === false);
+        var vox = rec.vox && rec.vox.q ? rec.vox.q[b.n] : null;
+        var sc = real ? v2ScoreQuestion(b, a, rec.round, vox) : null;
+        var sk = {}; V2_SKILLS.forEach(function (s) { sk[s[0]] = sc ? sc.skills[s[0]] : null; });
+        var why = !b.words ? "Not answered, so not scored." : !real ? "Not scored: you said " + b.words + " word" + (b.words === 1 ? "" : "s") + ". Give a full answer of a few sentences so it can be judged fairly." : "";
+        var note = why || (a && a.note) || (sc && sc.misses.length ? "Missing: " + sc.misses.slice(0, 3).join(", ").toLowerCase() + "." : "A complete answer.");
+        if (sc && a && Array.isArray(a.missing)) a.missing.filter(Boolean).slice(0, 3).forEach(function (x) { if (sc.misses.indexOf(x) === -1) sc.misses.push(String(x)); });
+        return { n: b.n, question: b.question, title: (a && a.title) || b.question, followups: b.followups, answered: real, words: b.words, skills: sk,
+          score: sc ? sc.score : null, note: note, hits: sc ? sc.hits : [], misses: sc ? sc.misses : [], caps: sc ? sc.caps : [], measures: sc ? sc.measures : null, method: sc ? sc.method : null };
+      });
+      var done = qs.filter(function (q) { return q.score != null; });
+      var overall = done.length ? Math.round(done.reduce(function (x, q) { return x + q.score; }, 0) / done.length) : null;
+      var skillAvg = {};
+      V2_SKILLS.forEach(function (s) { var v = done.map(function (q) { return q.skills[s[0]]; }).filter(function (x) { return x != null; }); skillAvg[s[0]] = v.length ? Math.round(v.reduce(function (x, y) { return x + y; }, 0) / v.length) : null; });
+      var low = skills.filter(function (s) { return skillAvg[s[0]] != null; }).sort(function (x, y) { return skillAvg[x[0]] - skillAvg[y[0]]; })[0] || skills[0];
+      var result = { overall: overall, pm: done.length ? v2ScorePm(done.length, !ai) : null, skills: skillAvg, questions: qs, ai: !!ai, method: "evidence-v1", weights: wts,
+        appearance: v2AppearanceScore(rec, apAi),
+        headA: (ai && ai.headline_a) || (overall == null ? "No answers yet." : overall >= 80 ? "Strong round." : "Good start."),
+        headB: (ai && ai.headline_b) || (overall == null ? "Give it one full run." : "Work on " + low[1].toLowerCase() + "."),
+        keep: (ai && ai.keep) || (overall == null ? "" : "You kept going and answered out loud, which is the hard part."),
+        fix: (ai && ai.fix) || (overall == null ? "Answer at least one question so there is something to score." : "Put one number against every claim, and say what you did yourself."),
+        mistakes: (ai && ai.mistakes) || [], scoredAt: Date.now() };
+      var r2 = v2GetSession(id);
+      r2.result = result; r2.status = "done";
+      v2SaveSession(r2);
+      if (r2.mode === "plan" && r2.planId) v2PlanAfterScore(r2);
+      if (prefs.memory && r2.planId && result.mistakes.length) v2Remember(r2);
+      return result;
+    });
+  }
+  var V2_SKILL_FIX = { structure: "Open with a one line answer, then situation, your actions and the result.", depth: "Use one real example with a number, a trade off and what you learned.",
+    presence: "Say “I” for your part, link it to business impact, and drop the fillers.", voice: "Speak at a steady, calm pace, about 140 words a minute, with some rise and fall." };
+
+  /* ---- Appearance review consent ---- */
+  function v2ApConsentHtml() {
+    return '<div class="v2-apc" role="dialog" aria-modal="true"><div class="v2-apc-card"><h3>Turn on appearance review?</h3>' +
+      "<p>During video interviews, Rehearsly takes 3 photos from your camera (start, middle and end) and sends them to Google Gemini to judge your dress, grooming and background.</p>" +
+      "<p>The photos are not saved by Rehearsly. Only presentation is judged, never your looks. You can turn this off at any time.</p>" +
+      '<div class="v2-apc-acts"><button type="button" class="v2-btn v2-primary" data-act="ap-yes">Turn on</button><button type="button" class="v2-btn v2-sec" data-act="ap-no">Not now</button></div></div></div>';
+  }
+  function v2ApAct(act) {
+    var el = document.querySelector(".v2-apc");
+    if (act === "ap-ask") { if (v2Prefs().appearanceAI === true) { v2SetPref("appearanceAI", false); v2RoomRelayout(); return true; } if (!el) document.body.insertAdjacentHTML("beforeend", v2ApConsentHtml()); return true; }
+    if (act === "ap-yes") { v2SetPref("appearanceAI", true); v2SetPref("apConsentAt", Date.now()); if (el) el.remove(); v2RoomRelayout(); return true; }
+    if (act === "ap-no") { if (el) el.remove(); return true; }
+    return false;
+  }
+  function v2RoomRelayout() { if (V2.room && V2.screen === "room") { v2Render(); v2RoomAfterRender(); } }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest ? e.target.closest("[data-act^='ap-']") : null;
+    if (b && v2ApAct(b.getAttribute("data-act"))) { e.preventDefault(); e.stopPropagation(); }
+  }, true);
+
+  /* ---- Admin: who may open the scoring guide ---- */
+  var V2_ADMINS = ["01b7c3d3a947f5fcebd736c21a8250f25d0e9a5caee8808e1d2baa203a60289b", "f660ab912ec121d1b1e928a0bb4bc61b15f5ad44d5efdc4e1c92a25e99b8e44a", "5364d75bb683367c9b56b8d9914df888527c9d170b78bbc5ef94bb01125a2253"];
+  function v2AdminCheck() {
+    var email = String(getSettings().authEmail || "").trim().toLowerCase();
+    if (V2.adminFor === email) return;
+    V2.adminFor = email; V2.isAdmin = false;
+    if (!email || !window.crypto || !crypto.subtle || !window.TextEncoder) return;
+    crypto.subtle.digest("SHA-256", new TextEncoder().encode(email)).then(function (buf) {
+      var hex = Array.prototype.map.call(new Uint8Array(buf), function (b) { return ("0" + b.toString(16)).slice(-2); }).join("");
+      if (V2.adminFor !== email) return;
+      V2.isAdmin = V2_ADMINS.indexOf(hex) !== -1;
+      if (V2.isAdmin && V2.screen !== "room" && document.querySelector(".v2-menu") && !document.querySelector("[data-act='scoreguide']")) v2Render();
+    }).catch(function () {});
+  }
+  function v2ScoreGuideHtml() {
+    if (!V2.isAdmin) return '<div class="v2-home"><p class="v2-sub">This page is for the Rehearsly team only.</p>' + v2Btn("home", "Back to home", "v2-btn v2-sec") + "</div>";
+    function rows(skill) { return Object.keys(V2_CHECKS).filter(function (k) { return V2_CHECKS[k][1] === skill; }).map(function (k) { return "<tr><td>" + v2Esc(V2_CHECKS[k][0]) + "</td><td>" + V2_CHECKS[k][2] + "</td><td>" + (k === "own_words" || k === "fresh" ? "Code" : "AI tick") + "</td></tr>"; }).join(""); }
+    function tbl(head, body) { return '<table class="v2-sg-t"><tr>' + head.map(function (h) { return "<th>" + h + "</th>"; }).join("") + "</tr>" + body + "</table>"; }
+    var rw = [v2RoundWeights("Leadership"), v2RoundWeights("Product sense"), v2RoundWeights("HR screen")];
+    return '<div class="v2-sg"><span class="v2-eyebrow">Admin · reference</span><h1 class="v2-h1">How the <i class="v2-gt">score</i> is calculated.</h1>' +
+      '<p class="v2-sub">Method evidence v1. The AI only ticks facts; fixed points and weights make the score, so the same answer always scores the same.</p>' +
+      '<div class="v2-sg-c"><h3>The 7 steps</h3><ol><li><b>Gate.</b> An answer needs ' + V2_MIN_WORDS + ' or more words and must be on topic, or it is not scored.</li>' +
+      "<li><b>AI checklist.</b> Gemini ticks true or false for each check below, at temperature 0, and rates the example 1 to 5.</li>" +
+      "<li><b>Code measures.</b> Words, fillers, hedging words, numbers, “I” vs “we”, repeated phrases, and voice: pace, pauses, pitch and volume.</li>" +
+      "<li><b>Points.</b> Each tick adds fixed points; each skill is out of 100. Penalties come off. The AI's 1 to 5 rating is " + Math.round(V2_AI_SHARE * 100) + "% of a skill at most.</li>" +
+      "<li><b>Caps.</b> Hard limits for missing basics (below).</li><li><b>Round weights.</b> Skills are weighted by the type of round.</li>" +
+      "<li><b>Proof.</b> Feedback lists the ticks and misses, and shows a range (±) that is wider when few answers were scored or the AI was not available.</li></ol></div>" +
+      '<div class="v2-sg-g"><div class="v2-sg-c"><h3>Answer framing</h3>' + tbl(["Check", "Points", "Source"], rows("structure")) + '<p class="v2-hint">Length: under 150 words loses up to 20; over 420 loses up to 25.</p></div>' +
+      '<div class="v2-sg-c"><h3>Depth</h3>' + tbl(["Check", "Points", "Source"], rows("depth")) + '<p class="v2-hint">With no follow ups asked, those 20 points are left out and the rest is scaled to 100.</p></div>' +
+      '<div class="v2-sg-c"><h3>Words used</h3>' + tbl(["Check", "Points", "Source"], rows("presence")) + '<p class="v2-hint">Fillers: 4 points off for each per 100 words above 1 (up to 24). Hedging: 5 off for each per 100 words above 0.5 (up to 20).</p></div>' +
+      '<div class="v2-sg-c"><h3>Voice delivery</h3>' + tbl(["Part", "Share", "Best"], "<tr><td>Pace</td><td>35%</td><td>125 to 165 words a minute</td></tr><tr><td>Tone (pitch change)</td><td>25%</td><td>2 to 6 semitones; under 1.2 is flat</td></tr><tr><td>Long pauses (2.5 to 8 s)</td><td>20%</td><td>1 or fewer a minute</td></tr><tr><td>Volume</td><td>20%</td><td>Clear, steady level</td></tr>") +
+      '<p class="v2-hint">Measured from the mic on the device. Needs 4 seconds of speech.</p></div></div>' +
+      '<div class="v2-sg-g"><div class="v2-sg-c"><h3>Caps</h3>' + tbl(["When", "Limit"], V2_CAPS.map(function (c) { return "<tr><td>" + c[0] + "</td><td>" + c[1] + "</td></tr>"; }).join("")) + "</div>" +
+      '<div class="v2-sg-c"><h3>Round weights</h3>' + tbl(["Round", "Framing", "Depth", "Words", "Voice"], rw.map(function (r) { return "<tr><td>" + r.name + "</td><td>" + r.w.structure + "</td><td>" + r.w.depth + "</td><td>" + r.w.presence + "</td><td>" + r.w.voice + "</td></tr>"; }).join("")) + "</div>" +
+      '<div class="v2-sg-c"><h3>Bands</h3>' + tbl(["Score", "Meaning"], V2_BANDS.map(function (b, i) { return "<tr><td>" + b[0] + (i ? " to " + (V2_BANDS[i - 1][0] - 1) : " to 100") + "</td><td>" + b[1] + "</td></tr>"; }).join("")) + "</div></div>" +
+      '<div class="v2-sg-c"><h3>Appearance score (separate, video only)</h3>' + tbl(["Part", "Weight", "Measured by"], V2_AP_PARTS.map(function (p) {
+        var by = { eye: "Face finder on the device: share of checks looking at the camera (85%+ = full marks)", angle: "Face finder: eye level, centred, distance, head straight (90%+ = full marks)",
+          light: "Brightness of face and room on the device", noise: "Mic noise level while silent, on the device", background: "Busy background check on the device, plus AI photos when on", dress: "AI photos only (appearance review on)" }[p[0]];
+        return "<tr><td>" + p[1] + "</td><td>" + p[2] + "</td><td>" + by + "</td></tr>"; }).join("")) +
+      '<p class="v2-hint">Parts that could not be measured are left out and the rest is scaled. Appearance never changes the interview skills score. Photos are not stored.</p></div></div>';
+  }
+  window.__v2Score = { session: v2ScoreSession, measure: v2Measure, question: v2ScoreQuestion, voice: v2VoiceScore, appearance: v2AppearanceScore, weights: v2RoundWeights, pitch: v2Pitch };
   /* V2-END */
   function boot() {
     forgetLeakedKeys();
@@ -16041,13 +16461,12 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     v2Init();
     v2CheckOwner();
 
-    // Every visit starts on the landing page. Nothing behind it is shown
-    // until someone taps Continue or logs in. Someone still signed in on
-    // this browser gets the login card straight away, with Continue.
+    // Every visit starts on the landing page. The login card opens only
+    // when the visitor taps Log in or Start free; someone still signed in
+    // on this browser then sees Continue on that card.
     var canContinue = mayContinue();
     if (signedIn() && !canContinue) lockSession();
     showLanding(true);
-    if (canContinue) showLogin(true);
     setAuthMode("login");
     showContinueRow(canContinue);
     var known = getSettings().authEmail || "";
