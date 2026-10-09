@@ -2334,10 +2334,10 @@ html.v2-live, html.v2-live body { overflow-x: clip !important; overflow-y: visib
 }
 /* ---- Waiting screen ---- */
 .rw-overlay { position:fixed; inset:0; z-index:9999; display:grid; place-items:center; padding:24px;
-  background:radial-gradient(60% 70% at 92% 8%,rgba(196,181,253,.55),transparent 70%),radial-gradient(50% 60% at 8% 100%,rgba(253,164,175,.45),transparent 70%),rgba(251,250,255,.96);
+  background:rgba(26,16,51,.32);
   animation:rw-fade .25s ease; font-family:'Inter Tight',system-ui,sans-serif; }
 @keyframes rw-fade { from { opacity:0; } }
-.rw-card { width:min(460px,100%); padding:40px 28px; border-radius:24px; background:#FFFFFF; border:1px solid #E4E8F1; box-shadow:0 30px 60px -40px rgba(26,16,51,.35); }
+.rw-card { width:min(460px,100%); padding:40px 28px; border-radius:24px; background:#FFFFFF; border:1px solid #E4E8F1; box-shadow:0 30px 80px -20px rgba(26,16,51,.55); }
 .rw-wave { display:flex; flex-direction:column; align-items:center; gap:20px; text-align:center; }
 .rw-wave.inline { padding:28px 0; gap:16px; }
 .rw-bars { display:flex; align-items:center; gap:8px; height:88px; }
@@ -2381,6 +2381,108 @@ html.v2-live, html.v2-live body { overflow-x: clip !important; overflow-y: visib
 .v2-sg-t th { text-align:left; color:var(--muted,#6B7390); font-weight:500; font-size:12px; padding:6px 8px; border-bottom:1px solid var(--bd,#E4E8F1); }
 .v2-sg-t td { padding:8px; border-bottom:1px solid #F0F2F7; vertical-align:top; }
 .v2-sg .v2-hint { display:block; margin-top:8px; }
+.v2-fb-early { margin:2px 0 6px; font-size:13px; line-height:1.5; color:#5B5F77; background:#FFF6E5; border-radius:12px; padding:8px 12px; }
+.v2-fb-early b { color:#B45309; font-weight:600; margin-right:6px; }
+.v2-fb-chance { margin:2px 0 6px; font-size:13px; color:#5B5F77; }
+.v2-fb-lang { border:1px solid var(--bd); border-radius:20px; padding:20px 24px; margin-top:16px; display:flex; flex-direction:column; gap:10px; min-width:0; }
+.v2-fb-lrow { display:grid; grid-template-columns:72px minmax(0,1fr) minmax(0,1fr); gap:12px; align-items:baseline; font-size:14px; line-height:1.45; }
+.v2-fb-lk { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; padding:4px 8px; border-radius:99px; text-align:center; }
+.v2-fb-lk.c { background:#F3E8FF; color:#6D28D9; } .v2-fb-lk.e { background:#FFE9EC; color:#BE123C; }
+.v2-fb-ls { color:#2E3550; overflow-wrap:anywhere; } .v2-fb-ls i { font-style:normal; color:#8A90A8; font-size:12px; margin-left:4px; }
+.v2-fb-lb { color:#0E8A4A; overflow-wrap:anywhere; }
+@media (max-width:640px) { .v2-fb-lrow { grid-template-columns:1fr; gap:4px; } .v2-fb-lk { justify-self:start; } }
+/* Admin dashboard */
+.adm { max-width:1240px; margin:0 auto; padding:24px clamp(16px,3vw,32px) 60px; }
+.adm-head { display:flex; justify-content:space-between; align-items:flex-end; gap:16px; flex-wrap:wrap; margin-bottom:14px; }
+.adm .v2-gt { background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; font-style:italic; }
+.adm-range, .adm-bar { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+.adm-bar { margin-bottom:12px; }
+.adm-chip { border:1px solid var(--bd,#E4E8F1); background:#fff; border-radius:99px; padding:7px 14px; font-size:13px; color:var(--text2,#465069); cursor:pointer; }
+.adm-chip.on { border-color:#D9CCF8; background:#F6F2FE; color:var(--violet,#6D28D9); font-weight:600; }
+.adm-nav { display:flex; gap:4px; border-bottom:1px solid var(--bd,#E4E8F1); margin-bottom:20px; overflow-x:auto; scrollbar-width:thin; }
+.adm-nav button { padding:10px 14px; color:var(--text2,#465069); background:none; border:0; border-bottom:2px solid transparent; font-weight:500; font-size:14px; white-space:nowrap; cursor:pointer; }
+.adm-nav button.on { color:var(--ink,#1A1033); border-color:var(--violet,#6D28D9); }
+.adm-tiles { display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:12px; margin-bottom:16px; }
+.adm-tile { background:#fff; border:1px solid var(--bd,#E4E8F1); border-radius:16px; padding:16px; display:flex; flex-direction:column; gap:2px; }
+.adm-tile b { font-family:'Newsreader',serif; font-weight:400; font-size:32px; line-height:1.1; margin:4px 0; }
+.adm-tile span { font-size:12px; color:var(--muted,#6B7390); }
+.adm-tile span.up { color:var(--green,#0E8A4A); font-weight:600; }
+.adm-grid { display:grid; grid-template-columns:2fr 1fr; gap:16px; margin-bottom:16px; }
+.adm-g2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
+.adm-g3 { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; margin-bottom:16px; }
+.adm-card { background:#fff; border:1px solid var(--bd,#E4E8F1); border-radius:18px; padding:18px 20px; margin-bottom:16px; min-width:0; }
+.adm-g2 > .adm-card, .adm-g3 > .adm-card, .adm-grid > .adm-card { margin-bottom:0; }
+.adm-card h3 { margin:0 0 4px; font-size:15px; }
+.adm-card h4 { margin:6px 0 8px; font-size:13px; }
+.adm-card p.h { margin:0 0 14px; color:var(--muted,#6B7390); font-size:12.5px; line-height:1.5; }
+.adm-card ol, .adm-card ul { margin:0; padding-left:20px; font-size:13.5px; line-height:1.6; color:#2E3550; }
+.adm-err { border-color:#FBCFD6; background:#FFF6F7; font-size:14px; }
+.adm-tw { overflow-x:auto; }
+.adm-t { width:100%; border-collapse:collapse; font-size:13px; }
+.adm-t th { text-align:left; color:var(--muted,#6B7390); font-weight:500; font-size:12px; padding:8px 10px; border-bottom:1px solid var(--bd,#E4E8F1); white-space:nowrap; }
+.adm-t td { padding:10px; border-bottom:1px solid #F0F2F7; white-space:nowrap; vertical-align:top; }
+.adm-t td.wrap { white-space:normal; min-width:240px; max-width:460px; }
+.adm-t.sm td { padding:6px 8px; }
+.adm-t tr.adm-detail > td { background:#FBFAFF; white-space:normal; }
+.adm-t .mut, .adm .mut { color:var(--muted,#6B7390); font-size:12px; font-style:normal; }
+.adm .pill { font-size:11.5px; padding:3px 9px; border-radius:99px; font-weight:600; display:inline-block; }
+.adm .pg { background:#E7F6EE; color:#0E8A4A; } .adm .pv { background:#F3EEFE; color:#6D28D9; } .adm .pr { background:#FFE9EC; color:#BE123C; } .adm .pa { background:#FEF3C7; color:#B45309; }
+.adm .act { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
+.adm .act button { font-size:12px; border:1px solid var(--bd,#E4E8F1); background:#fff; border-radius:8px; padding:4px 9px; color:var(--text2,#465069); cursor:pointer; }
+.adm .act button.r { color:#BE123C; border-color:#FBCFD6; }
+.adm .act button:disabled { opacity:.5; cursor:not-allowed; }
+.adm-in { height:36px; border:1px solid var(--bd,#E4E8F1); border-radius:10px; padding:0 12px; font:inherit; font-size:13px; background:#fff; color:var(--ink,#1A1033); min-width:0; }
+#adm-q { flex:1; min-width:200px; }
+.adm-in.sm { width:70px; height:30px; }
+.adm-hbar .row { display:grid; grid-template-columns:minmax(90px,1.4fr) 2fr 52px; align-items:center; gap:10px; margin:8px 0; font-size:13px; }
+.adm-hbar .row > span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.adm-hbar .t { height:10px; border-radius:9px; background:#ECE6FA; overflow:hidden; }
+.adm-hbar .t i { display:block; height:100%; border-radius:9px; background:var(--violet,#6D28D9); }
+.adm-hbar b { text-align:right; }
+.adm-fun .row { display:grid; grid-template-columns:170px 1fr 60px 70px; align-items:center; gap:10px; margin:7px 0; font-size:13px; }
+.adm-fun .fill { height:22px; border-radius:7px; background:var(--grad); }
+.adm-fun .drop { color:#BE123C; font-size:12px; }
+.adm-kv { display:grid; grid-template-columns:1fr auto; gap:8px 12px; font-size:13px; }
+.adm-kv span { color:var(--text2,#465069); } .adm-kv b { text-align:right; }
+.adm-kv .tot { color:var(--ink,#1A1033); font-weight:600; border-top:1px solid #F0F2F7; padding-top:8px; }
+.adm-meter { height:10px; border-radius:9px; background:#ECE6FA; overflow:hidden; margin:12px 0 2px; }
+.adm-meter i { display:block; height:100%; background:var(--grad); }
+.adm-note { font-size:12px; color:var(--muted,#6B7390); margin:10px 0 0; }
+.adm-note a { color:var(--violet,#6D28D9); }
+.adm-ans { border-top:1px solid #F0F2F7; padding:10px 0; }
+.adm-ans p { margin:6px 0; font-size:13.5px; line-height:1.5; color:#2E3550; white-space:pre-wrap; }
+.adm-f { display:flex; flex-direction:column; gap:4px; margin:0 0 12px; font-size:13px; color:var(--text2,#465069); }
+.adm-save { display:flex; gap:12px; align-items:center; }
+.v2-consent { display:flex; gap:16px; align-items:center; justify-content:space-between; flex-wrap:wrap; background:#F6F2FE; border:1px solid #E4DAFB; border-radius:16px; padding:16px 18px; margin:16px auto 0; max-width:1100px; width:calc(100% - 32px); }
+.v2-consent > div:first-child { display:flex; flex-direction:column; gap:4px; flex:1 1 320px; font-size:14px; color:#2E3550; line-height:1.5; }
+.v2-consent b { color:var(--ink,#1A1033); }
+.v2-consent-acts { display:flex; gap:8px; }
+@media (max-width:1000px) { .adm-grid, .adm-g2 { grid-template-columns:1fr; } }
+@media (max-width:560px) { .adm-fun .row { grid-template-columns:110px 1fr 46px; } .adm-fun .row .drop { display:none; } .adm-tile b { font-size:26px; } }
+.v2-main.v2-on-admin { min-width:0; max-width:100%; }
+.adm { min-width:0; width:100%; box-sizing:border-box; }
+.adm-body, .adm-card, .adm-tw { min-width:0; max-width:100%; }
+/* Voice library */
+.v2-vlib { border:1px solid var(--bd,#E4E8F1); border-radius:18px; padding:16px 18px; background:#fff; margin:12px 0; display:flex; flex-direction:column; gap:12px; text-align:left; }
+.v2-vlib-head { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:flex-start; }
+.v2-vlib-head > div { display:flex; flex-direction:column; gap:3px; }
+.v2-vlib-head b { font-size:15px; color:var(--ink,#1A1033); }
+.v2-vlib-head span { font-size:13px; color:var(--text2,#566079); line-height:1.45; }
+.v2-vlib-cur { font-size:12.5px !important; background:#F6F2FE; color:#6D28D9 !important; padding:5px 10px; border-radius:99px; white-space:nowrap; }
+.v2-vlib-tabs { display:flex; gap:4px; padding:3px; border-radius:99px; background:#ECEEF5; width:max-content; max-width:100%; overflow-x:auto; }
+.v2-vlib-tabs button { height:30px; padding:0 14px; border:none; border-radius:99px; background:transparent; color:var(--text2,#566079); font-size:13px; font-weight:500; white-space:nowrap; cursor:pointer; }
+.v2-vlib-tabs button.on { background:#fff; color:var(--ink,#1A1033); box-shadow:0 1px 3px rgba(26,16,51,.12); }
+.v2-vlib-tabs i { font-style:normal; color:var(--muted,#6B7390); font-size:11.5px; }
+.v2-vlib-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; }
+.v2-vcard { border:1px solid var(--bd,#E4E8F1); border-radius:14px; display:flex; flex-direction:column; overflow:hidden; background:#fff; transition:border-color .15s, box-shadow .15s; }
+.v2-vcard.on { border-color:#6D28D9; box-shadow:0 0 0 3px rgba(109,40,217,.14); }
+.v2-vpick { border:0; background:none; text-align:left; padding:12px 12px 8px; display:flex; flex-direction:column; gap:2px; cursor:pointer; font:inherit; }
+.v2-vpick b { font-size:15px; color:var(--ink,#1A1033); }
+.v2-vpick span { font-size:12.5px; color:var(--text2,#566079); line-height:1.35; }
+.v2-vpick span.g { color:var(--muted,#6B7390); font-size:11.5px; }
+.v2-vplay { border:0; border-top:1px solid #F0F2F7; background:#FBFAFF; color:#6D28D9; font-size:12.5px; font-weight:600; padding:8px; cursor:pointer; }
+.v2-vplay.playing { color:#BE123C; }
+.ob2-card .v2-vlib, #ob2-content .v2-vlib { margin:4px 0 18px; }
 </style>
 </head>
 <body>
@@ -5554,10 +5656,11 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       "Use the business context the candidate lives in: Indian companies, Indian customers, rupees, lakhs and crores, IST. Never put on a British or American accent.",
     neutral: "Speak clear, neutral international English. Do not lean into any one country's accent.",
     british: "You are a British interviewer, sitting in an office in the UK. Speak natural British English.",
-    american: "You are an American interviewer, sitting in an office in the US. Speak natural American English."
+    american: "You are an American interviewer, sitting in an office in the US. Speak natural American English.",
+    australian: "You are an Australian interviewer, sitting in an office in Australia. Speak natural Australian English."
   };
   function accentStyle(settings) {
-    var key = (settings || getSettings()).interviewAccent || DEFAULT_SETTINGS.interviewAccent;
+    var key = v2Active() ? v2AccentKey() : ((settings || getSettings()).interviewAccent || DEFAULT_SETTINGS.interviewAccent);
     return ACCENT_STYLES[key] || ACCENT_STYLES.indian;
   }
 
@@ -7270,7 +7373,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     var fr = $("#landing-frame");
     if (!fr || e.source !== fr.contentWindow) return;
     var d = e.data || {};
-    if (d.rehearsly === "auth") openLoginPanel(d.mode);
+    if (d.rehearsly === "auth") { try { v2TrackVisit(d.mode === "signup" ? "cta_signup" : "cta_login"); } catch (e) {} openLoginPanel(d.mode); }
   });
   // kind: "busy" while something is happening, "good" when it worked,
   // anything else is treated as a problem and shown in red.
@@ -7993,6 +8096,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
         "<h2>Leadership round for " + escapeHtml(d.targetRole) + "</h2>" +
         '<div class="ob2-info"><span>Interviewer <b>' + escapeHtml(ob2Interviewer()) + "</b></span>" +
         "<span>Based on <b>" + escapeHtml(ob2BasedOn() || "Core questions") + "</b></span></div></div>" +
+        (v2Active() ? v2VoicePickerHtml("ob") : "") +
         '<div class="ob2-actions"><button type="button" class="ob2-btn ob2-primary" id="ob2-start">Start interview</button>' +
         '<button type="button" class="ob2-btn ob2-secondary" id="ob2-mic-test">Test my mic first</button></div>' +
         '<p class="ob2-status" id="ob2-status" aria-live="polite"></p>';
@@ -9626,7 +9730,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
    * one Gemini voice you picked, with the same accent. The plain browser
    * voice is only a backup for when Gemini cannot be reached.
    * ------------------------------------------------------------------- */
-  function appVoice() { if (v2Active()) return V2_KIRA_VOICE; return getSettings().liveVoiceName || DEFAULT_SETTINGS.liveVoiceName; }
+  function appVoice() { if (v2Active()) return v2CurVoice().voice; return getSettings().liveVoiceName || DEFAULT_SETTINGS.liveVoiceName; }
   var backupNoticeShown = false;
   var missingKeyPromptShown = false;
   function speakApp(text, opts) {
@@ -10339,8 +10443,9 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     "Say nothing except the words between the markers.";
   // Only the sound of the accent, so the reader never picks up a role.
   function readerAccent(settings) {
-    var key = (settings || getSettings()).interviewAccent || DEFAULT_SETTINGS.interviewAccent;
+    var key = v2Active() ? v2AccentKey() : ((settings || getSettings()).interviewAccent || DEFAULT_SETTINGS.interviewAccent);
     return ({
+      australian: "Speak with a natural Australian English accent.",
       indian: "Speak with a natural Indian English accent.",
       neutral: "Speak clear, neutral international English.",
       british: "Speak with a natural British English accent.",
@@ -12595,12 +12700,17 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     for (var i = 0; i < plan.steps.length; i++) if (plan.steps[i].status === "paused" || plan.steps[i].status === "next") return i;
     return -1;
   }
-  function v2Readiness(plan, before) {
+  // Skill level: recent rounds weigh more. Readiness: skill level times the share of plan rounds done.
+  function v2SkillLevel(plan, before) {
     var done = plan.steps.filter(function (s) { return s.status === "done" && s.score != null && (!before || (s.doneAt || 0) < before); });
     if (!done.length) return null;
     var sw = 0, ss = 0;
     done.forEach(function (s, i) { sw += i + 1; ss += (i + 1) * s.score; });
-    return Math.round(ss / sw);
+    return { level: Math.round(ss / sw), done: done.length, total: plan.steps.length || 1 };
+  }
+  function v2Readiness(plan, before) {
+    var k = v2SkillLevel(plan, before);
+    return k ? Math.round(k.level * Math.min(1, k.done / k.total)) : null;
   }
   function v2PlanTitle(plan) { return plan.role + (plan.company ? " · " + plan.company : ""); }
   function v2PlanMeta(plan) {
@@ -12648,6 +12758,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   /* ---- Showing the new app, or an old screen for now ---- */
   function v2Show(screen, opts) {
     opts = opts || {};
+    try { v2TrackBoot(); } catch (e) {}
     if (V2.screen === "mic" && screen !== "mic") v2StopMic();
     if (V2.screen === "room" && screen === "settings" && V2.room) v2RoomPause(true);
     else if (V2.screen === "room" && screen !== "room" && V2.room) { v2RoomClose(); if (!V2.room.done) V2.room = null; }
@@ -12721,7 +12832,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       "</div></header>";
     var menu = noMenu ? "" : V2.menuOpen ? v2MenuHtml() : (v2Narrow() ? "" : v2RailHtml());
     var body = sc === "settings" ? v2SettingsHtml() : sc === "mic" ? v2MicHtml() : sc === "room" ? v2RoomHtml() : sc === "processing" ? v2ProcHtml()
-      : sc === "feedback" ? v2FeedbackHtml() : sc === "history" ? v2HistoryHtml() : sc === "quick" ? v2QuickHtml() : sc === "plan" ? v2PlanPageHtml() : sc === "newplan" ? v2NpHtml() : sc === "library" ? v2LibHtml() : sc === "practice" ? v2PrHtml() : sc === "detail" ? v2DtHtml() : sc === "scoreguide" ? v2ScoreGuideHtml() : v2HomeHtml();
+      : sc === "feedback" ? v2FeedbackHtml() : sc === "history" ? v2HistoryHtml() : sc === "quick" ? v2QuickHtml() : sc === "plan" ? v2PlanPageHtml() : sc === "newplan" ? v2NpHtml() : sc === "library" ? v2LibHtml() : sc === "practice" ? v2PrHtml() : sc === "detail" ? v2DtHtml() : sc === "scoreguide" ? v2ScoreGuideHtml() : sc === "admin" ? v2AdminHtml() : v2ConsentCard() + v2HomeHtml();
     root.innerHTML = top + '<div class="v2-body">' + menu + (open && v2Narrow() ? '<div class="v2-scrim" data-act="menu"></div>' : "") +
       '<main class="v2-main v2-on-' + sc + '">' + body + "</main></div>" + (V2.modal ? v2ModalHtml() : "");
     if (sc === "room") v2RoomAttachCam();
@@ -12755,7 +12866,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       '<div class="v2-mgroup"><span class="v2-eyebrow-m">Your sections</span>' + mine +
         v2Btn("newsec", "+ New section", "v2-mi v2-newsec") + "</div>" +
       '<div class="v2-mgroup v2-mfoot">' + item("My interview history", "", "history") + item("Interview tips", f.tips ? v2SecCount(f.tips) : "", "sec", f.tips ? f.tips.key : "") +
-        (V2.isAdmin ? item("Scoring guide (admin)", "", "scoreguide") : "") + "</div>" +
+        (V2.server && V2.server.admin ? item("Admin dashboard", "", "admin") : V2.isAdmin ? item("Scoring guide (admin)", "", "scoreguide") : "") + "</div>" +
       '<button type="button" class="v2-collapse" data-act="menu" title="Collapse menu">' + V2_PANEL_IN + "Collapse menu</button>" +
       "</aside>";
   }
@@ -12813,7 +12924,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   function v2PlanCard(plan) {
     var n = plan.steps.length, done = plan.steps.filter(function (x) { return x.status === "done"; }).length;
     var ci = v2CurIdx(plan), cur = ci >= 0 ? plan.steps[ci] : null, paused = !!(cur && cur.status === "paused");
-    var ready = v2Readiness(plan), wk = v2Readiness(plan, Date.now() - 7 * 864e5), goal = parseInt(v2Prefs().goal, 10) || 80;
+    var ready = v2Readiness(plan), wk = v2Readiness(plan, Date.now() - 7 * 864e5), goal = parseInt(v2Prefs().goal, 10) || 80, lvl = v2SkillLevel(plan);
     var delta = ready != null && wk != null && ready !== wk ? (ready > wk ? "+" : "") + (ready - wk) + " this week" : "";
     var confirming = V2.confirmDel === plan.id, busy = V2.busy === plan.id;
     var h = '<div class="v2-card" id="v2-plan-' + plan.id + '"><div class="v2-card-in">';
@@ -12827,10 +12938,10 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       "</div></div>";
     h += '<div class="v2-ready"><div class="v2-ready-top"><span class="v2-ready-l"><span class="v2-ready-lab">Interview readiness</span><span class="v2-ready-num">' + (ready == null ? "—" : ready) +
       '</span><span class="v2-ready-of">/100</span>' + (delta ? '<span class="v2-ready-d">' + delta + "</span>" : "") + "</span>" +
-      '<span class="v2-ready-note">' + (ready == null ? "Your first interview sets your baseline." : ready >= goal ? "You’re in the clear zone." : (goal - ready) + " points to reach the clear zone.") + "</span></div>" +
+      '<span class="v2-ready-note">' + (ready == null ? "Your first interview sets your baseline." : (lvl && lvl.done < lvl.total ? "Skill level " + lvl.level + " · " + lvl.done + " of " + lvl.total + " rounds done. " : "") + (ready >= goal ? "You’re in the clear zone." : (goal - ready) + " points to reach the clear zone.")) + "</span></div>" +
       '<div class="v2-bar-wrap"><div class="v2-bar"><div class="v2-zone" style="left:' + goal + '%"></div><div class="v2-fill" style="width:' + (ready || 0) + '%"></div></div>' +
-      '<div class="v2-marker" style="left:' + goal + '%"></div><div class="v2-bar-labels"><span class="v2-chance">' + (ready == null ? "Not scored yet" : "At " + ready + " · about " + Math.round(ready * 0.8) + "% chance of clearing") +
-      '</span><span class="v2-goal-lab" style="left:' + goal + '%">Reach ' + goal + " · 90% chance of clearing</span></div></div></div>";
+      '<div class="v2-marker" style="left:' + goal + '%"></div><div class="v2-bar-labels"><span class="v2-chance">' + (ready == null ? "Not scored yet" : "At " + ready + " · about " + v2Chance(ready) + "% chance of clearing") +
+      '</span><span class="v2-goal-lab" style="left:' + goal + '%">Reach ' + goal + " · " + v2Chance(goal) + "% chance of clearing</span></div></div></div>";
     var edge = 50 / n;
     h += '<div class="v2-tl" style="grid-template-columns:repeat(' + n + ',minmax(0,1fr))"><div class="v2-tl-line" style="left:' + edge + "%;right:" + edge + '%"></div>' +
       '<div class="v2-tl-done" style="left:' + edge + "%;width:" + ((ci < 0 ? n - 1 : ci) / n * 100) + '%"></div>';
@@ -12966,6 +13077,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     if (status) { status.className = "ob2-status"; status.textContent = "Getting your questions ready…"; }
     var p0 = v2Plans()[0];
     v2Wait(v2WaitQuestions(p0 && p0.persona, p0 && p0.company, "leadership"));
+    v2Feature("onboarding_done");
     (OB2.gen || ob2Generate()).then(function (qs) {
       v2WaitDone();
       exitProfileOnboarding();
@@ -13127,7 +13239,8 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     if (tab === "practice") return ["Practice defaults", "Used whenever you start an interview. You can still change them for each session.", [
       v2Sg("Difficulty", "How hard the interviewer pushes with follow-ups.", "difficulty", ["Easy", "Moderate", "Difficult"]),
       v2Sg("Interviewer", "", "persona", V2_PERSONAS), v2Sg("Format", "", "media", ["Voice only", "Video"]),
-      v2Sg("Interviewer voice", "", "voice", ["Calm", "Warm", "Brisk"]), v2Sg("Speaking speed", "", "speed", ["Slower", "Normal", "Faster"]),
+      v2VoicePickerHtml("set"),
+      v2Sg("Speaking style", "", "voice", ["Calm", "Warm", "Brisk"]), v2Sg("Speaking speed", "", "speed", ["Slower", "Normal", "Faster"]),
       v2Tg("Answer timer", "Show a timer while you answer.", "timer"), v2Sg("Target answer length", "We flag answers that run longer.", "ansLen", ["90 s", "2 min", "3 min"]),
       v2Sg("Live hints", "Coach mode shows prompts while you speak.", "hints", ["Off", "Subtle", "Coach"])
     ]];
@@ -13147,6 +13260,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       v2Sg("Feedback tone", "", "tone", ["Direct", "Balanced", "Encouraging"]),
       v2Tg("Score answer framing", "Direct answer, situation, actions, result, close.", "skStructure"), v2Tg("Score words used", "Ownership, business impact, no fillers or hedging.", "skPresence"),
       v2Tg("Score depth", "Real example, numbers, trade offs, follow ups.", "skDepth"), v2Tg("Score voice delivery", "Pace, tone, pauses and volume from your mic.", "skVoice"),
+      v2Tg("Share my answers to improve Rehearsly", "The text of your answers, no resume or recordings, helps Kira learn what strong answers look like.", "shareAnswers"),
       v2Tg("Appearance review in video interviews", "3 photos sent to Gemini to judge dress, grooming and background. Not stored.", "appearanceAI"),
       v2Sg("Readiness goal", "The score your plans aim for.", "goal", ["75", "80", "85"])
     ]];
@@ -13362,6 +13476,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       case "stories": v2LibOpen("stories"); break;
       case "history": v2Show("history"); break;
       case "scoreguide": v2Show("scoreguide"); break;
+      case "admin": V2.adm = V2.adm || { tab: "overview", days: 30 }; v2Show("admin"); v2AdminLoad(); break;
       case "hist-f": V2.histFilter = arg; v2Render(); break;
       case "hist-open":
         if (!arg) { v2Legacy(function () { openInterviewHistory(); }); break; }
@@ -13404,7 +13519,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       case "mic-done": v2StopMic(); v2Show(V2.mic && V2.mic.from === "settings" ? "settings" : "home", V2.mic && V2.mic.from === "settings" ? { tab: "av" } : {}); break;
       case "mic-go": if (V2.mic && V2.mic.quick) v2QuickLaunch(); else v2Launch(); break;
       case "avtest": V2.mic = { from: "settings", camera: true }; v2Show("mic"); break;
-      case "tog": v2SetPref(arg, !v2Prefs()[arg]); v2Render(); break;
+      case "tog": v2SetPref(arg, !v2Prefs()[arg]); if (arg === "shareAnswers") { v2SetPref("shareNoticeSeen", true); v2Track("consent", { share: !!v2Prefs().shareAnswers }); } if (arg === "appearanceAI" && v2Prefs().appearanceAI) v2Feature("appearance_review_on"); v2Render(); break;
       case "pref": v2SetPref(arg, b.getAttribute("data-v")); if (arg === "keep") v2KeepRule(); v2Render(); break;
       case "drive-on": v2DriveConnect(); break;
       case "drive-sync": v2Flash("Syncing…"); driveSyncAndRender(true).then(function () { V2.flash = "Synced with your Google Drive."; v2PullPlans(); v2PullQa(); v2Render(); }).catch(function (err) { v2Flash(String((err && err.message) || err)); }); break;
@@ -13536,7 +13651,8 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     R.selfW = sb.w || (v2Narrow() ? 110 : 220); R.selfX = null; R.selfY = null; R.selfFree = false;
     if (sb.free && sb.x != null) { R.selfFree = true; R.selfX = sb.x; R.selfY = sb.y; v2SelfClamp(R); }
     R.camStats = rec && rec.camStats ? rec.camStats : {};
-    R.vox = null; R.snaps = [];
+    R.vox = null; R.snaps = []; R.usage = rec && rec.usage ? rec.usage : null;
+    if (!rec) v2Feature("interview_start", { meta: [R.mode, R.media, R.round].join("|") });
     R.turns.forEach(function (t) { t.closed = true; });
     R.inIntro = !R.turns.length && !R.startQ; R.inClosing = false;
     V2.room = R;
@@ -13549,7 +13665,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     v2SaveSession({ id: R.id, mode: R.mode, planId: R.planId || null, step: R.step == null ? null : R.step, title: R.title, round: R.round,
       difficulty: R.difficulty, persona: R.persona, media: R.media, company: R.company, target: R.target, questions: R.questions,
       turns: R.turns.map(function (t) { return { who: t.who, kind: t.kind || "", q: t.q, text: t.text }; }),
-      startedAt: R.startedAt, durationMs: R.elapsed, relaySession: R.relaySession, status: status, origin: R.origin, note: R.note || "", camStats: R.camStats || null, vox: v2VoxSummary(R, (v2GetSession(R.id) || {}).vox),
+      startedAt: R.startedAt, durationMs: R.elapsed, relaySession: R.relaySession, status: status, origin: R.origin, note: R.note || "", camStats: R.camStats || null, usage: R.usage || null, vox: v2VoxSummary(R, (v2GetSession(R.id) || {}).vox),
       result: (v2GetSession(R.id) || {}).result || null });
   }
   function v2Asked(turns) { var m = 0; (turns || []).forEach(function (t) { if (t.who === "ai" && t.kind === "question") m = Math.max(m, t.q || 0); }); return m; }
@@ -13577,7 +13693,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
         (asked >= R.questions.length ? "Give your closing now." : "Say you are picking up where you left off, then ask question " + (asked + 1) + ".") +
         (said ? "\nThe last part of the conversation was:\n" + said : "");
     }
-    return "You are Kira, the AI interviewer at Rehearsly. In this interview you are acting as the " + who + (R.company ? " at " + R.company : "") +
+    return "You are " + v2VoiceName() + ", the AI interviewer at Rehearsly. In this interview you are acting as the " + who + (R.company ? " at " + R.company : "") +
       ", running a " + R.round + " round for a " + (R.target || "senior") + " role. This is a live spoken interview on a voice call, so talk like a real person: short, plain, everyday English. Never read out lists, never use markdown, never use dashes. " +
       accentStyle() + " " + voice + speed +
       " The candidate speaks English, so always listen for English and always reply in English." +
@@ -13589,7 +13705,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       (rich ? " Each time, right before you speak, call the set_turn tool to say what you are about to do: kind intro for your opening before question 1, question with its number when you ask a main question, followup for your first follow up on an answer, probe for every further follow up, closing for your thank you and feedback after the last question, and wrapup only for your very last turn."
         : " When you ask a main question, start with its number, like: Question two.") +
       "\n\nHow to close. After the follow ups on the last question, thank them in one warm sentence and name one thing they did well. Then ask whether they would like quick feedback on what they could do better and what to watch out for in the real interview. Stop and wait for their reply. " +
-      "If they say yes, give it in under 45 seconds: the two most important things they did not do well in this interview, based only on what they actually said, and for each one a simple precaution for the real interview. Then ask if they have any question, and answer it briefly. " +
+      "If they say yes, give it in under 45 seconds: the two most important things they did not do well in this interview, based only on what they actually said, and for each one a simple precaution for the real interview. If they used casual words such as yup or gonna, or wrong English such as my self, name one example they said and the better way to say it. Then ask if they have any question, and answer it briefly. " +
       "If they say no, wish them luck in one line. Your very last turn must end with exactly this sentence: That is the end of the interview. Do not say that sentence before then." +
       (R.note ? "\n\nFocus for this practice: " + R.note : "") +
       candidateBrief() + resume;
@@ -13614,7 +13730,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     var one = N === 1 ? "one main question" : N + " main questions";
     if (!coach) {
       return "How to open. This is the candidate's first interview with you, so open the way a good real interviewer does before an interview starts, in about 30 seconds. " +
-        "Greet " + (name || "them") + " warmly" + (name ? " by first name" : "") + ", say you are Kira, their interview coach at Rehearsly, and that today you will run a " + R.round + " round the way a " + who + at + " would. " +
+        "Greet " + (name || "them") + " warmly" + (name ? " by first name" : "") + ", say you are " + v2VoiceName() + ", their interview coach at Rehearsly, and that today you will run a " + R.round + " round the way a " + who + at + " would. " +
         "Put them at ease in one line, for example that this is a safe place to practise and every mistake made here is one they will not make in the real room. " +
         "Then explain how it will go in two or three short sentences: you will ask " + one + how + ", they can take a moment to think before answering, and a strong answer is about two minutes with one real example and a number. " +
         "Tell them that at the end you will offer quick feedback, and a full score report follows. Then ask if they are ready or have any question before you start. " +
@@ -13733,6 +13849,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       if (res.length) v2RoomSend({ toolResponse: { functionResponses: res } });
       return;
     }
+    if (msg.usageMetadata) { try { v2UsageAdd(msg.usageMetadata); } catch (e) {} }
     var sc = msg.serverContent;
     if (!sc) return;
     if (sc.interrupted) v2RoomStopPlay();
@@ -14055,7 +14172,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   function v2Mmss(ms) { var s = Math.floor(ms / 1000); return Math.floor(s / 60) + ":" + ("0" + (s % 60)).slice(-2); }
   function v2ThreadHtml() {
     var R = V2.room, n = R.turns.length;
-    if (!n) return '<div class="v2r-wait">' + (R.status === "error" ? "" : "Kira is joining the call…") + "</div>";
+    if (!n) return '<div class="v2r-wait">' + (R.status === "error" ? "" : v2VoiceName() + " is joining the call…") + "</div>";
     return R.turns.map(function (t, i) {
       var cursor = i === n - 1 && !t.closed && !R.done ? '<span class="v2r-cur">▍</span>' : "";
       if (t.who === "ai") return '<div class="v2r-ai"><span class="v2r-av">' + V2_AVATAR + '</span><span class="v2r-ai-t"><span class="v2r-kind k-' + (t.kind || "q") + '">' + v2KindLabel(t) +
@@ -14092,8 +14209,8 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
         '<div class="v2r-ai-tile' + (full ? " full" : "") + '">' + (full ? selfBox("v2r-selffull", "") : "") +
         '<div class="v2r-kira" id="v2r-kira"><video id="v2r-kira-v" muted playsinline loop preload="auto"></video>' +
         '<div class="v2r-face"><span class="v2r-ring" id="v2r-ring"></span><span class="v2r-big">' + V2_AVATAR + "</span></div></div>" +
-        '<span class="v2r-name">Kira · ' + v2Esc(v2PersonaLong(R.persona)) + (R.company ? ", " + v2Esc(R.company) : "") + ' · AI interviewer</span>' +
-        '<div class="v2r-cap"><span id="v2r-cap">' + v2Esc(lastAi ? lastAi.text : (R.error ? "" : "Kira is joining the call…")) + "</span></div>" +
+        '<span class="v2r-name">' + v2Esc(v2VoiceName()) + " · " + v2Esc(v2PersonaLong(R.persona)) + (R.company ? ", " + v2Esc(R.company) : "") + ' · AI interviewer</span>' +
+        '<div class="v2r-cap"><span id="v2r-cap">' + v2Esc(lastAi ? lastAi.text : (R.error ? "" : v2VoiceName() + " is joining the call…")) + "</span></div>" +
         (fl && !R.selfFree ? selfBox("v2r-float", "width:" + R.selfW + "px;" + pos) : "") + "</div>" +
         (split ? selfBox("v2r-tile2", "") : "") + "</div>" +
         '<div class="v2r-live"><span class="v2r-live-l">Your live transcript</span><span id="v2r-you">' + v2Esc(cur && cur.who === "you" ? cur.text : "") + "</span></div></div>" +
@@ -14181,6 +14298,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   function v2KiraVideo() {
     var kira = $("#v2r-kira"), kv = $("#v2r-kira-v");
     if (!kira || !kv || kv.getAttribute("data-on")) return;
+    if (v2CurVoice().g !== "F") return; // the video persona is a woman; male voices keep the voice mark
     kv.setAttribute("data-on", "1");
     var src = ""; try { src = window.REHEARSLY_HERO_VIDEO ? window.REHEARSLY_HERO_VIDEO() : ""; } catch (e) {}
     if (!src) return;
@@ -14219,7 +14337,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     var st = plan.steps[rec.step];
     st.sessionId = rec.id; st.run = { sid: rec.relaySession, questions: rec.questions };
     st.answered = v2AnsweredQs(rec.turns);
-    if (rec.result.overall != null) {
+    if (rec.result.overall != null && !rec.result.early) {
       st.status = "done"; st.score = rec.result.overall; st.doneAt = Date.now();
       for (var i = rec.step + 1; i < plan.steps.length; i++) if (plan.steps[i].status !== "done") { if (!plan.steps[i].status) plan.steps[i].status = "next"; break; }
     }
@@ -14262,14 +14380,14 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       '<h1 class="v2-h1">' + v2Esc(res.headA) + " " + v2Grad(res.headB) + "</h1></div>" +
       '<div class="v2-fb-cards"><div class="v2-fb-overall"><span class="v2-fb-lab">Interview skills</span><div class="v2-fb-num"><span>' + (res.overall == null ? "—" : res.overall) + "</span>" +
       (res.overall != null && res.pm ? '<i class="v2-fb-pm">\u00b1 ' + res.pm + "</i>" : "") +
-      (delta != null || res.readyAfter != null ? '<b>' + (delta != null ? (delta >= 0 ? "+" : "") + delta : "") + (res.readyAfter != null ? (delta != null ? " · " : "") + "readiness now " + res.readyAfter : "") + "</b>" : "") + "</div>" +
+      (delta != null || res.readyAfter != null ? '<b>' + (delta != null ? (delta >= 0 ? "+" : "") + delta : "") + (res.readyAfter != null ? (delta != null ? " · " : "") + "readiness now " + res.readyAfter : "") + "</b>" : "") + "</div>" + v2FbStatusHtml(res) +
       skills.map(function (s, i) { var v = res.skills[s[0]]; return '<div class="v2-fb-sk"><div><span>' + s[1] + "</span><b>" + (v == null ? "—" : v) + '</b></div><div class="v2-fb-track"><div style="width:' + (v || 0) + "%;background:" + cols[i] + '"></div></div></div>'; }).join("") +
       (lowSk ? '<p class="v2-fb-first"><b>Fix first:</b> ' + v2Esc(V2_SKILL_FIX[lowSk[0]] || "") + "</p>" : "") + "</div>" +
       v2FbAppearanceHtml(rec, res) +
       '<div class="v2-fb-coach"><span class="v2-fb-lab">Coach summary</span>' +
       (res.keep ? '<p><b class="g">Keep:</b> ' + v2Esc(res.keep) + "</p>" : "") + '<p><b class="r">Fix:</b> ' + v2Esc(res.fix) + '</p><p><b class="v">Earned:</b> ' + v2Esc(earned) + "</p>" +
       '<div class="v2-fb-acts">' + v2Btn("fb-again", "Interview again", "v2-btn v2-primary") + v2Btn("history", "All history", "v2-btn v2-sec") + "</div></div></div>" +
-      '<div class="v2-fb-qs"><span class="v2-fb-qh">Question by question</span>' + res.questions.map(function (q, i) {
+      v2FbLangHtml(res) + '<div class="v2-fb-qs"><span class="v2-fb-qh">Question by question</span>' + res.questions.map(function (q, i) {
         return '<div class="v2-fb-q"><div class="v2-fb-qt"><span>' + v2Esc(q.title) + ' <small>· ' + q.followups + (q.followups === 1 ? " follow-up" : " follow-ups") + "</small></span><span class=\"v2-fb-note\">" + v2Esc(q.note) + "</span>" + v2FbEvidenceHtml(q) + "</div>" +
           '<div class="v2-fb-track w"><div style="width:' + (q.score || 0) + "%;background:" + v2Col(q.score) + '"></div></div><span class="v2-fb-qs-n" style="color:' + v2Col(q.score) + '">' + (q.score == null ? "—" : q.score) + "</span>" +
           v2Btn("fb-practise", "Practise", "v2-mini v2-mini-lg", ' data-arg="' + i + '"') + "</div>";
@@ -14277,6 +14395,20 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     return h;
   }
 
+  // Early read or final, and the chance of clearing on the one shared scale.
+  function v2FbStatusHtml(res) {
+    if (res.overall == null) return "";
+    if (res.early) return '<p class="v2-fb-early"><b>Early read</b> Based on ' + res.scoredCount + " of " + res.needed + " full answers. Answer at least " + res.needed + " questions fully for a final score. This does not change your readiness.</p>";
+    return res.chance != null ? '<p class="v2-fb-chance">About ' + res.chance + "% chance of clearing a real round at this level.</p>" : "";
+  }
+  // Casual words and wrong English: what you said and a better way. These do not change the score.
+  function v2FbLangHtml(res) {
+    var L = res.language || [];
+    if (!L.length) return "";
+    return '<div class="v2-fb-lang"><span class="v2-fb-lab">Language check</span><span class="v2-hint">Words to change before the real interview. These do not change your score.</span>' +
+      L.map(function (l) { return '<div class="v2-fb-lrow"><span class="v2-fb-lk ' + (l.kind === "casual" ? "c" : "e") + '">' + (l.kind === "casual" ? "Casual" : "English") + '</span><span class="v2-fb-ls">You said “' + v2Esc(l.said) + "”" +
+        (l.n > 1 ? " <i>" + l.n + " times</i>" : "") + '</span><span class="v2-fb-lb">Say: ' + v2Esc(l.better) + "</span></div>"; }).join("") + "</div>";
+  }
   function v2FbEvidenceHtml(q) {
     if (!q || (!(q.hits || []).length && !(q.misses || []).length)) return "";
     var m = q.measures, line = m ? [m.words + " words", m.fillers + (m.fillers === 1 ? " filler" : " fillers"), m.nums + (m.nums === 1 ? " number" : " numbers"), m.wpm ? m.wpm + " words a minute" : ""].filter(Boolean).join(" · ") : "";
@@ -14307,7 +14439,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     v2Sessions().forEach(function (r) {
       if (r.status !== "done" && r.status !== "paused") return;
       rows.push({ at: r.startedAt, type: r.mode === "plan" || r.questions.length > 1 ? "Interview" : "Question", title: r.mode === "plan" ? r.round + " round · " + r.persona + " interviewer · " + r.difficulty.toLowerCase() : (r.questions[0] || {}).question || r.title,
-        dur: Math.max(1, Math.round((r.durationMs || 0) / 60000)) + " min", score: r.result ? r.result.overall : null, open: "fb", id: r.id, paused: r.status === "paused" });
+        dur: Math.max(1, Math.round((r.durationMs || 0) / 60000)) + " min", score: r.result ? r.result.overall : null, early: !!(r.result && r.result.early), open: "fb", id: r.id, paused: r.status === "paused" });
     });
     var groups = {};
     getInterviewHistory().forEach(function (e) {
@@ -14328,7 +14460,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       (rows.length ? '<div class="v2-hist-list">' + rows.map(function (r, i) {
         var d = new Date(r.at || Date.now());
         return '<button type="button" class="v2-hrow" data-act="hist-open" data-arg="' + (r.id || "") + '"><span class="v2-rdate">' + d.getDate() + " " + V2_MONTHS[d.getMonth()] + '</span><span class="v2-tpill">' + r.type +
-          '</span><span class="v2-rtitle">' + v2Esc(r.title) + (r.paused ? " · paused" : "") + '</span><span class="v2-rdate">' + v2Esc(r.dur) + '</span><span class="v2-rscore" style="color:' + v2Col(r.score) + '">' + (r.score == null ? "—" : r.score) + "</span></button>";
+          '</span><span class="v2-rtitle">' + v2Esc(r.title) + (r.paused ? " · paused" : "") + (r.early ? " · early read" : "") + '</span><span class="v2-rdate">' + v2Esc(r.dur) + '</span><span class="v2-rscore" style="color:' + v2Col(r.score) + '">' + (r.score == null ? "—" : r.score) + "</span></button>";
       }).join("") + "</div>" : '<div class="v2-recent-empty">No interviews yet. Start your plan from Home and your first one will appear here.</div>') + "</div>";
   }
   /* =====================================================================
@@ -14390,6 +14522,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     saveLocalJson("rh_v2_suggestions", list.slice(-200));
   }
   function v2NpSave(start) {
+    v2Feature(V2.np && V2.np.edit ? "plan_edited" : "plan_created");
     var np = V2.np, doc = v2PlanDoc(), steps = v2NpSteps(), rounds = v2NpRounds();
     if (np.rounds.indexOf("Other") !== -1) v2LogSuggestion("round", np.other);
     var id;
@@ -14788,7 +14921,8 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     var sys = "You score a written interview answer for a senior candidate, as a coach. Score from 0 to 100 how ready it is to say in a real interview: " +
       "a clear structure, the candidate's own part, specific evidence with numbers, and a length that fits about two minutes (150 to 250 words). " +
       "Bands: 90 to 100 exceptional, 80 to 89 ready for a real panel, 65 to 79 close, 50 to 64 needs work, under 50 weak. " +
-      "Hard caps: if it does not answer the question, 30 or less. No specific real example, 55 or less. No number or measurable result, 65 or less. Generic textbook answer, 50 or less. " +
+      "Hard caps: if it does not answer the question, 30 or less. A red flag (blames others, runs down a past employer, a story that does not add up), 45 or less. No specific real example, 55 or less. No number or measurable result, 65 or less. Generic textbook answer, 50 or less. Below the senior bar (no senior framing, no number, or no trade off or business impact), 70 or less. " +
+      "Give no points for free: only reward what is really written in the answer. " +
       "Be honest; a kind score that is wrong hurts the candidate. Plain simple English, no markdown, no dashes. " +
       "Reply with ONLY compact JSON: {\"score\": 0, \"keep\": \"one sentence on what to keep\", \"fix\": \"one sentence on the one thing to fix first\"}";
     var msg = "Role: " + (v2Profile().target || "") + "\nQUESTION: " + q.question + "\nWhat a strong answer contains: " + (v2PlainMd(q.tips).slice(0, 400) || "a clear, specific answer with a number") + "\n\nANSWER:\n" + text;
@@ -14796,7 +14930,9 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       var j = parseFeedbackContent(c), n = j ? Number(j.score) : NaN;
       if (!j || !isFinite(n)) return v2ScoreTextHeur(text);
       var h = v2ScoreTextHeur(text);
-      return { score: v2Clamp(n), keep: String(j.keep || h.keep), fix: String(j.fix || h.fix), ai: true };
+      var sc = v2Clamp(n);
+      if (!v2Measure(text).nums) sc = Math.min(sc, 65); // no number in the answer, whatever the AI says
+      return { score: sc, keep: String(j.keep || h.keep), fix: String(j.fix || h.fix), ai: true };
     }).catch(function () { return v2ScoreTextHeur(text); });
   }
   function v2DraftWithAi(q) {
@@ -15108,6 +15244,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   }
   function v2PrSave(fromDraft) {
     var P = V2.pr, q = v2QById(P.id); if (!q || P.busy) return;
+    v2Feature("answer_saved");
     var mine = v2Mine(q);
     var html = fromDraft ? v2MdToHtml(q.answer) : v2RtClean(P.buf != null ? P.buf : mine ? mine.html : "");
     var text = v2HtmlToText(html);
@@ -15133,6 +15270,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   }
   function v2PrDraft() {
     var P = V2.pr, q = v2QById(P.id); if (!q || P.busy) return;
+    v2Feature("draft_ai");
     P.tab = "draft"; P.busy = "draft"; v2Render();
     v2DraftWithAi(q).then(function () { if (V2.pr && V2.pr.id === q.id) { V2.pr.busy = ""; v2Render(); } })
       .catch(function (err) { if (V2.pr && V2.pr.id === q.id) { V2.pr.busy = ""; v2Render(); } v2Toast("Could not draft just now. " + String((err && err.message) || err).slice(0, 80)); });
@@ -15174,6 +15312,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     if (!text) { v2Toast("Type the question first."); return; }
     if (!meta) { V2.modal = null; v2Render(); return; }
     M.busy = true; v2Render();
+    v2Feature("question_created", { question: text, round: meta.title, target: meta.role });
     createQuestion({ role: meta.role, question: text, category: M.sub || "", part_title: meta.title, answer: "", tips: "", approach_to_learn: "" }).then(function (res) {
       return loadData(true).then(function () { return res; });
     }).then(function (res) {
@@ -15547,6 +15686,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   function v2ResumeImport() {
     var d = v2QaDoc(), sc = d.resumeScan;
     if (!sc || !sc.items || !sc.items.length || V2.importing) return;
+    v2Feature("story_import", { value: sc.items.length });
     if (!v2CanAdd()) { nudgeSetup("Importing stories"); return; }
     V2.importing = true; v2Render();
     var ids = [];
@@ -15832,7 +15972,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     var btn = $("#v2-mic-go");
     if (btn) { btn.disabled = true; btn.textContent = "Getting your questions ready…"; }
     v2StopMic();
-    v2Wait(cfg.source ? ["Picking your questions from " + cfg.source.title + "…", "Briefing Kira…"] : v2WaitQuestions(cfg.persona, null, cfg.rounds.length === 1 ? cfg.rounds[0] : "custom"));
+    v2Wait(cfg.source ? ["Picking your questions from " + cfg.source.title + "…", "Briefing " + v2VoiceName() + "…"] : v2WaitQuestions(cfg.persona, null, cfg.rounds.length === 1 ? cfg.rounds[0] : "custom"));
     var job;
     if (cfg.source && cfg.source.qids) {
       var qs = cfg.source.qids.map(v2QById).filter(Boolean).slice(0, cfg.n).map(v2QRoomItem);
@@ -15959,12 +16099,22 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     if (V2_WAIT.el) { try { V2_WAIT.el.remove(); } catch (e) {} }
     V2_WAIT.el = null;
   }
+  // Each line says what is really happening, using only what the user gave us.
   function v2WaitQuestions(persona, company, round) {
-    var p = v2Profile(), co = company || p.company;
-    return [getSettings().resumeText ? "Reading your resume…" : "Reading your profile…",
-      "Picking questions a " + (v2PersonaTitle(persona || v2Prefs().persona) || "senior interviewer") + (co ? " at " + co : "") + " would ask…",
-      "Briefing Kira for your " + (round ? String(round).toLowerCase().replace(/ round$/, "") + " " : "") + "round…"];
+    var p = v2Profile(), st = getSettings(), co = company || p.company, role = p.targetRole || st.targetRole || "";
+    var who = v2PersonaTitle(persona || v2Prefs().persona) || "senior interviewer";
+    var r = round ? String(round).toLowerCase().replace(/ round$/, "") : "";
+    var lines = [];
+    lines.push(role ? "Looking at your target role: " + role + (co ? " at " + co : "") + "…" : "Looking at the role you are preparing for…");
+    if (st.resumeText && st.jdText) lines.push("Matching questions to your resume and the job description…");
+    else if (st.resumeText) lines.push("Matching questions to the resume you uploaded…");
+    else if (st.jdText) lines.push("Matching questions to the job description you added…");
+    lines.push("Choosing " + (r ? r + " " : "") + "questions a " + who + (co ? " at " + co : "") + " would ask…");
+    if (v2Sessions().length) lines.push("Leaving out questions you have already practised…");
+    lines.push("Briefing " + v2VoiceName() + " for your " + (r ? r + " " : "") + "round…");
+    return lines;
   }
+  window.__v2Wait = { show: v2Wait, lines: v2WaitQuestions, done: v2WaitDone };
   /* =====================================================================
    * Camera tips: looks at the user's own camera about once a second and
    * gives one short tip on light, framing, posture, eye line or the
@@ -16102,30 +16252,45 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   }
   window.__v2Cam = { analyse: v2CamAnalyse, flags: v2CamFlags, state: V2_CAM, room: function () { return V2.room; } };
   /* =====================================================================
-   * Scoring: evidence first, points second.
-   * The AI only ticks a fixed checklist of facts about each answer. Code
-   * measures words, fillers, numbers, pace and voice. Fixed points and
-   * round weights turn that into a score, so the same answer always gets
-   * the same score and every point can be traced to a tick or a measure.
+   * Scoring: evidence first, points second (method evidence v2).
+   * The AI only ticks a fixed checklist of facts about each answer, and
+   * every tick must come with the candidate's own words as proof; a tick
+   * without proof found in the answer does not count. Code measures words,
+   * fillers, numbers, pace and voice. Fixed points, caps and round weights
+   * turn that into a score. No point is given for free.
    * Appearance is a second, separate score from the camera and the mic.
    * =================================================================== */
   var V2_SKILLS = [["structure", "Answer framing", "skStructure"], ["depth", "Depth", "skDepth"], ["presence", "Words used", "skPresence"], ["voice", "Voice delivery", "skVoice"]];
   function v2OnSkills() { var p = v2Prefs(); var on = V2_SKILLS.filter(function (s) { return p[s[2]] !== false; }); return on.length ? on : V2_SKILLS; }
   function v2Clamp(n) { n = Math.round(Number(n)); return isFinite(n) ? Math.max(0, Math.min(100, n)) : null; }
   var V2_MIN_WORDS = 30;
+  var V2_MIN_FINAL = 5; // full answers needed for a final score; fewer is an Early read
   var V2_AI_SHARE = 0.2; // the AI's own judgement of the example is at most 20% of a skill
-  // key: [label, skill, points]
+  var V2_SENIOR_CAP = 70, V2_RED_CAP = 45;
+  // key: [label, skill, points]. Each skill adds up to 100.
   var V2_CHECKS = {
     direct: ["Direct answer up front", "structure", 20], situation: ["Set the situation", "structure", 10], task: ["Named the task or goal", "structure", 10],
-    action: ["Clear actions you took", "structure", 20], result: ["Stated the result", "structure", 20], close: ["Clear close", "structure", 10], logical: ["Logical order", "structure", 10],
+    action: ["Clear actions you took", "structure", 25], result: ["Stated the result", "structure", 25], close: ["Clear close", "structure", 10],
     example: ["Real, specific example", "depth", 25], number: ["Number or measurable result", "depth", 20], tradeoff: ["Trade off explained", "depth", 15],
     lesson: ["Lesson learned", "depth", 10], ownership: ["Your own part is clear", "depth", 10], followups: ["Handled the follow ups", "depth", 15], consistent: ["Consistent under follow ups", "depth", 5],
-    impact: ["Business impact", "presence", 20], stakeholders: ["Stakeholders named", "presence", 10], senior: ["Senior framing", "presence", 15],
-    own_words: ["Owns the work (“I”)", "presence", 15], specific: ["Specific, not generic", "presence", 15], on_topic: ["Stayed on the question", "presence", 15], fresh: ["No repeating", "presence", 10]
+    impact: ["Business impact", "presence", 25], stakeholders: ["Stakeholders named", "presence", 15], senior: ["Senior framing", "presence", 20],
+    own_words: ["Owns the work (“I”)", "presence", 20], specific: ["Concrete details", "presence", 20]
   };
-  var V2_AI_KEYS = ["on_topic", "direct", "situation", "task", "action", "result", "close", "logical", "example", "number", "tradeoff", "lesson", "ownership", "impact", "stakeholders", "senior", "generic", "followups_handled", "consistent"];
-  var V2_CAPS = [["Off topic", "every score 30 or less"], ["No real example", "framing and depth 55 or less"], ["No number or result", "depth 65 or less"], ["Generic answer", "framing, depth and words 50 or less"]];
+  var V2_AI_KEYS = ["on_topic", "direct", "situation", "task", "action", "result", "close", "example", "number", "tradeoff", "lesson", "ownership", "impact", "stakeholders", "senior", "specific", "generic", "followups_handled", "consistent", "red_flag"];
+  // A true tick on these needs a quote of the candidate's own words.
+  var V2_PROOF_KEYS = ["direct", "situation", "task", "action", "result", "close", "example", "number", "tradeoff", "lesson", "ownership", "impact", "stakeholders", "senior", "specific", "followups_handled", "red_flag"];
+  var V2_CAPS = [["Off topic", "every score 30 or less"], ["Red flag (blames others, runs down a past employer, a story that does not add up)", "score " + V2_RED_CAP + " or less"],
+    ["Generic answer", "framing, depth, words and score 50 or less"], ["No real example", "framing and depth 55 or less"], ["No number or result", "depth 65 or less"],
+    ["Below the senior bar (needs senior framing, a number, and a trade off or business impact)", "score " + V2_SENIOR_CAP + " or less"]];
   var V2_BANDS = [[90, "Exceptional"], [80, "Ready for a real panel"], [65, "Close"], [50, "Needs work"], [0, "Weak"]];
+  // One scale for the chance of clearing, used everywhere.
+  var V2_CHANCE = [[0, 0], [50, 30], [65, 55], [80, 80], [90, 95], [100, 98]];
+  function v2Chance(score) {
+    if (score == null) return null;
+    var s = Math.max(0, Math.min(100, Number(score)));
+    for (var i = 1; i < V2_CHANCE.length; i++) { var a = V2_CHANCE[i - 1], b = V2_CHANCE[i]; if (s <= b[0]) return Math.round(a[1] + (s - a[0]) / (b[0] - a[0]) * (b[1] - a[1])); }
+    return 98;
+  }
   function v2RoundWeights(round) {
     var r = String(round || "");
     if (/product|strategy|case|technical|analytic|execution|metric|design|system/i.test(r)) return { name: "Product, strategy or case", w: { structure: 25, depth: 40, presence: 15, voice: 20 } };
@@ -16135,6 +16300,49 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   var V2_FILLERS = /\b(um+|uh+|erm+|you know|basically|literally|i mean)\b/gi;
   var V2_HEDGES = /\b(i think maybe|i guess|probably|sort of|kind of|maybe|perhaps|i feel like|hopefully|not sure)\b/gi;
   var V2_NUMS = /(\b\d+([.,]\d+)?\b|\b(hundred|thousand|million|billion|crore|lakh|percent|twice|double|half)\b)/gi;
+  // Casual words and wrong English: shown with a better way to say it. They never change the score.
+  var V2_CASUAL = [[/\b(yup|yep|yeah|yah)\b/gi, "Yes"], [/\bnope\b/gi, "No"], [/\bgonna\b/gi, "going to"], [/\bwanna\b/gi, "want to"], [/\bgotta\b/gi, "have to"],
+    [/\b(kinda|sorta)\b/gi, "drop it, or say exactly how much"], [/\b(and stuff|stuff like that|things like that|and all that)\b/gi, "name the exact thing"],
+    [/\b(cool|awesome|super cool)\b/gi, "good, or say why it worked"], [/\b(ok|okay) so\b/gi, "drop it and start with the answer"], [/\bno worries\b/gi, "that is fine"]];
+  var V2_WRONG = [[/\bmy self\b/gi, "I am (name), or My name is (name)"], [/(^|[.!?]\s+)myself\s+(?!and\b)[a-z]+/gi, "I am (name), or My name is (name)"],
+    [/\bmyself and my team\b/gi, "my team and I"], [/\bI am having\b/gi, "I have"], [/\bdo the needful\b/gi, "do what is needed"], [/\brevert back\b/gi, "reply"],
+    [/\breturn back\b/gi, "return"], [/\bdiscuss about\b/gi, "discuss"], [/\bcope up with\b/gi, "cope with"], [/\bpassed out (from|of)\b/gi, "graduated from"],
+    [/\bI am (knowing|understanding|wanting)\b/gi, "I know, I understand, I want"], [/\bmore (better|easier|faster|bigger)\b/gi, "drop more: better, easier, faster"],
+    [/\bsince (\d+|one|two|three|four|five|six|seven|eight|nine|ten) (years?|months?)\b/gi, "for (number) years"], [/\bupdation\b/gi, "update"],
+    [/\bpreponed?\b/gi, "bring forward (prepone is not used outside India)"], [/\bout of station\b/gi, "out of town"], [/\bintimate (you|him|her|them|the team)\b/gi, "inform"]];
+  function v2Norm(s) { return String(s || "").toLowerCase().replace(/[^a-z0-9% ]+/g, " ").replace(/\s+/g, " ").trim(); }
+  // A quote counts as proof only when it is really in the answer.
+  function v2ProofOk(quote, normText) {
+    var q = v2Norm(quote); if (!q) return false;
+    var qw = q.split(" ");
+    if (qw.length >= 2 && (" " + normText + " ").indexOf(" " + q + " ") > -1) return true;
+    if (qw.length < 4) return false;
+    var set = {}; normText.split(" ").forEach(function (w) { set[w] = 1; });
+    return qw.filter(function (w) { return set[w]; }).length / qw.length >= 0.85;
+  }
+  function v2Snip(text, i, len) {
+    var a = text.lastIndexOf(" ", Math.max(0, i - 18)), b = text.indexOf(" ", Math.min(text.length, i + len + 18));
+    return (a > 0 ? "…" : "") + text.slice(a < 0 ? 0 : a + 1, b < 0 ? text.length : b).trim() + (b > 0 ? "…" : "");
+  }
+  // Code finds the common ones; the AI may add more, each checked against the answer.
+  function v2LangCheck(text, ai) {
+    text = String(text || ""); var out = [], seen = {};
+    function add(kind, word, said, better) {
+      var key = kind + ":" + v2Norm(word);
+      if (seen[key]) { seen[key].n++; return; }
+      seen[key] = { kind: kind, word: word, said: said, better: better, n: 1 }; out.push(seen[key]);
+    }
+    [["casual", V2_CASUAL], ["english", V2_WRONG]].forEach(function (set) {
+      set[1].forEach(function (r) { var re = new RegExp(r[0].source, r[0].flags), m; while ((m = re.exec(text))) { var w = m[0].replace(/^[.!?\s]+/, ""); add(set[0], w, v2Snip(text, m.index, m[0].length), r[1]); if (!m[0]) re.lastIndex++; } });
+    });
+    var nt = v2Norm(text);
+    (Array.isArray(ai) ? ai : []).slice(0, 5).forEach(function (x) {
+      if (!x || !x.said || !x.better || !v2ProofOk(x.said, nt)) return;
+      var dup = out.some(function (o) { return v2Norm(x.said).indexOf(v2Norm(o.word)) > -1; });
+      if (!dup) add("english", String(x.said), String(x.said), String(x.better));
+    });
+    return out;
+  }
   // Code measures on the candidate's own words. No AI.
   function v2Measure(text) {
     text = String(text || "");
@@ -16148,7 +16356,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     return { words: n, fillers: fillers.length, fillerWords: fillers.map(function (x) { return x.toLowerCase(); }), hedges: hedges.length, nums: (text.match(V2_NUMS) || []).length,
       iCount: iCount, weCount: weCount, iRatio: iCount + weCount ? iCount / (iCount + weCount) : 0, repeat: tri ? rep / tri : 0, firstLen: first };
   }
-  // Ticks from plain rules, used only when the AI coach is not available.
+  // Ticks from plain rules, used only when the AI coach is not available. Each rule reads the answer itself.
   function v2RuleTicks(text, b, m) {
     var t = String(text || ""), sents = t.split(/(?<=[.!?])\s+/), last = sents[sents.length - 1] || "";
     var situation = /\b(when i was|at (my|our)|in my (last|previous)|while working|the situation|back in|last year|in (19|20)\d\d)\b/i.test(t);
@@ -16158,10 +16366,12 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     var impact = /\b(revenue|cost|customers?|users?|growth|margin|profit|retention|conversion|nps|market share|crore|lakh|percent)\b|%/i.test(t);
     var stake = /\b(stakeholders?|leadership|ceo|cxo|engineering|sales|marketing|finance|legal|partners?|cross.?functional|board)\b/i.test(t);
     var example = m.words >= 80 && (situation || action);
+    var tradeoff = /\b(trade.?off|instead of|rather than|versus|the cost was|we gave up|balanc)/i.test(t);
     return { on_topic: true, direct: m.firstLen > 0 && m.firstLen <= 40, situation: situation, task: task, action: action, result: result,
-      close: /\b(so |that's why|overall|in short|that is how|which is why|lesson|learn)/i.test(last), logical: situation && action && result, example: example,
-      number: m.nums > 0, tradeoff: /\b(trade.?off|instead of|rather than|versus|the cost was|we gave up|balanc)/i.test(t), lesson: /\b(learn(ed|t)|lesson|next time|in hindsight|taught me)\b/i.test(t),
-      ownership: m.iCount >= 2, impact: impact, stakeholders: stake, senior: impact && stake, generic: !example,
+      close: /\b(so |that's why|overall|in short|that is how|which is why|lesson|learn)/i.test(last), example: example,
+      number: m.nums > 0, tradeoff: tradeoff, lesson: /\b(learn(ed|t)|lesson|next time|in hindsight|taught me)\b/i.test(t),
+      ownership: m.iCount >= 2, impact: impact, stakeholders: stake, senior: impact && stake && (tradeoff || m.nums > 1), specific: example && m.nums > 0, generic: !example,
+      red_flag: /\b(not my fault|my (boss|manager) was (bad|useless|stupid)|they never listened|i was not responsible|blame(d)? (them|him|her|the team))\b/i.test(t),
       followups_handled: b.followups ? m.words >= 60 : null, consistent: b.followups ? m.words >= 60 : null, quality: null };
   }
   function v2Yes(v) { return v === true || v === "true" || v === 1 || v === "yes"; }
@@ -16177,20 +16387,30 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     var tw = parts.reduce(function (a, x) { return a + x[1]; }, 0);
     return { score: Math.round(parts.reduce(function (a, x) { return a + x[0] * x[1]; }, 0) / tw), wpm: Math.round(wpm), pitch: pitch, pauses: v.pauses || 0, ppm: ppm, level: lv, pace: Math.round(pace), vol: Math.round(vol) };
   }
-  // One answer: ticks plus measures, into four skills and one score.
+  // One answer: proved ticks plus measures, into four skills and one score.
   function v2ScoreQuestion(b, ai, round, vox) {
     var text = b.lines.filter(function (l) { return /^Candidate: /.test(l); }).map(function (l) { return l.replace(/^Candidate: /, ""); }).join(" ");
-    var m = v2Measure(text), viaAi = !!ai, t = ai || v2RuleTicks(text, b, m), tick = {};
+    var m = v2Measure(text), viaAi = !!ai, t = ai || v2RuleTicks(text, b, m), tick = {}, proof = {}, unproven = [];
     V2_AI_KEYS.forEach(function (k) { tick[k] = v2Yes(t[k]); });
     tick.on_topic = t.on_topic == null ? true : v2Yes(t.on_topic);
-    tick.number = viaAi ? tick.number : m.nums > 0;
+    // The AI must show the candidate's own words for every tick, or the tick does not count.
+    if (viaAi) {
+      var given = t.proof && typeof t.proof === "object" ? t.proof : {}, nt = v2Norm(text);
+      V2_PROOF_KEYS.forEach(function (k) {
+        if (!tick[k]) return;
+        if (v2ProofOk(given[k], nt)) proof[k] = String(given[k]).slice(0, 200);
+        else { tick[k] = false; if (k !== "red_flag") unproven.push(k); }
+      });
+    }
+    tick.number = tick.number && m.nums > 0;
+    tick.specific = tick.specific && !tick.generic;
     var hits = [], misses = [], pts = { structure: 0, depth: 0, presence: 0 }, max = { structure: 100, depth: 100, presence: 100 };
     var asked = b.followups > 0;
-    var got = { direct: tick.direct, situation: tick.situation, task: tick.task, action: tick.action, result: tick.result, close: tick.close, logical: tick.logical,
+    var got = { direct: tick.direct, situation: tick.situation, task: tick.task, action: tick.action, result: tick.result, close: tick.close,
       example: tick.example, number: tick.number, tradeoff: tick.tradeoff, lesson: tick.lesson, ownership: tick.ownership,
-      followups: asked ? tick.followups_handled : null, consistent: asked ? tick.consistent : null,
+      followups: asked ? tick.followups_handled : null, consistent: asked ? (tick.followups_handled && tick.consistent) : null,
       impact: tick.impact, stakeholders: tick.stakeholders, senior: tick.senior, own_words: m.words >= 40 ? (m.iCount >= 2 && m.iRatio >= 0.35) : tick.ownership,
-      specific: !tick.generic, on_topic: tick.on_topic, fresh: m.repeat < 0.08 };
+      specific: tick.specific };
     Object.keys(V2_CHECKS).forEach(function (k) {
       var c = V2_CHECKS[k];
       if (got[k] == null) { max[c[1]] -= c[2]; return; }
@@ -16206,10 +16426,11 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     sk.presence -= fpen + hpen;
     if (fpen) misses.push(m.fillers + " filler words (" + m.fillerWords.slice(0, 3).join(", ") + ")");
     if (hpen) misses.push(m.hedges + " hedging words");
+    if (m.repeat >= 0.08) { sk.presence -= 10; misses.push("Repeats the same phrases"); }
     if (m.words >= 60 && m.iRatio < 0.3) misses.push("Mostly “we”: say what you did");
-    // The AI's judgement of the example, capped at 20%.
+    // The AI's judgement of the example, capped at 20%, and only when the example itself is proved.
     var q = Number(t.quality);
-    var qual = viaAi && q >= 1 && q <= 5 ? (q - 1) * 25 : null;
+    var qual = viaAi && q >= 1 && q <= 5 ? (tick.example ? (q - 1) * 25 : 0) : null;
     ["structure", "depth", "presence"].forEach(function (s) { if (qual != null) sk[s] = sk[s] * (1 - V2_AI_SHARE) + qual * V2_AI_SHARE; });
     // Hard caps.
     var caps = [];
@@ -16217,6 +16438,10 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     if (!tick.number) { sk.depth = Math.min(sk.depth, 65); caps.push("No number or result"); }
     if (tick.generic) { ["structure", "depth", "presence"].forEach(function (s) { sk[s] = Math.min(sk[s], 50); }); caps.push("Generic answer"); }
     if (!tick.on_topic) { ["structure", "depth", "presence"].forEach(function (s) { sk[s] = Math.min(sk[s], 30); }); caps.push("Off topic"); }
+    var senior = tick.senior && tick.number && (tick.tradeoff || tick.impact);
+    if (!senior) caps.push("Below the senior bar");
+    var red = tick.red_flag ? String(t.red_flag_why || "").slice(0, 160) || "Something an interviewer would worry about" : "";
+    if (red) caps.push("Red flag");
     var vs = v2VoiceScore(vox, m.words);
     sk.voice = vs ? vs.score : null;
     if (vs) {
@@ -16229,12 +16454,17 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     var w = v2RoundWeights(round).w, on = v2OnSkills(), tot = 0, wsum = 0;
     on.forEach(function (s) { var v = sk[s[0]]; if (v != null) { tot += v * w[s[0]]; wsum += w[s[0]]; } });
     var score = wsum ? Math.round(tot / wsum) : null;
-    if (score != null && !tick.on_topic) score = Math.min(score, 30);
+    if (score != null && !senior) score = Math.min(score, V2_SENIOR_CAP);
     if (score != null && tick.generic) score = Math.min(score, 50);
-    return { skills: sk, score: score, hits: hits, misses: misses, caps: caps, method: viaAi ? "ai" : "rules",
+    if (score != null && red) score = Math.min(score, V2_RED_CAP);
+    if (score != null && !tick.on_topic) score = Math.min(score, 30);
+    if (!senior) misses.push("Below the senior bar: add senior framing, a number, and a trade off or business impact");
+    if (red) misses.unshift("Red flag: " + red);
+    return { skills: sk, score: score, hits: hits, misses: misses, caps: caps, method: viaAi ? "ai" : "rules", proof: proof, unproven: unproven, redFlag: red || null, senior: !!senior,
+      language: v2LangCheck(text, viaAi ? t.language : null),
       measures: { words: m.words, fillers: m.fillers, hedges: m.hedges, nums: m.nums, iRatio: Math.round(m.iRatio * 100), wpm: vs ? vs.wpm : null, pauses: vs ? vs.pauses : null } };
   }
-  function v2ScorePm(n, rules) { return (n >= 3 ? 3 : n === 2 ? 5 : 7) + (rules ? 2 : 0); }
+  function v2ScorePm(n, rules, early) { return (n >= 3 ? 3 : n === 2 ? 5 : 7) + (rules ? 2 : 0) + (early ? 3 : 0); }
 
   /* ---- Voice, measured on the device while the user speaks ---- */
   function v2Pitch(f, rate) {
@@ -16333,11 +16563,14 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     var answered = blocks.filter(function (b) { return b.answered; });
     var sys = "You check a senior mock interview for a coaching app, using an evidence checklist for a mock interview. You do not give scores. " +
       "For each main question, read only the candidate's own words, never the interviewer, and tick each item true or false. Be strict: tick true only when it is clearly there. " +
+      "PROOF RULE: for every item you tick true (except on_topic, generic and consistent), copy into proof the candidate's exact words that show it, 3 to 20 words, word for word from their answer. If you cannot quote it, tick it false. A tick without a real quote is thrown away. " +
       "on_topic: the answer addresses the question asked. direct: the first one or two sentences answer the question directly. situation: sets the context. task: names the goal or problem. " +
-      "action: says what the candidate personally did, step by step. result: states the outcome. close: ends with a clear wrap up or lesson. logical: the order is easy to follow. " +
+      "action: says what the candidate personally did, step by step. result: states the outcome. close: ends with a clear wrap up or lesson. " +
       "example: one specific, real example, not a hypothetical. number: at least one number or measurable result. tradeoff: explains a trade off or a choice not taken. lesson: says what they learned. " +
       "ownership: clear about their own part, not only the team. impact: links to business impact such as revenue, cost, customers or growth. stakeholders: names the people or teams involved. " +
-      "senior: frames the answer at the level of the role, with judgement and scope. generic: a textbook or vague answer that could be anyone's. " +
+      "senior: frames the answer at the level of the role, with judgement, scope and a decision they owned; a junior style task list is false. specific: concrete details only this candidate would know (a product, a metric, a time, a team). generic: a textbook or vague answer that could be anyone's. " +
+      "red_flag: true only for something a real panel would reject on: blames others, runs down a past employer or team, takes credit that is clearly the team's, a story that contradicts itself, or a rude or unethical remark; give red_flag_why in one short sentence. " +
+      "language: up to 5 casual words or wrong English the candidate used (for example yup, gonna, my self Sunny, I am having 10 years, discuss about), each as said (their exact words) and better (the correct way to say it); ignore accent and small speech slips. " +
       "followups_handled: answers the interviewer's follow up questions directly (null when there were none). consistent: the follow up answers fit the main answer (null when none). " +
       "quality: 1 to 5 for how convincing the example is (1 weak, 3 fair, 5 outstanding). missing: up to 3 short phrases of what is missing. " +
       "If the candidate did not make a real attempt (a few words, off topic, or silence), set answered to false. " +
@@ -16345,7 +16578,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
       "Reply with ONLY compact JSON of this exact shape: {\"headline_a\": \"short praise, 2 to 4 words, ends with a full stop\", \"headline_b\": \"short fix, 3 to 5 words, ends with a full stop\", " +
       "\"keep\": \"one sentence on what to keep doing\", \"fix\": \"one sentence on the one thing to fix first\", " +
       "\"questions\": [{\"n\": 1, \"title\": \"4 to 7 word title for the question\", \"answered\": true, " + V2_AI_KEYS.map(function (k) { return "\"" + k + "\": true"; }).join(", ") +
-      ", \"quality\": 3, \"missing\": [\"\"], \"note\": \"one or two sentences of coaching\"}], " +
+      ", \"red_flag_why\": \"\", \"proof\": {\"action\": \"their exact words\"}, \"quality\": 3, \"missing\": [\"\"], \"language\": [{\"said\": \"\", \"better\": \"\"}], \"note\": \"one or two sentences of coaching\"}], " +
       "\"mistakes\": [{\"title\": \"short name of a repeated mistake pattern\", \"quote\": \"their exact words that show it, under 15 words\", \"fix\": \"one sentence\"}]}";
     var msg = "Role: " + (rec.target || "") + "\nRound: " + rec.round + "\nInterviewer: " + rec.persona + "\nDifficulty: " + rec.difficulty + "\n\n" +
       blocks.map(function (b) { return "MAIN QUESTION " + b.n + ": " + b.question + "\nWhat a strong answer contains: " + (b.look_for || "a clear, specific answer with a number") + "\n" + (b.lines.join("\n") || "Not asked."); }).join("\n\n");
@@ -16364,27 +16597,46 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
         var note = why || (a && a.note) || (sc && sc.misses.length ? "Missing: " + sc.misses.slice(0, 3).join(", ").toLowerCase() + "." : "A complete answer.");
         if (sc && a && Array.isArray(a.missing)) a.missing.filter(Boolean).slice(0, 3).forEach(function (x) { if (sc.misses.indexOf(x) === -1) sc.misses.push(String(x)); });
         return { n: b.n, question: b.question, title: (a && a.title) || b.question, followups: b.followups, answered: real, words: b.words, skills: sk,
-          score: sc ? sc.score : null, note: note, hits: sc ? sc.hits : [], misses: sc ? sc.misses : [], caps: sc ? sc.caps : [], measures: sc ? sc.measures : null, method: sc ? sc.method : null };
+          score: sc ? sc.score : null, note: note, hits: sc ? sc.hits : [], misses: sc ? sc.misses : [], caps: sc ? sc.caps : [], measures: sc ? sc.measures : null, method: sc ? sc.method : null,
+          proof: sc ? sc.proof : {}, redFlag: sc ? sc.redFlag : null, senior: sc ? sc.senior : null, language: sc ? sc.language : [] };
       });
       var done = qs.filter(function (q) { return q.score != null; });
       var overall = done.length ? Math.round(done.reduce(function (x, q) { return x + q.score; }, 0) / done.length) : null;
+      // One red flag sinks a real interview, so it caps the whole round.
+      var red = done.filter(function (q) { return q.redFlag; })[0];
+      if (overall != null && red) overall = Math.min(overall, V2_RED_CAP);
+      // A final score needs enough full answers; fewer is an Early read that does not move readiness.
+      var needed = Math.min(V2_MIN_FINAL, blocks.length), early = overall != null && done.length < needed;
+      var lang = v2LangSummary(qs);
       var skillAvg = {};
       V2_SKILLS.forEach(function (s) { var v = done.map(function (q) { return q.skills[s[0]]; }).filter(function (x) { return x != null; }); skillAvg[s[0]] = v.length ? Math.round(v.reduce(function (x, y) { return x + y; }, 0) / v.length) : null; });
       var low = skills.filter(function (s) { return skillAvg[s[0]] != null; }).sort(function (x, y) { return skillAvg[x[0]] - skillAvg[y[0]]; })[0] || skills[0];
-      var result = { overall: overall, pm: done.length ? v2ScorePm(done.length, !ai) : null, skills: skillAvg, questions: qs, ai: !!ai, method: "evidence-v1", weights: wts,
+      var mist = (ai && Array.isArray(ai.mistakes) ? ai.mistakes : []).slice(0, 6);
+      if (red) mist.unshift({ title: "Red flag", quote: "", fix: red.redFlag });
+      if (lang.length && !mist.some(function (x) { return /casual|english|grammar|slang/i.test((x && x.title) || ""); }))
+        mist.push({ title: lang[0].kind === "casual" ? "Casual words" : "Wrong English", quote: lang[0].word, fix: "Say “" + lang[0].better + "” instead." });
+      var result = { overall: overall, pm: done.length ? v2ScorePm(done.length, !ai, early) : null, skills: skillAvg, questions: qs, ai: !!ai, method: "evidence-v2", weights: wts,
+        early: early, needed: needed, scoredCount: done.length, chance: overall == null || early ? null : v2Chance(overall), redFlag: red ? red.redFlag : null, language: lang,
         appearance: v2AppearanceScore(rec, apAi),
         headA: (ai && ai.headline_a) || (overall == null ? "No answers yet." : overall >= 80 ? "Strong round." : "Good start."),
         headB: (ai && ai.headline_b) || (overall == null ? "Give it one full run." : "Work on " + low[1].toLowerCase() + "."),
         keep: (ai && ai.keep) || (overall == null ? "" : "You kept going and answered out loud, which is the hard part."),
         fix: (ai && ai.fix) || (overall == null ? "Answer at least one question so there is something to score." : "Put one number against every claim, and say what you did yourself."),
-        mistakes: (ai && ai.mistakes) || [], scoredAt: Date.now() };
+        mistakes: mist, scoredAt: Date.now() };
       var r2 = v2GetSession(id);
       r2.result = result; r2.status = "done";
       v2SaveSession(r2);
+      try { v2TrackSession(r2); } catch (e) {}
       if (r2.mode === "plan" && r2.planId) v2PlanAfterScore(r2);
       if (prefs.memory && r2.planId && result.mistakes.length) v2Remember(r2);
       return result;
     });
+  }
+  // All language flags of the round, most used first, with the question they came from.
+  function v2LangSummary(qs) {
+    var by = {}, out = [];
+    qs.forEach(function (q) { (q.language || []).forEach(function (l) { var k = l.kind + ":" + v2Norm(l.word); if (by[k]) { by[k].n += l.n; return; } by[k] = Object.assign({ q: q.n }, l); out.push(by[k]); }); });
+    return out.sort(function (a, b) { return b.n - a.n; }).slice(0, 8);
   }
   var V2_SKILL_FIX = { structure: "Open with a one line answer, then situation, your actions and the result.", depth: "Use one real example with a number, a trade off and what you learned.",
     presence: "Say “I” for your part, link it to business impact, and drop the fillers.", voice: "Speak at a steady, calm pace, about 140 words a minute, with some rise and fall." };
@@ -16425,20 +16677,23 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
   }
   function v2ScoreGuideHtml() {
     if (!V2.isAdmin) return '<div class="v2-home"><p class="v2-sub">This page is for the Rehearsly team only.</p>' + v2Btn("home", "Back to home", "v2-btn v2-sec") + "</div>";
-    function rows(skill) { return Object.keys(V2_CHECKS).filter(function (k) { return V2_CHECKS[k][1] === skill; }).map(function (k) { return "<tr><td>" + v2Esc(V2_CHECKS[k][0]) + "</td><td>" + V2_CHECKS[k][2] + "</td><td>" + (k === "own_words" || k === "fresh" ? "Code" : "AI tick") + "</td></tr>"; }).join(""); }
+    function rows(skill) { return Object.keys(V2_CHECKS).filter(function (k) { return V2_CHECKS[k][1] === skill; }).map(function (k) { return "<tr><td>" + v2Esc(V2_CHECKS[k][0]) + "</td><td>" + V2_CHECKS[k][2] + "</td><td>" + (k === "own_words" ? "Code" : k === "number" ? "AI tick with quote, plus a number in the answer" : "AI tick with quote") + "</td></tr>"; }).join(""); }
     function tbl(head, body) { return '<table class="v2-sg-t"><tr>' + head.map(function (h) { return "<th>" + h + "</th>"; }).join("") + "</tr>" + body + "</table>"; }
     var rw = [v2RoundWeights("Leadership"), v2RoundWeights("Product sense"), v2RoundWeights("HR screen")];
     return '<div class="v2-sg"><span class="v2-eyebrow">Admin · reference</span><h1 class="v2-h1">How the <i class="v2-gt">score</i> is calculated.</h1>' +
-      '<p class="v2-sub">Method evidence v1. The AI only ticks facts; fixed points and weights make the score, so the same answer always scores the same.</p>' +
-      '<div class="v2-sg-c"><h3>The 7 steps</h3><ol><li><b>Gate.</b> An answer needs ' + V2_MIN_WORDS + ' or more words and must be on topic, or it is not scored.</li>' +
+      '<p class="v2-sub">Method evidence v2. The AI only ticks facts and must quote the candidate for each one; fixed points, caps and weights make the score, so the same answer always scores the same. No point is free.</p>' +
+      '<div class="v2-sg-c"><h3>The 9 steps</h3><ol><li><b>Gate.</b> An answer needs ' + V2_MIN_WORDS + ' or more words and must be on topic, or it is not scored.</li>' +
       "<li><b>AI checklist.</b> Gemini ticks true or false for each check below, at temperature 0, and rates the example 1 to 5.</li>" +
+      "<li><b>Proof.</b> Every true tick must come with the candidate's exact words. Code checks the quote is really in the answer; if not, the tick is thrown away. A number tick also needs a number in the answer. The 1 to 5 rating counts only when the example is proved.</li>" +
       "<li><b>Code measures.</b> Words, fillers, hedging words, numbers, “I” vs “we”, repeated phrases, and voice: pace, pauses, pitch and volume.</li>" +
       "<li><b>Points.</b> Each tick adds fixed points; each skill is out of 100. Penalties come off. The AI's 1 to 5 rating is " + Math.round(V2_AI_SHARE * 100) + "% of a skill at most.</li>" +
-      "<li><b>Caps.</b> Hard limits for missing basics (below).</li><li><b>Round weights.</b> Skills are weighted by the type of round.</li>" +
-      "<li><b>Proof.</b> Feedback lists the ticks and misses, and shows a range (±) that is wider when few answers were scored or the AI was not available.</li></ol></div>" +
+      "<li><b>Caps.</b> Hard limits for missing basics, the senior bar and red flags (below). A red flag also caps the whole round at " + V2_RED_CAP + ".</li><li><b>Round weights.</b> Skills are weighted by the type of round.</li>" +
+      "<li><b>Final or Early read.</b> The round score is the average of scored answers. With fewer than " + V2_MIN_FINAL + " full answers (or fewer than the questions planned, if less), it is an Early read: shown, but it does not move readiness or finish a plan step.</li>" +
+      "<li><b>Readiness and chance.</b> Readiness = plan skill level × share of plan rounds done, so one round of six counts as one sixth. Chance of clearing uses one scale: 50 = 30%, 65 = 55%, 80 = 80%, 90 = 95%. Feedback lists ticks and misses with a range (±), wider for few answers, an Early read or no AI.</li>" +
+      "<li><b>Language check.</b> Casual words (yup, gonna) and wrong English (my self, I am having, discuss about) are listed with a better phrase. They do not change the score.</li></ol></div>" +
       '<div class="v2-sg-g"><div class="v2-sg-c"><h3>Answer framing</h3>' + tbl(["Check", "Points", "Source"], rows("structure")) + '<p class="v2-hint">Length: under 150 words loses up to 20; over 420 loses up to 25.</p></div>' +
       '<div class="v2-sg-c"><h3>Depth</h3>' + tbl(["Check", "Points", "Source"], rows("depth")) + '<p class="v2-hint">With no follow ups asked, those 20 points are left out and the rest is scaled to 100.</p></div>' +
-      '<div class="v2-sg-c"><h3>Words used</h3>' + tbl(["Check", "Points", "Source"], rows("presence")) + '<p class="v2-hint">Fillers: 4 points off for each per 100 words above 1 (up to 24). Hedging: 5 off for each per 100 words above 0.5 (up to 20).</p></div>' +
+      '<div class="v2-sg-c"><h3>Words used</h3>' + tbl(["Check", "Points", "Source"], rows("presence")) + '<p class="v2-hint">Fillers: 4 points off for each per 100 words above 1 (up to 24). Hedging: 5 off for each per 100 words above 0.5 (up to 20). Repeating phrases: 10 off. Off topic is a cap, not points.</p></div>' +
       '<div class="v2-sg-c"><h3>Voice delivery</h3>' + tbl(["Part", "Share", "Best"], "<tr><td>Pace</td><td>35%</td><td>125 to 165 words a minute</td></tr><tr><td>Tone (pitch change)</td><td>25%</td><td>2 to 6 semitones; under 1.2 is flat</td></tr><tr><td>Long pauses (2.5 to 8 s)</td><td>20%</td><td>1 or fewer a minute</td></tr><tr><td>Volume</td><td>20%</td><td>Clear, steady level</td></tr>") +
       '<p class="v2-hint">Measured from the mic on the device. Needs 4 seconds of speech.</p></div></div>' +
       '<div class="v2-sg-g"><div class="v2-sg-c"><h3>Caps</h3>' + tbl(["When", "Limit"], V2_CAPS.map(function (c) { return "<tr><td>" + c[0] + "</td><td>" + c[1] + "</td></tr>"; }).join("")) + "</div>" +
@@ -16450,7 +16705,521 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
         return "<tr><td>" + p[1] + "</td><td>" + p[2] + "</td><td>" + by + "</td></tr>"; }).join("")) +
       '<p class="v2-hint">Parts that could not be measured are left out and the rest is scaled. Appearance never changes the interview skills score. Photos are not stored.</p></div></div>';
   }
-  window.__v2Score = { session: v2ScoreSession, measure: v2Measure, question: v2ScoreQuestion, voice: v2VoiceScore, appearance: v2AppearanceScore, weights: v2RoundWeights, pitch: v2Pitch };
+  window.__v2Score = { session: v2ScoreSession, measure: v2Measure, question: v2ScoreQuestion, voice: v2VoiceScore, appearance: v2AppearanceScore, weights: v2RoundWeights, pitch: v2Pitch, chance: v2Chance, lang: v2LangCheck, proofOk: v2ProofOk, norm: v2Norm, readiness: v2Readiness, level: v2SkillLevel };
+  /* =====================================================================
+   * Usage events for the admin dashboard. Everything is sent to the
+   * Rehearsly relay (stored in its D1 database). Nothing is sent in the
+   * offline demo, and a failed send never gets in the user's way.
+   * =================================================================== */
+  function v2TrackOn() { return !!(window.__v2TrackSink || (relayOn() && signedIn() && !demoMode())); }
+  function v2Track(type, data) {
+    if (window.__v2TrackSink) { try { window.__v2TrackSink(Object.assign({ type: type }, data || {})); } catch (e) {} return; }
+    if (!v2TrackOn()) return;
+    try { relayFetch("/event", Object.assign({ type: type }, data || {})).catch(function () {}); } catch (e) {}
+  }
+  function v2Feature(name, extra) { v2Track("feature", Object.assign({ name: name }, extra || {})); }
+  // Landing page counts: one anonymous id per browser, each kind counted once a day.
+  function v2TrackVisit(kind) {
+    var url = relayUrl(); if (!url) return;
+    var vid = "";
+    try { vid = localStorage.getItem("rh_vid") || ""; if (!vid) { vid = "v" + Date.now().toString(36) + Math.random().toString(36).slice(2, 10); localStorage.setItem("rh_vid", vid); } } catch (e) { return; }
+    var key = "rh_vt_" + kind;
+    try { if (localStorage.getItem(key) === v2Iso(new Date())) return; localStorage.setItem(key, v2Iso(new Date())); } catch (e) {}
+    try { fetch(url + "/track", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: kind, vid: vid }) }).catch(function () {}); } catch (e) {}
+  }
+  window.v2TrackVisit = v2TrackVisit;
+  // Once per app load: who the server says you are (admin, sharing), plus a daily "opened the app".
+  function v2TrackBoot() {
+    if (V2.trackBooted || !v2TrackOn()) return;
+    V2.trackBooted = true;
+    relayFetch("/usage", {}).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+      if (!j) return;
+      var was = V2.server && V2.server.admin;
+      V2.server = j;
+      if (j.admin) V2.isAdmin = true;
+      if (j.shareDefault === "default" && v2Prefs().shareAnswers == null) v2SetPref("shareAnswers", j.shareAnswers == null ? true : j.shareAnswers);
+      if ((j.admin && !was) || (V2.screen === "home" && v2ConsentDue())) v2Render();
+    }).catch(function () {});
+    var day = v2Iso(new Date()), k = "rh_open_" + v2Email();
+    try {
+      if (localStorage.getItem(k) !== day) {
+        localStorage.setItem(k, day);
+        v2Feature("app_open");
+        var p = v2Profile();
+        v2Track("profile", { target: p.targetRole || getSettings().targetRole || "", company: p.company || "", name: getSettings().authName || "" });
+      }
+    } catch (e) {}
+  }
+  // Live voice usage, as Google reports it on the voice line.
+  function v2UsageAdd(m) {
+    var R = V2.room; if (!R || !m) return;
+    var U = R.usage || (R.usage = { tin: 0, tout: 0, ain: 0, aout: 0, base: { tin: 0, tout: 0, ain: 0, aout: 0 }, last: null });
+    function split(list) { var a = 0, t = 0; (list || []).forEach(function (d) { if (/AUDIO/i.test(d.modality || "")) a += d.tokenCount || 0; else t += d.tokenCount || 0; }); return [a, t]; }
+    var pin = split(m.promptTokensDetails), pout = split(m.responseTokensDetails);
+    var cur = { ain: pin[0], tin: pin[1] || (m.promptTokensDetails ? 0 : (m.promptTokenCount || 0)), aout: pout[0], tout: pout[1] || (m.responseTokensDetails ? 0 : (m.responseTokenCount || 0)) };
+    // Google's counts grow during one connection; a smaller number means a new connection.
+    var tot = cur.ain + cur.tin + cur.aout + cur.tout, lastTot = U.last ? U.last.ain + U.last.tin + U.last.aout + U.last.tout : 0;
+    if (U.last && tot < lastTot) ["tin", "tout", "ain", "aout"].forEach(function (k) { U.base[k] += U.last[k]; });
+    U.last = cur;
+    ["tin", "tout", "ain", "aout"].forEach(function (k) { U[k] = U.base[k] + cur[k]; });
+  }
+  // After every scored interview: the summary, each answer and the mistakes.
+  function v2TrackSession(rec) {
+    if (!rec || !rec.result) return;
+    var res = rec.result, share = v2Prefs().shareAnswers !== false;
+    var blocks = v2Transcript(rec), byN = {};
+    blocks.forEach(function (b) { byN[b.n] = b; });
+    var U = rec.usage || {};
+    v2Track("session", {
+      s: { id: rec.id, startedAt: rec.startedAt, mode: rec.mode, round: rec.round, persona: rec.persona, difficulty: rec.difficulty, media: rec.media, target: rec.target, company: rec.company,
+        questions: (rec.questions || []).length, answered: res.questions.filter(function (q) { return q.answered; }).length, minutes: Math.round((rec.durationMs || 0) / 6000) / 10,
+        overall: res.overall, appearance: res.appearance ? res.appearance.score : null, skills: res.skills, method: res.ai ? "ai" : "rules",
+        usage: { tin: U.tin || 0, tout: U.tout || 0, ain: U.ain || 0, aout: U.aout || 0, model: "live" } },
+      answers: res.questions.filter(function (q) { return q.answered; }).map(function (q) {
+        var b = byN[q.n], said = b ? b.lines.filter(function (l) { return /^Candidate: /.test(l); }).map(function (l) { return l.replace(/^Candidate: /, ""); }).join(" ") : "";
+        var src = (rec.questions[q.n - 1] || {}).source || (rec.mode === "plan" ? "ai" : "library");
+        return { qn: q.n, question: q.question, source: src, score: q.score, skills: q.skills, hits: q.hits || [], misses: q.misses || [], words: q.words, answer: share ? said.slice(0, 6000) : "" };
+      }),
+      mistakes: (res.mistakes || []).map(function (m) { return { title: m.title, fix: m.fix, quote: share ? m.quote : "" }; })
+    });
+  }
+  // The answer sharing notice on Home.
+  function v2ConsentDue() {
+    if (!v2TrackOn() || !V2.server) return false;
+    var p = v2Prefs();
+    if (V2.server.shareDefault === "default") return !p.shareNoticeSeen;
+    return p.shareAnswers == null;
+  }
+  function v2ConsentCard() {
+    if (!v2ConsentDue()) return "";
+    var dflt = V2.server.shareDefault === "default";
+    return '<div class="v2-consent"><div><b>' + (dflt ? "Your answers help Kira get better." : "Help Kira get better?") + "</b>" +
+      "<span>" + (dflt ? "Rehearsly keeps the text of your interview answers, without your resume or recordings, to learn what strong answers look like and improve the coaching. You can turn this off any time in Settings."
+        : "Share the text of your interview answers, without your resume or recordings, so Rehearsly can learn what strong answers look like. You can change this any time in Settings.") + "</span></div>" +
+      '<div class="v2-consent-acts">' + (dflt ? v2Btn("share-ok", "OK", "v2-btn v2-primary") + v2Btn("share-no", "Turn off", "v2-btn v2-sec")
+        : v2Btn("share-yes", "Share my answers", "v2-btn v2-primary") + v2Btn("share-no", "No thanks", "v2-btn v2-sec")) + "</div></div>";
+  }
+  function v2ShareAct(act) {
+    if (act === "share-ok") { v2SetPref("shareNoticeSeen", true); v2SetPref("shareAnswers", true); v2Track("consent", { share: true }); }
+    else if (act === "share-yes") { v2SetPref("shareNoticeSeen", true); v2SetPref("shareAnswers", true); v2Track("consent", { share: true }); }
+    else if (act === "share-no") { v2SetPref("shareNoticeSeen", true); v2SetPref("shareAnswers", false); v2Track("consent", { share: false }); }
+    else return false;
+    v2Render();
+    return true;
+  }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest ? e.target.closest("[data-act^='share-']") : null;
+    if (b && v2ShareAct(b.getAttribute("data-act"))) { e.preventDefault(); e.stopPropagation(); }
+  }, true);
+  // Test hooks: let the test page say what the relay would say. The relay still checks admin rights on every call.
+  window.__v2Admin = { setServer: function (j) { V2.server = j; if (j && j.admin) V2.isAdmin = true; }, state: function () { return V2.adm; } };
+  /* =====================================================================
+   * Admin dashboard. Only for the admin emails set in the relay; the
+   * relay checks every call, so this page shows nothing to anyone else.
+   * =================================================================== */
+  var V2_ADM_TABS = [["overview", "Overview"], ["users", "Users and access"], ["usage", "Usage and funnel"], ["questions", "Question bank"], ["mistakes", "Top mistakes"],
+    ["cost", "Cost and bill"], ["health", "Health"], ["learning", "Learning data"], ["guide", "Scoring guide"], ["settings", "Settings"]];
+  function v2AdminCall(name, payload) {
+    if (window.__v2AdminFetch) return Promise.resolve(window.__v2AdminFetch(name, payload || {}));
+    return relayFetch("/admin/" + name, payload || {}).then(function (r) {
+      return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok) throw new Error((j && j.error && j.error.message) || ("Error " + r.status)); return j; });
+    });
+  }
+  function v2AdminLoad(force) {
+    var A = V2.adm || (V2.adm = { tab: "overview", days: 30 });
+    var t = A.tab, need = { overview: "stats", usage: "stats", cost: "stats", health: "stats", users: "users", questions: "questions", mistakes: "mistakes", settings: "config", learning: "stats" }[t];
+    if (!need) { v2Render(); return; }
+    var key = need + ":" + A.days + ":" + (need === "users" || need === "questions" ? (A.q || "") : "");
+    if (!force && A.cache && A.cache[key]) { v2Render(); return; }
+    A.loading = true; A.err = ""; v2Render();
+    var pay = { days: A.days, q: A.q || "" };
+    var jobs = [v2AdminCall(need, pay)];
+    if (need !== "config" && !A.cfg) jobs.push(v2AdminCall("config", {}));
+    Promise.all(jobs).then(function (rs) {
+      A.cache = A.cache || {}; A.cache[key] = rs[0];
+      if (rs[1]) A.cfg = rs[1];
+      if (need === "config") A.cfg = rs[0];
+      A.loading = false; v2Render();
+    }).catch(function (e) { A.loading = false; A.err = String((e && e.message) || e); v2Render(); });
+  }
+  function v2AdmData(need) { var A = V2.adm; return A && A.cache ? A.cache[need + ":" + A.days + ":" + (need === "users" || need === "questions" ? (A.q || "") : "")] : null; }
+  function v2AdmNum(n, d) { if (n == null || !isFinite(n)) return "—"; n = Number(n); return n >= 100000 ? (n / 100000).toFixed(1) + " L" : n.toLocaleString("en-IN", { maximumFractionDigits: d == null ? 0 : d }); }
+  function v2AdmPct(a, b) { return b ? Math.round(a / b * 100) : 0; }
+  function v2AdmAgo(ts) { if (!ts) return "—"; var m = Math.round((Date.now() - ts) / 60000); return m < 2 ? "just now" : m < 60 ? m + " min ago" : m < 1440 ? Math.round(m / 60) + " hr ago" : Math.round(m / 1440) + " days ago"; }
+  function v2AdmDate(ts) { if (!ts) return "—"; var d = new Date(ts); return d.getDate() + " " + V2_MONTHS[d.getMonth()]; }
+  // Money, from token counts and the prices in Settings (dollars per million tokens).
+  function v2AdmCfg() { var c = (V2.adm.cfg && V2.adm.cfg.config) || {}; var f = function (k, d) { var v = parseFloat(c[k]); return isFinite(v) ? v : d; };
+    return { ti: f("price_text_in", 0.75), to: f("price_text_out", 3.75), lai: f("price_live_audio_in", 3), lao: f("price_live_audio_out", 12), lti: f("price_live_text_in", 0.75), lto: f("price_live_text_out", 4.5),
+      inr: f("usd_inr", 85), budget: parseFloat(c.budget_inr) || 0, share: c.share_default || "default", daily: c.daily_sessions || "" }; }
+  function v2AdmCost(textRows, live) {
+    var P = v2AdmCfg(), text = 0, tin = 0, tout = 0;
+    (textRows || []).forEach(function (r) { if (r.kind === "text") { text += (r.tin || 0) / 1e6 * P.ti + (r.tout || 0) / 1e6 * P.to; tin += r.tin || 0; tout += r.tout || 0; } });
+    live = live || {};
+    var lv = (live.ain || 0) / 1e6 * P.lai + (live.aout || 0) / 1e6 * P.lao + (live.tin || 0) / 1e6 * P.lti + (live.tout || 0) / 1e6 * P.lto;
+    var est = (live.est_mins || 0) * (0.55 * 0.005 + 0.45 * 0.018); // minutes with no counts from Google: about 55% listening, 45% Kira speaking
+    return { text: text, live: lv, est: est, total: text + lv + est, inr: (text + lv + est) * P.inr, tin: tin, tout: tout };
+  }
+  function v2AdmRs(usd) { var P = v2AdmCfg(); return "₹" + v2AdmNum(Math.round(usd * P.inr)); }
+  function v2AdmTile(label, value, sub, cls) { return '<div class="adm-tile"><span>' + label + "</span><b>" + value + '</b><span class="' + (cls || "") + '">' + (sub || "") + "</span></div>"; }
+  function v2AdmBars(rows, max) {
+    max = max || Math.max.apply(null, rows.map(function (r) { return r[1]; }).concat([1]));
+    return '<div class="adm-hbar">' + rows.map(function (r) { return '<div class="row"><span title="' + v2Esc(r[0]) + '">' + v2Esc(r[0] || "Not set") + '</span><div class="t"><i style="width:' + Math.round(r[1] / max * 100) + '%"></i></div><b>' + (r[2] != null ? r[2] : v2AdmNum(r[1])) + "</b></div>"; }).join("") + "</div>";
+  }
+  function v2AdmCard(title, hint, body, cls) { return '<div class="adm-card ' + (cls || "") + '"><h3>' + title + "</h3>" + (hint ? '<p class="h">' + hint + "</p>" : "") + body + "</div>"; }
+
+  function v2AdminHtml() {
+    var A = V2.adm || (V2.adm = { tab: "overview", days: 30 });
+    if (!(V2.server && V2.server.admin)) return '<div class="v2-home"><p class="v2-sub">This page is for the Rehearsly admin only.</p>' + v2Btn("home", "Back to home", "v2-btn v2-sec") + "</div>";
+    V2.isAdmin = true;
+    var head = '<div class="adm"><div class="adm-head"><div><span class="v2-eyebrow">Admin</span><h1 class="v2-h1">How Rehearsly is <i class="v2-gt">doing.</i></h1>' +
+      '<p class="v2-sub">Only you can see this page. Numbers come live from the relay.</p></div>' +
+      '<div class="adm-range">' + [7, 30, 90].map(function (d) { return '<button type="button" class="adm-chip' + (A.days === d ? " on" : "") + '" data-act="adm-days" data-arg="' + d + '">' + d + " days</button>"; }).join("") +
+      '<button type="button" class="adm-chip" data-act="adm-refresh">Refresh</button></div></div>' +
+      '<div class="adm-nav">' + V2_ADM_TABS.map(function (t) { return '<button type="button" class="' + (A.tab === t[0] ? "on" : "") + '" data-act="adm-tab" data-arg="' + t[0] + '">' + t[1] + "</button>"; }).join("") + "</div>";
+    var body;
+    if (A.err) body = '<div class="adm-card adm-err"><b>Could not load.</b> ' + v2Esc(A.err) + ' <button type="button" class="adm-chip" data-act="adm-refresh">Try again</button></div>';
+    else if (A.tab === "guide") body = v2ScoreGuideHtml();
+    else {
+      var need = { overview: "stats", usage: "stats", cost: "stats", health: "stats", learning: "stats", users: "users", questions: "questions", mistakes: "mistakes", settings: "config" }[A.tab];
+      var d = need === "config" ? A.cfg : v2AdmData(need);
+      if (A.loading && !d) body = v2WaveHtml(["Counting the numbers…"], "", true);
+      else if (d && d.nodb) body = v2AdmNoDb();
+      else if (!d) body = "";
+      else body = { overview: v2AdmOverview, usage: v2AdmUsage, cost: v2AdmCostHtml, health: v2AdmHealth, learning: v2AdmLearning, users: v2AdmUsers, questions: v2AdmQuestions, mistakes: v2AdmMistakes, settings: v2AdmSettings }[A.tab](d);
+    }
+    return head + '<div class="adm-body">' + body + "</div></div>";
+  }
+  function v2AdmNoDb() {
+    return v2AdmCard("Connect the database", "The relay is running, but no D1 database is linked yet, so nothing is being counted.",
+      "<ol><li>Cloudflare, Storage and databases, D1, Create, name it rehearsly-db.</li><li>Workers, rehearsly-relay, Settings, Bindings, Add, D1 database, variable name DB, pick rehearsly-db, Deploy.</li><li>Come back and press Refresh.</li></ol>");
+  }
+
+  /* ---- Overview ---- */
+  function v2AdmOverview(S) {
+    var cm = v2AdmCost(S.usageMonth, S.liveMonth), sess = S.sessions || {}, u = S.users || {}, act = S.active || {};
+    var tiles = '<div class="adm-tiles">' +
+      v2AdmTile("Total users", v2AdmNum(u.n), "+" + v2AdmNum(u.fresh || 0) + " in " + S.days + " days", "up") +
+      v2AdmTile("Active today", v2AdmNum(act.dau), v2AdmNum(act.wau) + " this week · " + v2AdmNum(act.mau) + " this month") +
+      v2AdmTile("Interviews today", v2AdmNum(sess.today), v2AdmNum(sess.n) + " in " + S.days + " days") +
+      v2AdmTile("Minutes today", v2AdmNum(Math.round(sess.mtoday || 0)), v2AdmNum(Math.round(sess.mins || 0)) + " in " + S.days + " days") +
+      v2AdmTile("Cost this month", v2AdmRs(cm.total), "if paid · ₹0 on the free key") +
+      v2AdmTile("Average score", sess.avg == null ? "—" : Math.round(sess.avg), S.improvement && S.improvement.avgGain != null ? (S.improvement.avgGain >= 0 ? "+" : "") + S.improvement.avgGain + " from first to latest" : "", "up") + "</div>";
+    var byDay = {}, days = [];
+    for (var i = S.days - 1; i >= 0; i--) { var k = new Date(Date.now() - i * 86400000).toISOString().slice(0, 10); days.push(k); byDay[k] = { v: 0, vid: 0 }; }
+    (S.perDay || []).forEach(function (r) { if (byDay[r.day]) { if (r.media === "Video") byDay[r.day].vid += r.n; else byDay[r.day].v += r.n; } });
+    var mx = Math.max.apply(null, days.map(function (k) { return byDay[k].v + byDay[k].vid; }).concat([1])), W = 600, bw = W / days.length;
+    var svg = '<svg viewBox="0 0 ' + W + ' 170" width="100%" height="170" role="img" aria-label="Interviews per day">' + days.map(function (k, i) {
+      var a = byDay[k].v / mx * 150, b = byDay[k].vid / mx * 150, x = i * bw + bw * 0.15, w = Math.max(2, bw * 0.7);
+      return '<rect x="' + x.toFixed(1) + '" y="' + (160 - a - b).toFixed(1) + '" width="' + w.toFixed(1) + '" height="' + a.toFixed(1) + '" rx="2" fill="#6D28D9"><title>' + k + ": " + byDay[k].v + ' voice</title></rect>' +
+        '<rect x="' + x.toFixed(1) + '" y="' + (160 - b).toFixed(1) + '" width="' + w.toFixed(1) + '" height="' + b.toFixed(1) + '" rx="2" fill="#F43F5E"><title>' + k + ": " + byDay[k].vid + " video</title></rect>";
+    }).join("") + '<line x1="0" y1="160.5" x2="' + W + '" y2="160.5" stroke="#E4E8F1"/></svg>';
+    var td = {}; (S.usageToday || []).forEach(function (r) { td[r.kind] = r; });
+    var lt = (S.health || []).filter(function (h) { return h.type === "live_token"; }).reduce(function (a, h) { return a + (h.today || 0); }, 0);
+    var dm = (S.health || []).filter(function (h) { return h.type === "demo_chat"; }).reduce(function (a, h) { return a + (h.today || 0); }, 0);
+    var today = v2AdmCard("Today's AI use", "Compare with your limits in Google AI Studio.",
+      '<div class="adm-kv"><span>Text calls (questions, drafts, scores)</span><b>' + v2AdmNum(td.text ? td.text.calls : 0) + "</b><span>Voice lines opened</span><b>" + v2AdmNum(lt) +
+      "</b><span>Landing demo chats</span><b>" + v2AdmNum(dm) + "</b><span>Text tokens today</span><b>" + v2AdmNum(td.text ? td.text.tin + td.text.tout : 0) + "</b></div>" +
+      '<p class="adm-note"><a href="https://aistudio.google.com/rate-limit" target="_blank" rel="noopener">Open your Gemini limits in AI Studio</a></p>');
+    var f = S.funnel || {};
+    var mini = v2AdmCard("Top mistakes", "Share of scored interviews in " + S.days + " days.", (S.mistakes || []).slice(0, 5).length ? v2AdmBars((S.mistakes || []).slice(0, 5).map(function (m) { return [m.title, m.s, v2AdmPct(m.s, sess.n) + "%"]; }), sess.n || 1) : '<p class="adm-note">No mistakes recorded yet.</p>');
+    var fun = v2AdmCard("Funnel at a glance", "", '<div class="adm-kv"><span>Landing visitors</span><b>' + v2AdmNum(f.visits) + "</b><span>Signed up</span><b>" + v2AdmNum(f.signups) + "</b><span>Did a first interview</span><b>" + v2AdmNum(f.first) +
+      "</b><span>Came back another week</span><b>" + v2AdmNum(f.back) + "</b></div>");
+    return tiles + '<div class="adm-grid">' + v2AdmCard("Interviews per day", "Violet is voice only, rose is video.", svg) + today + "</div>" + '<div class="adm-g2">' + mini + fun + "</div>";
+  }
+
+  /* ---- Users ---- */
+  function v2AdmUsers(D) {
+    var A = V2.adm, P = v2AdmCfg(), f = A.uf || "All", rows = (D.users || []).slice();
+    var wk = Date.now() - 7 * 86400000;
+    var flt = { "All": function () { return true; }, "Active 7 days": function (r) { return (r.last_seen || 0) >= wk; }, "Hit limit": function (r) { return r.hits > 0; },
+      "Blocked": function (r) { return !!r.blocked; }, "Unlimited": function (r) { return !!r.unlimited || r.envUnlimited; }, "Sharing off": function (r) { return r.share_answers === 0; } };
+    var counts = {}; Object.keys(flt).forEach(function (k) { counts[k] = rows.filter(flt[k]).length; });
+    rows = rows.filter(flt[f]);
+    var cost = function (r) { return ((r.gtin || 0) / 1e6 * P.ti + (r.gtout || 0) / 1e6 * P.to + (r.ain || 0) / 1e6 * P.lai + (r.aout || 0) / 1e6 * P.lao + (r.tin || 0) / 1e6 * P.lti + (r.tout || 0) / 1e6 * P.lto); };
+    var bar = '<div class="adm-bar"><input id="adm-q" class="adm-in" placeholder="Search email or name" value="' + v2Esc(A.q || "") + '"><button type="button" class="adm-chip" data-act="adm-search">Search</button>' +
+      Object.keys(flt).map(function (k) { return '<button type="button" class="adm-chip' + (f === k ? " on" : "") + '" data-act="adm-uf" data-arg="' + k + '">' + k + " " + counts[k] + "</button>"; }).join("") + "</div>";
+    var table = '<div class="adm-tw"><table class="adm-t"><tr><th>User</th><th>Sign in</th><th>Joined</th><th>Last active</th><th>Interviews</th><th>Minutes</th><th>Avg score</th><th>Cost</th><th>Limit hits</th><th>Access</th><th>Actions</th></tr>' +
+      rows.map(function (r) {
+        var unl = !!r.unlimited || r.envUnlimited, acc = r.blocked ? '<span class="pill pr">Blocked</span>' : unl ? '<span class="pill pg">Unlimited</span>' : '<span class="pill pv">' + (r.daily_limit != null ? r.daily_limit : D.defaultLimit) + " a day</span>";
+        var editing = A.edit === r.uid;
+        return '<tr><td><b>' + v2Esc(r.name || "—") + '</b><br><span class="mut">' + v2Esc(r.email || r.uid) + "</span>" + (r.target ? '<br><span class="mut">' + v2Esc(r.target + (r.company ? " · " + r.company : "")) + "</span>" : "") + "</td>" +
+          "<td>" + (/google/.test(r.provider || "") ? "Google" : "Email") + (r.verified ? "" : ' <span class="mut">· not verified</span>') + "</td><td>" + v2AdmDate(r.created_at) + "</td><td>" + v2AdmAgo(r.last_seen) + "</td>" +
+          "<td>" + (r.n || 0) + "</td><td>" + v2AdmNum(Math.round(r.mins || 0)) + "</td><td>" + (r.avg == null ? "—" : Math.round(r.avg)) + "</td><td>" + v2AdmRs(cost(r)) + "</td><td>" + (r.hits || 0) + "</td><td>" + acc + "</td>" +
+          '<td class="act">' + (editing ? '<input id="adm-lim" class="adm-in sm" type="number" min="0" max="100" value="' + (r.daily_limit != null ? r.daily_limit : "") + '" placeholder="' + D.defaultLimit + '"><button type="button" data-act="adm-limit-save" data-arg="' + v2Esc(r.uid) + '">Save</button><button type="button" data-act="adm-limit-cancel">Cancel</button>'
+            : '<button type="button" data-act="adm-limit" data-arg="' + v2Esc(r.uid) + '">Change limit</button>' +
+            '<button type="button" data-act="adm-unl" data-arg="' + v2Esc(r.uid) + '" data-v="' + (r.unlimited ? 0 : 1) + '"' + (r.envUnlimited ? ' disabled title="Set in the relay settings"' : "") + ">" + (r.unlimited || r.envUnlimited ? "Set normal" : "Unlimited") + "</button>" +
+            '<button type="button" class="' + (r.blocked ? "" : "r") + '" data-act="adm-block" data-arg="' + v2Esc(r.uid) + '" data-v="' + (r.blocked ? 0 : 1) + '">' + (r.blocked ? "Unblock" : "Block") + "</button>" +
+            '<button type="button" data-act="adm-user" data-arg="' + v2Esc(r.uid) + '">Details</button>') + "</td></tr>" +
+          (A.detail && A.detail.uid === r.uid ? '<tr class="adm-detail"><td colspan="11">' + v2AdmUserDetail(A.detail) + "</td></tr>" : "");
+      }).join("") + "</table></div>";
+    return v2AdmCard("Users and access", rows.length + " shown. Answers, resumes and recordings are never shown here; open the Question bank for shared answers.", bar + (rows.length ? table : '<p class="adm-note">No users match.</p>'));
+  }
+  function v2AdmUserDetail(D) {
+    if (D.loading) return '<span class="mut">Loading…</span>';
+    var s = D.sessions || [];
+    return '<div class="adm-g2"><div><h4>Interviews</h4>' + (s.length ? '<table class="adm-t sm"><tr><th>Date</th><th>Round</th><th>Format</th><th>Minutes</th><th>Score</th><th>Appearance</th></tr>' + s.map(function (x) {
+      return "<tr><td>" + v2AdmDate(x.ts) + "</td><td>" + v2Esc(x.round || x.mode || "") + "</td><td>" + v2Esc(x.media || "") + "</td><td>" + v2AdmNum(x.minutes, 1) + "</td><td>" + (x.overall == null ? "—" : x.overall) + "</td><td>" + (x.appearance == null ? "—" : x.appearance) + "</td></tr>"; }).join("") + "</table>" : '<p class="adm-note">No interviews yet.</p>') + "</div>" +
+      "<div><h4>Mistakes</h4>" + ((D.mistakes || []).length ? "<ul>" + D.mistakes.map(function (m) { return "<li><b>" + v2Esc(m.title) + "</b> " + (m.fix ? '<span class="mut">' + v2Esc(m.fix) + "</span>" : "") + "</li>"; }).join("") + "</ul>" : '<p class="adm-note">None recorded.</p>') +
+      "<h4>Recent activity</h4><ul>" + (D.events || []).slice(0, 15).map(function (e) { return "<li>" + v2AdmAgo(e.ts) + " · " + v2Esc(v2AdmEventName(e)) + "</li>"; }).join("") + "</ul></div></div>";
+  }
+  function v2AdmEventName(e) {
+    if (e.type === "feature") return e.name === "app_open" ? "Opened the app" : v2AdmFeatName(e.name);
+    if (e.type === "limit_hit") return e.name === "blocked" ? "Tried to use AI while blocked" : "Reached the daily interview limit";
+    if (e.type === "live_token") return e.name === "interview" ? "Opened an interview voice line" : e.name === "reader" ? "Used the reading voice" : "Tested the voice";
+    if (e.type === "error") return "Error: " + String(e.name || "").replace(/_/g, " ");
+    return e.type + (e.name ? ": " + e.name : "");
+  }
+
+  /* ---- Usage and funnel ---- */
+  function v2AdmUsage(S) {
+    var f = S.funnel || {}, top = Math.max(f.visits || 0, f.signups || 0, 1), sess = S.sessions || {}, act = S.active || {};
+    var steps = [["Landing visitors", f.visits], ["Tapped Start free", f.ctaSignup], ["Tried the Kira demo", f.demo], ["Signed up", f.signups], ["Finished onboarding", f.onboarding], ["Did a first interview", f.first], ["Did 3 or more", f.three], ["Came back another week", f.back]];
+    var fun = '<div class="adm-fun">' + steps.map(function (s, i) {
+      var prev = i ? steps[i - 1][1] : null, drop = prev ? 100 - v2AdmPct(s[1] || 0, prev) : null;
+      return '<div class="row"><span>' + s[0] + '</span><div class="fill" style="width:' + Math.max(1, v2AdmPct(s[1] || 0, top)) + '%"></div><b>' + v2AdmNum(s[1] || 0) + '</b><span class="drop">' + (drop != null && prev ? drop + "% left" : "") + "</span></div>"; }).join("") + "</div>";
+    var mix = {}; (S.mix || []).forEach(function (r) { (mix[r.f] = mix[r.f] || []).push([r.v, r.n]); });
+    Object.keys(mix).forEach(function (k) { mix[k].sort(function (a, b) { return b[1] - a[1]; }); });
+    var mixCard = function (k, t) { return v2AdmCard(t, "", mix[k] && mix[k].length ? v2AdmBars(mix[k].slice(0, 8)) : '<p class="adm-note">No data yet.</p>'); };
+    var kpis = '<div class="adm-tiles">' + v2AdmTile("Daily active", v2AdmNum(act.dau), "users today") + v2AdmTile("Weekly active", v2AdmNum(act.wau), "last 7 days") + v2AdmTile("Monthly active", v2AdmNum(act.mau), "last 30 days") +
+      v2AdmTile("Stickiness", act.mau ? v2AdmPct(act.dau, act.mau) + "%" : "—", "daily of monthly") + v2AdmTile("Interviews per user", v2AdmNum(S.perUserSessions, 1), "all time") +
+      v2AdmTile("Minutes per interview", sess.n ? v2AdmNum(sess.mins / sess.n, 1) : "—", "average") + v2AdmTile("Questions answered", sess.qs ? v2AdmPct(sess.ans, sess.qs) + "%" : "—", "of questions asked") +
+      v2AdmTile("Users improving", S.improvement && S.improvement.users ? v2AdmPct(S.improvement.improvers, S.improvement.users) + "%" : "—", "of users with 2+ interviews") +
+      v2AdmTile("Sharing answers", (S.users && S.users.n) ? v2AdmPct(S.users.sharing || 0, S.users.n) + "%" : "—", "chose to share") + "</div>";
+    var feats = (S.features || []).filter(function (x) { return x.name !== "app_open"; });
+    var featCard = v2AdmCard("Features used", "Times used and number of users, " + S.days + " days.", feats.length ? '<table class="adm-t sm"><tr><th>Feature</th><th>Times</th><th>Users</th></tr>' + feats.map(function (x) { return "<tr><td>" + v2Esc(v2AdmFeatName(x.name)) + "</td><td>" + x.n + "</td><td>" + x.u + "</td></tr>"; }).join("") + "</table>" : '<p class="adm-note">No feature use yet.</p>');
+    var sk = S.skills || {}, skCard = v2AdmCard("Average skills", "Across scored interviews.", v2AdmBars(V2_SKILLS.map(function (s) { return [s[1], sk[s[0]] || 0, sk[s[0]] == null ? "—" : sk[s[0]]]; }), 100));
+    return kpis + '<div class="adm-g2">' + v2AdmCard("Funnel", "From first visit to a returning user, " + S.days + " days.", fun) + featCard + "</div>" +
+      '<div class="adm-g3">' + mixCard("media", "Format") + mixCard("persona", "Interviewer") + mixCard("difficulty", "Difficulty") + mixCard("round", "Round") + mixCard("target", "Target role") + mixCard("company", "Company") + mixCard("mode", "Type") + skCard + "</div>";
+  }
+  function v2AdmFeatName(n) {
+    return { onboarding_done: "Finished onboarding", plan_created: "Created a practice plan", plan_edited: "Edited a plan", interview_start: "Started an interview", draft_ai: "Drafted an answer with AI", answer_saved: "Saved an answer",
+      story_import: "Imported stories from resume", question_created: "Added own question", appearance_review_on: "Turned on appearance review", consent_share: "Chose to share answers", consent_no: "Turned off answer sharing" }[n] || n;
+  }
+
+  /* ---- Question bank ---- */
+  function v2AdmQuestions(D) {
+    var A = V2.adm, rows = D.questions || [];
+    var src = (D.sources || []).map(function (s) { return '<span class="pill pv">' + v2Esc({ ai: "Written by AI", library: "From the library", user: "Added by candidates" }[s.source] || s.source) + " " + s.n + "</span>"; }).join(" ");
+    var bar = '<div class="adm-bar"><input id="adm-q" class="adm-in" placeholder="Search questions" value="' + v2Esc(A.q || "") + '"><button type="button" class="adm-chip" data-act="adm-search">Search</button>' + src + "</div>";
+    var t = '<div class="adm-tw"><table class="adm-t"><tr><th>Question</th><th>Source</th><th>Round</th><th>Asked</th><th>Scored</th><th>Avg score</th><th>Best</th><th>Shared answers</th><th></th></tr>' + rows.map(function (q) {
+      var avg = q.scored ? Math.round(q.score_sum / q.scored) : null;
+      return "<tr><td class=\"wrap\">" + v2Esc(q.question) + "</td><td>" + v2Esc({ ai: "AI", library: "Library", user: "Candidate" }[q.source] || q.source || "") + "</td><td>" + v2Esc(q.round || "") + "</td><td>" + (q.asked || 0) + "</td><td>" + (q.scored || 0) + "</td>" +
+        '<td style="color:' + v2Col(avg) + '">' + (avg == null ? "—" : avg) + "</td><td>" + (q.best == null ? "—" : q.best) + "</td><td>" + (q.shared || 0) + '</td><td><button type="button" class="adm-chip" data-act="adm-qopen" data-arg="' + q.qhash + '">Open</button></td></tr>' +
+        (A.qd && A.qd.qhash === q.qhash ? '<tr class="adm-detail"><td colspan="9">' + v2AdmQDetail(A.qd) + "</td></tr>" : "");
+    }).join("") + "</table></div>";
+    return v2AdmCard("Question bank", rows.length + (rows.length === 1 ? " question" : " questions") + " asked across all candidates, with how people score on each. Questions candidates add themselves join the bank too.", bar + (rows.length ? t : '<p class="adm-note">No questions yet.</p>'));
+  }
+  function v2AdmQDetail(D) {
+    if (D.loading) return '<span class="mut">Loading…</span>';
+    var total = D.total || 0;
+    return '<div class="adm-g2"><div><h4>What people miss most</h4>' + ((D.topMisses || []).length ? v2AdmBars(D.topMisses.map(function (m) { return [m.miss, m.n, v2AdmPct(m.n, total) + "%"]; }), total || 1) : '<p class="adm-note">Nothing yet.</p>') + "</div>" +
+      "<div><h4>Answers, best first</h4>" + ((D.answers || []).length ? D.answers.slice(0, 12).map(function (a) {
+        var hits = [], misses = []; try { hits = JSON.parse(a.hits || "[]"); misses = JSON.parse(a.misses || "[]"); } catch (e) {}
+        return '<div class="adm-ans"><div><b style="color:' + v2Col(a.score) + '">' + (a.score == null ? "—" : a.score) + '</b> <span class="mut">' + v2Esc([a.round, a.target, a.day].filter(Boolean).join(" · ")) + " · " + (a.words || 0) + " words</span></div>" +
+          (a.answer ? "<p>" + v2Esc(a.answer) + "</p>" : '<p class="mut">Answer text not shared.</p>') +
+          '<div class="v2-fb-ev">' + hits.slice(0, 5).map(function (h) { return '<i class="ok">✓ ' + v2Esc(h) + "</i>"; }).join("") + misses.slice(0, 5).map(function (h) { return '<i class="no">✗ ' + v2Esc(h) + "</i>"; }).join("") + "</div></div>";
+      }).join("") : '<p class="adm-note">No answers yet.</p>') + "</div></div>";
+  }
+
+  /* ---- Top mistakes ---- */
+  function v2AdmMistakes(D) {
+    var A = V2.adm, rounds = {}, rf = A.rf || "All";
+    (D.byRound || []).forEach(function (r) { if (r.round) rounds[r.round] = 1; });
+    var list = rf === "All" ? (D.mistakes || []).map(function (m) { return { title: m.title, fix: m.fix, s: m.sessions, users: m.users, rounds: m.rounds }; })
+      : (D.byRound || []).filter(function (r) { return r.round === rf; }).map(function (r) { var m = (D.mistakes || []).filter(function (x) { return x.tkey === r.tkey; })[0] || {}; return { title: r.title, fix: m.fix, s: r.s, users: m.users, rounds: rf }; });
+    var n = D.sessions || 0;
+    var chips = '<div class="adm-bar">' + ["All"].concat(Object.keys(rounds)).map(function (r) { return '<button type="button" class="adm-chip' + (rf === r ? " on" : "") + '" data-act="adm-rf" data-arg="' + v2Esc(r) + '">' + v2Esc(r) + "</button>"; }).join("") + "</div>";
+    var chart = list.length ? v2AdmBars(list.slice(0, 10).map(function (m) { return [m.title, m.s, v2AdmPct(m.s, n) + "%"]; }), n || 1) : '<p class="adm-note">No mistakes recorded in this range.</p>';
+    var t = list.length ? '<div class="adm-tw"><table class="adm-t"><tr><th>Mistake</th><th>Share of interviews</th><th>Interviews</th><th>People</th><th>Rounds</th><th>How to fix</th></tr>' + list.map(function (m) {
+      return "<tr><td><b>" + v2Esc(m.title) + "</b></td><td>" + v2AdmPct(m.s, n) + "%</td><td>" + m.s + "</td><td>" + (m.users || "—") + "</td><td class=\"wrap\">" + v2Esc(m.rounds || "") + '</td><td class="wrap">' + v2Esc(m.fix || "") + "</td></tr>"; }).join("") + "</table></div>" : "";
+    return v2AdmCard("Learn from others' mistakes", "The mistakes candidates make most, as a share of " + n + " scored interviews in " + A.days + " days. Ready to show users as a public insight.", chips + chart) + (t ? v2AdmCard("All mistakes", "", t) : "");
+  }
+
+  /* ---- Cost ---- */
+  function v2AdmCostHtml(S) {
+    var P = v2AdmCfg(), cm = v2AdmCost(S.usageMonth, S.liveMonth), cr = v2AdmCost(S.usage, S.liveRange), lm = S.liveMonth || {};
+    var now = new Date(), dom = now.getUTCDate(), dim = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 0)).getUTCDate();
+    var fc = cm.total / dom * dim, perI = lm.n ? cm.total / lm.n : 0, perU = S.activeMonth ? cm.total / S.activeMonth : 0;
+    var month = v2AdmCard("This month", "Worked out from the token counts Google reports, times the prices in Settings.",
+      '<div class="adm-kv"><span>Text model (questions, drafts, scores): ' + v2AdmNum(cm.tin) + " in, " + v2AdmNum(cm.tout) + " out tokens</span><b>$" + cm.text.toFixed(2) + "</b>" +
+      "<span>Kira's voice: " + v2AdmNum((lm.ain || 0) + (lm.tin || 0)) + " in, " + v2AdmNum((lm.aout || 0) + (lm.tout || 0)) + " out tokens</span><b>$" + cm.live.toFixed(2) + "</b>" +
+      (cm.est ? "<span>Voice minutes with no counts from Google (estimated)</span><b>$" + cm.est.toFixed(2) + "</b>" : "") +
+      '<span class="tot">Total if paid</span><b class="tot">$' + cm.total.toFixed(2) + " · " + v2AdmRs(cm.total) + "</b><span>Real bill now (free key)</span><b>₹0</b></div>" +
+      '<p class="adm-note"><a href="https://console.cloud.google.com/billing" target="_blank" rel="noopener">Open your Google Cloud bill</a> once billing is on.</p>');
+    var unit = v2AdmCard("Unit costs and forecast", "For pricing and plan decisions.",
+      '<div class="adm-kv"><span>Cost per interview</span><b>' + v2AdmRs(perI) + "</b><span>Cost per active user this month</span><b>" + v2AdmRs(perU) + "</b><span>Month end forecast</span><b>" + v2AdmRs(fc) + "</b>" +
+      (P.budget ? "<span>Budget</span><b>₹" + v2AdmNum(P.budget) + "</b>" : "") + "</div>" +
+      (P.budget ? '<div class="adm-meter"><i style="width:' + Math.min(100, v2AdmPct(fc * P.inr, P.budget)) + '%"></i></div><p class="adm-note">Forecast is ' + v2AdmPct(fc * P.inr, P.budget) + "% of your budget.</p>" : '<p class="adm-note">No budget set. You can add one in Settings.</p>'));
+    var byModel = (S.usage || []).length ? '<table class="adm-t sm"><tr><th>Kind</th><th>Model</th><th>Calls</th><th>Tokens in</th><th>Tokens out</th></tr>' + S.usage.map(function (u) { return "<tr><td>" + v2Esc(u.kind) + "</td><td>" + v2Esc(u.model) + "</td><td>" + v2AdmNum(u.calls) + "</td><td>" + v2AdmNum(u.tin) + "</td><td>" + v2AdmNum(u.tout) + "</td></tr>"; }).join("") + "</table>" : '<p class="adm-note">No AI use recorded yet.</p>';
+    return '<div class="adm-g2">' + month + unit + "</div>" + v2AdmCard("AI use by model, " + S.days + " days", "Total if paid in this range: $" + cr.total.toFixed(2) + " · " + v2AdmRs(cr.total), byModel);
+  }
+
+  /* ---- Health ---- */
+  function v2AdmHealth(S) {
+    var label = { "limit_hit:sessions": "Daily interview limit reached", "limit_hit:blocked": "Blocked user tried to use AI", "live_token:interview": "Interview voice lines opened", "live_token:reader": "Reading voice opened",
+      "live_token:test": "Voice tests", "demo_chat:start": "Landing demo chats started" };
+    var rows = (S.health || []).map(function (h) {
+      var k = h.type + ":" + h.name, bad = h.type === "error" || (h.type === "limit_hit" && h.n >= 20);
+      return "<tr><td>" + v2Esc(label[k] || (h.type === "error" ? "Error: " + h.name.replace(/_/g, " ") : k)) + "</td><td>" + (h.today || 0) + "</td><td>" + h.n + '</td><td><span class="pill ' + (h.type === "error" ? (h.n > 10 ? "pr" : "pa") : bad ? "pa" : "pg") + '">' + (h.type === "error" ? (h.n > 10 ? "Check" : "Watch") : bad ? "Watch" : "OK") + "</span></td></tr>";
+    }).join("");
+    var m = {}; (S.methods || []).forEach(function (x) { m[x.method || "?"] = x.n; });
+    var tot = (m.ai || 0) + (m.rules || 0);
+    return v2AdmCard("Health", "Errors, limits and voice lines, today and in " + S.days + " days.", rows ? '<div class="adm-tw"><table class="adm-t"><tr><th>Check</th><th>Today</th><th>' + S.days + " days</th><th>Status</th></tr>" + rows + "</table></div>" : '<p class="adm-note">Nothing recorded yet.</p>') +
+      v2AdmCard("Scoring quality", "How often the AI coach scored, versus the backup rules when Google was busy.", '<div class="adm-kv"><span>Scored by the AI checklist</span><b>' + (tot ? v2AdmPct(m.ai || 0, tot) + "%" : "—") + "</b><span>Scored by backup rules</span><b>" + (tot ? v2AdmPct(m.rules || 0, tot) + "%" : "—") + "</b></div>");
+  }
+
+  /* ---- Learning data ---- */
+  function v2AdmLearning(S) {
+    var t = [["answers", "Answers", "Every scored answer: question, score, skills, ticks and misses, and the answer text where shared."], ["questions", "Question bank", "Every question with how often it is asked and the average score."],
+      ["mistakes", "Mistakes", "Every mistake pattern with its fix."], ["sessions", "Interviews", "Every interview with format, round, minutes and scores."], ["users", "Users", "Email, sign in, plan and limits."]];
+    return v2AdmCard("Learning data", "Everything Rehearsly has learned, ready to download. Use these files to brief a new AI model, or to rebuild context if you change from Gemini to another AI tool.",
+      '<table class="adm-t"><tr><th>Data</th><th>What is in it</th><th>Download</th></tr>' + t.map(function (x) { return "<tr><td><b>" + x[1] + '</b></td><td class="wrap">' + x[2] + '</td><td class="act"><button type="button" data-act="adm-export" data-arg="' + x[0] + ':json">JSON</button><button type="button" data-act="adm-export" data-arg="' + x[0] + ':csv">CSV</button></td></tr>'; }).join("") + "</table>" +
+      '<p class="adm-note">Downloads cover the last ' + V2.adm.days + " days. Change the range at the top for more.</p>");
+  }
+
+  /* ---- Settings ---- */
+  function v2AdmSettings(D) {
+    var c = (D && D.config) || {};
+    var f = function (k, label, hint) { return '<label class="adm-f"><span>' + label + (hint ? ' <i class="mut">' + hint + "</i>" : "") + '</span><input class="adm-in" data-cfg="' + k + '" value="' + v2Esc(c[k] == null ? "" : c[k]) + '"></label>'; };
+    return '<div class="adm-g2">' + v2AdmCard("Prices", "Dollars per million tokens. Used for the cost estimates.", f("price_text_in", "Text model, input") + f("price_text_out", "Text model, output") + f("price_live_audio_in", "Voice, audio in") + f("price_live_audio_out", "Voice, audio out") + f("price_live_text_in", "Voice, text in") + f("price_live_text_out", "Voice, text out") + f("usd_inr", "Rupees per dollar")) +
+      v2AdmCard("Rules", "", f("daily_sessions", "Interviews per user per day", "blank uses the relay setting (" + (D.envLimit || 3) + ")") + f("budget_inr", "Monthly budget in rupees", "optional, blank for none") +
+        '<label class="adm-f"><span>Answer sharing</span><select class="adm-in" data-cfg="share_default"><option value="default"' + (c.share_default === "default" ? " selected" : "") + '>On by default, users can turn it off</option><option value="optin"' + (c.share_default === "optin" ? " selected" : "") + ">Ask each user first</option></select></label>" +
+        '<p class="adm-note">Answer sharing must be covered in the privacy policy before the public launch.</p>') + "</div>" +
+      '<div class="adm-save">' + v2Btn("adm-cfg-save", V2.adm.saving ? "Saving…" : "Save settings", "v2-btn v2-primary") + (V2.adm.saved ? '<span class="mut">Saved.</span>' : "") + "</div>";
+  }
+
+  /* ---- Actions ---- */
+  function v2AdmDownload(name, text, type) {
+    var url = URL.createObjectURL(new Blob([text], { type: type })), a = document.createElement("a");
+    a.href = url; a.download = name; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 500);
+  }
+  function v2AdmCsv(rows) {
+    if (!rows.length) return "";
+    var keys = Object.keys(rows[0]), q = function (v) { v = v == null ? "" : String(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+    return keys.join(",") + "\n" + rows.map(function (r) { return keys.map(function (k) { return q(r[k]); }).join(","); }).join("\n");
+  }
+  function v2AdminAct(act, arg, b) {
+    var A = V2.adm || (V2.adm = { tab: "overview", days: 30 });
+    var refreshUsers = function () { A.cache = {}; v2AdminLoad(true); };
+    var upd = function (action, value) { return v2AdminCall("user-update", { uid: arg, action: action, value: value }).then(refreshUsers).catch(function (e) { v2Toast(String(e.message || e)); }); };
+    switch (act) {
+      case "adm-tab": A.tab = arg; A.err = ""; A.detail = null; A.qd = null; v2AdminLoad(); window.scrollTo(0, 0); return true;
+      case "adm-days": A.days = parseInt(arg, 10) || 30; v2AdminLoad(); return true;
+      case "adm-refresh": A.cache = {}; A.cfg = null; v2AdminLoad(true); return true;
+      case "adm-search": var qi = document.querySelector("#adm-q"); A.q = qi ? qi.value.trim() : ""; v2AdminLoad(); return true;
+      case "adm-uf": A.uf = arg; v2Render(); return true;
+      case "adm-rf": A.rf = arg; v2Render(); return true;
+      case "adm-limit": A.edit = arg; v2Render(); setTimeout(function () { var i = document.querySelector("#adm-lim"); if (i) i.focus(); }, 30); return true;
+      case "adm-limit-cancel": A.edit = null; v2Render(); return true;
+      case "adm-limit-save": var li = document.querySelector("#adm-lim"); A.edit = null; upd("limit", li ? li.value.trim() : ""); return true;
+      case "adm-unl": upd("unlimited", b.getAttribute("data-v") === "1"); return true;
+      case "adm-block": upd("block", b.getAttribute("data-v") === "1"); return true;
+      case "adm-user":
+        if (A.detail && A.detail.uid === arg) { A.detail = null; v2Render(); return true; }
+        A.detail = { uid: arg, loading: true }; v2Render();
+        v2AdminCall("user", { uid: arg }).then(function (d) { if (A.detail && A.detail.uid === arg) { A.detail = Object.assign({ uid: arg }, d); v2Render(); } }).catch(function (e) { A.detail = null; v2Toast(String(e.message || e)); v2Render(); });
+        return true;
+      case "adm-qopen":
+        if (A.qd && A.qd.qhash === arg) { A.qd = null; v2Render(); return true; }
+        A.qd = { qhash: arg, loading: true }; v2Render();
+        v2AdminCall("question", { qhash: arg }).then(function (d) { if (A.qd && A.qd.qhash === arg) { A.qd = Object.assign({ qhash: arg }, d); v2Render(); } }).catch(function (e) { A.qd = null; v2Toast(String(e.message || e)); v2Render(); });
+        return true;
+      case "adm-export":
+        var pr = String(arg).split(":");
+        v2AdminCall("export", { table: pr[0], days: A.days }).then(function (d) {
+          var rows = (d && d.rows) || [], stamp = v2Iso(new Date());
+          if (pr[1] === "csv") v2AdmDownload("rehearsly-" + pr[0] + "-" + stamp + ".csv", v2AdmCsv(rows), "text/csv");
+          else v2AdmDownload("rehearsly-" + pr[0] + "-" + stamp + ".json", JSON.stringify(rows, null, 1), "application/json");
+        }).catch(function (e) { v2Toast(String(e.message || e)); });
+        return true;
+      case "adm-cfg-save":
+        var set = {}; document.querySelectorAll("[data-cfg]").forEach(function (i) { set[i.getAttribute("data-cfg")] = i.value.trim(); });
+        A.saving = true; A.saved = false; v2Render();
+        v2AdminCall("config", { set: set }).then(function (d) { A.cfg = d; A.saving = false; A.saved = true; A.cache = {}; v2Render(); }).catch(function (e) { A.saving = false; v2Toast(String(e.message || e)); v2Render(); });
+        return true;
+    }
+    return false;
+  }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest ? e.target.closest("[data-act^='adm-']") : null;
+    if (b && v2AdminAct(b.getAttribute("data-act"), b.getAttribute("data-arg"), b)) { e.preventDefault(); e.stopPropagation(); }
+  }, true);
+  document.addEventListener("keydown", function (e) { if (e.key === "Enter" && e.target && e.target.id === "adm-q") { e.preventDefault(); v2AdminAct("adm-search"); } });
+  /* =====================================================================
+   * Voice library: 20 interviewer voices, Gemini voices paired with an
+   * accent. Picked in onboarding, changeable in Settings. The interviewer
+   * takes the voice's name; Kira is the default.
+   * =================================================================== */
+  var V2_VOICES = [
+    { id: "kira", name: "Kira", voice: "Sulafat", accent: "indian", g: "F", tone: "Warm and supportive" },
+    { id: "ananya", name: "Ananya", voice: "Kore", accent: "indian", g: "F", tone: "Firm and direct" },
+    { id: "priya", name: "Priya", voice: "Despina", accent: "indian", g: "F", tone: "Smooth and calm" },
+    { id: "meera", name: "Meera", voice: "Gacrux", accent: "indian", g: "F", tone: "Mature, senior leader" },
+    { id: "isha", name: "Isha", voice: "Leda", accent: "indian", g: "F", tone: "Young and energetic" },
+    { id: "arjun", name: "Arjun", voice: "Charon", accent: "indian", g: "M", tone: "Clear and informative" },
+    { id: "rohan", name: "Rohan", voice: "Achird", accent: "indian", g: "M", tone: "Friendly and easy" },
+    { id: "vikram", name: "Vikram", voice: "Alnilam", accent: "indian", g: "M", tone: "Firm, senior panel" },
+    { id: "karan", name: "Karan", voice: "Iapetus", accent: "indian", g: "M", tone: "Crisp and clear" },
+    { id: "dev", name: "Dev", voice: "Sadaltager", accent: "indian", g: "M", tone: "Thoughtful and expert" },
+    { id: "emma", name: "Emma", voice: "Aoede", accent: "american", g: "F", tone: "Bright and breezy" },
+    { id: "olivia", name: "Olivia", voice: "Erinome", accent: "american", g: "F", tone: "Clear and precise" },
+    { id: "jake", name: "Jake", voice: "Puck", accent: "american", g: "M", tone: "Upbeat and quick" },
+    { id: "ryan", name: "Ryan", voice: "Orus", accent: "american", g: "M", tone: "Firm, big tech panel" },
+    { id: "charlotte", name: "Charlotte", voice: "Vindemiatrix", accent: "british", g: "F", tone: "Gentle and polished" },
+    { id: "oliver", name: "Oliver", voice: "Rasalgethi", accent: "british", g: "M", tone: "Measured and informative" },
+    { id: "sophie", name: "Sophie", voice: "Pulcherrima", accent: "british", g: "F", tone: "Forward and sharp" },
+    { id: "mia", name: "Mia", voice: "Laomedeia", accent: "australian", g: "F", tone: "Upbeat and warm" },
+    { id: "jack", name: "Jack", voice: "Zubenelgenubi", accent: "australian", g: "M", tone: "Casual and relaxed" },
+    { id: "chloe", name: "Chloe", voice: "Callirrhoe", accent: "australian", g: "F", tone: "Easy going" }
+  ];
+  var V2_ACCENTS = [["indian", "Indian English"], ["american", "US"], ["british", "UK"], ["australian", "Australian"]];
+  function v2VoiceById(id) { return V2_VOICES.filter(function (v) { return v.id === id; })[0] || V2_VOICES[0]; }
+  function v2CurVoice() { return v2VoiceById(v2Prefs().voiceId || "kira"); }
+  function v2VoiceName() { return v2CurVoice().name; }
+  function v2AccentKey() { return V2.previewAccent || v2CurVoice().accent; }
+  function v2VoiceLabel(v) { return (V2_ACCENTS.filter(function (a) { return a[0] === v.accent; })[0] || [0, ""])[1] + " · " + (v.g === "F" ? "Female" : "Male"); }
+  // where: "ob" in onboarding, "set" in Settings
+  function v2VoicePickerHtml(where) {
+    var cur = v2CurVoice(), grp = V2.voiceGroup || cur.accent;
+    return '<div class="v2-vlib" data-where="' + where + '"><div class="v2-vlib-head"><div><b>' + (where === "ob" ? "Pick your interviewer's voice" : "Interviewer voice library") + "</b>" +
+      "<span>" + (where === "ob" ? "Tap Play to hear each one. You can change it any time in Settings, under Practice defaults." : "Your interviewer takes this voice and name in every interview.") + "</span></div>" +
+      '<span class="v2-vlib-cur">Selected: <b>' + v2Esc(cur.name) + "</b> · " + v2Esc(v2VoiceLabel(cur)) + "</span></div>" +
+      '<div class="v2-vlib-tabs">' + V2_ACCENTS.map(function (a) { var n = V2_VOICES.filter(function (v) { return v.accent === a[0]; }).length;
+        return '<button type="button" class="' + (grp === a[0] ? "on" : "") + '" data-act="voice-group" data-arg="' + a[0] + '">' + a[1] + " <i>" + n + "</i></button>"; }).join("") + "</div>" +
+      '<div class="v2-vlib-grid">' + V2_VOICES.filter(function (v) { return v.accent === grp; }).map(function (v) {
+        var on = v.id === cur.id, playing = V2.voicePlaying === v.id;
+        return '<div class="v2-vcard' + (on ? " on" : "") + '"><button type="button" class="v2-vpick" data-act="voice-pick" data-arg="' + v.id + '" aria-pressed="' + on + '"><b>' + v2Esc(v.name) + "</b><span>" + v2Esc(v.tone) + "</span><span class=\"g\">" + (v.g === "F" ? "Female" : "Male") + "</span></button>" +
+          '<button type="button" class="v2-vplay' + (playing ? " playing" : "") + '" data-act="voice-play" data-arg="' + v.id + '" aria-label="Play ' + v2Esc(v.name) + '">' + (playing ? "Playing…" : "Play") + "</button></div>";
+      }).join("") + "</div></div>";
+  }
+  function v2VoicePreview(id) {
+    var v = v2VoiceById(id);
+    V2.voicePlaying = id; v2VoiceRefresh();
+    var text = "Hi, I'm " + v.name + ". I'll be your interviewer today. Take a breath, and tell me about a project you are proud of.";
+    var done = function () { if (V2.voicePlaying === id) { V2.voicePlaying = null; V2.previewAccent = null; v2VoiceRefresh(); } };
+    V2.previewAccent = v.accent;
+    try {
+      if (window.__v2VoicePreview) { window.__v2VoicePreview(v, text); setTimeout(done, 300); return; }
+      if (hasGeminiKey() && window.WebSocket) speakWithGemini(chunkForSpeech(text), { voice: v.voice, onDone: done, onFail: function () { speakBrowser(text, done); } });
+      else speakBrowser(text, done);
+    } catch (e) { done(); }
+    setTimeout(done, 15000);
+  }
+  // Redraws only the picker, so onboarding and Settings keep their place.
+  function v2VoiceRefresh() {
+    document.querySelectorAll(".v2-vlib").forEach(function (el) { var w = el.getAttribute("data-where"); var t = document.createElement("div"); t.innerHTML = v2VoicePickerHtml(w); el.replaceWith(t.firstChild); });
+  }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest ? e.target.closest("[data-act^='voice-']") : null;
+    if (!b) return;
+    var act = b.getAttribute("data-act"), arg = b.getAttribute("data-arg");
+    if (act === "voice-group") V2.voiceGroup = arg;
+    else if (act === "voice-pick") { v2SetPref("voiceId", arg); v2Feature("voice_picked", { meta: arg }); }
+    else if (act === "voice-play") { v2VoicePreview(arg); }
+    else return;
+    e.preventDefault(); e.stopPropagation();
+    if (act !== "voice-play") v2VoiceRefresh();
+  }, true);
   /* V2-END */
   function boot() {
     forgetLeakedKeys();
@@ -16467,6 +17236,7 @@ window.EMBEDDED_BOOK_DATA = JSON.parse("{\"questions\": [{\"id\": \"q0002\", \"p
     var canContinue = mayContinue();
     if (signedIn() && !canContinue) lockSession();
     showLanding(true);
+    try { v2TrackVisit("visit"); } catch (e) {}
     setAuthMode("login");
     showContinueRow(canContinue);
     var known = getSettings().authEmail || "";
